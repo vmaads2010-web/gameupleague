@@ -1,0 +1,38 @@
+{
+  "_instructions": "Edit the text values below (the parts in quotes after each colon). Do not change anything before a colon (the field names). After saving, the live website updates automatically within about a minute.",
+
+  "noticeBar": "🚧 Early preview of the Game Up League website. Some details are still being confirmed by GUL leadership.",
+
+  "hero": {
+    "kicker": "⚽ Football • Community • Competition",
+    "titleLine1": "PLAY.",
+    "titleLine2": "COMPETE.",
+    "titleLine3": "GAME UP.",
+    "description": "A football-first community built for players, teams and unforgettable matchday experiences. Season 2 — RE-LOADED is on its way."
+  },
+
+  "season2": {
+    "intro": "Confirmed details only. Registration pricing and some dates are still being finalized by GUL leadership and will appear here once confirmed.",
+    "pillDates": "16 Jan – 13 Mar 2027",
+    "pillMatchDays": "Match days: Saturdays",
+    "pillAuction": "Player auction: 13 Dec 2026, 10 AM–2 PM (venue TBC)",
+    "teamCountTitle": "9 Teams",
+    "teamCountDesc": "Home-and-away league format. Full playoff/knockout structure to be confirmed.",
+    "playersPerTeamTitle": "8 Players per Team",
+    "playersPerTeamDesc": "Squad size for Season 2 RE-LOADED.",
+    "registrationNote": "Registration windows and fees are still being confirmed. Follow our Instagram or email us to be notified the moment registration opens."
+  },
+
+  "season1": {
+    "archiveNote": "Season 1 is complete. Approved photos, videos and results from Season 1 will be added here once the archive is prepared."
+  },
+
+  "contact": {
+    "email": "gameupleague@gmail.com",
+    "phoneDisplay": "+91 97303 80420",
+    "phoneHref": "+919730380420",
+    "instagramHandle": "@gameup.league",
+    "instagramUrl": "https://www.instagram.com/gameup.league",
+    "youtubeNote": "YouTube: channel link pending confirmation"
+  }
+}

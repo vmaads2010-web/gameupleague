@@ -60,7 +60,7 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 </style>
 </head>
 <body>
-<div class="notice-bar">🚧 <b>Early preview</b> of the Game Up League website. Some details are still being confirmed by GUL leadership.</div>
+<div class="notice-bar" id="noticeBar">Loading…</div>
 <header class="nav">
  <div class="container navin">
   <a class="brand" href="#home"><img src="assets/gul-logo.png" alt="Game Up League logo"><span>GAME UP LEAGUE</span></a>
@@ -74,9 +74,9 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <main id="home">
 <section class="hero">
  <div class="container hero-copy">
-  <div class="kicker">⚽ Football • Community • Competition</div>
-  <h1>PLAY.<br><span>COMPETE.</span><br>GAME UP.</h1>
-  <p>A football-first community built for players, teams and unforgettable matchday experiences. Season 2 — RE-LOADED is on its way.</p>
+  <div class="kicker" id="heroKicker"></div>
+  <h1><span id="heroLine1" style="color:var(--white)"></span><br><span id="heroLine2" style="color:var(--gold)"></span><br><span id="heroLine3" style="color:var(--white)"></span></h1>
+  <p id="heroDesc"></p>
   <div class="actions"><a class="btn gold" href="#season2">Season 2 — RE-LOADED →</a><a class="btn outline" href="#contact">Get in touch</a></div>
  </div>
  <div class="hero-art"><img class="mascot" src="assets/gul-mascot.png" alt="Game Up League grey wolf mascot"></div>
@@ -85,16 +85,16 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <section class="section" id="season2">
  <div class="container">
   <div class="section-head"><div><div class="eyebrow">Coming up</div><h2>Season 2 — RE-LOADED</h2></div></div>
-  <p class="sub">Confirmed details only. Registration pricing and some dates are still being finalized by GUL leadership and will appear here once confirmed.</p>
+  <p class="sub" id="season2Intro"></p>
   <div class="pills">
-   <span class="pill">16 Jan – 13 Mar 2027</span>
-   <span class="pill">Match days: Saturdays</span>
-   <span class="pill">Player auction: 13 Dec 2026, 10 AM–2 PM (venue TBC)</span>
+   <span class="pill" id="pillDates"></span>
+   <span class="pill" id="pillMatchDays"></span>
+   <span class="pill" id="pillAuction"></span>
   </div>
   <div class="grid cards" style="margin-top:10px">
-   <article class="card"><span class="tag">Format</span><h3>9 Teams</h3><p>Home-and-away league format. Full playoff/knockout structure to be confirmed.</p></article>
-   <article class="card"><span class="tag">Format</span><h3>8 Players per Team</h3><p>Squad size for Season 2 RE-LOADED.</p></article>
-   <article class="card"><span class="tag pending">Pending</span><h3>Registration & Pricing</h3><p>Registration windows and fees are still being confirmed. Follow our Instagram or email us to be notified the moment registration opens.</p></article>
+   <article class="card"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
+   <article class="card"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
+   <article class="card"><span class="tag pending">Pending</span><h3>Registration & Pricing</h3><p id="registrationNote"></p></article>
   </div>
  </div>
 </section>
@@ -102,7 +102,7 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <section class="section" id="season1">
  <div class="container">
   <div class="section-head"><div><div class="eyebrow">Completed</div><h2>Season 1 Archive</h2></div></div>
-  <div class="placeholder-box">Season 1 is complete. Approved photos, videos and results from Season 1 will be added here once the archive is prepared.</div>
+  <div class="placeholder-box" id="season1Note"></div>
  </div>
 </section>
 
@@ -130,11 +130,11 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container">
   <div class="section-head"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
   <div class="cta">
-   <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 gameupleague@gmail.com</p><p class="sub" style="margin:0 0 4px">📞 +91 97303 80420</p><p class="sub" style="margin:0">📸 @gameup.league</p></div>
+   <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 <span id="contactEmailText"></span></p><p class="sub" style="margin:0 0 4px">📞 <span id="contactPhoneText"></span></p><p class="sub" style="margin:0">📸 <span id="contactInstagramText"></span></p></div>
    <div class="contact-actions">
-    <a class="btn gold" href="mailto:gameupleague@gmail.com?subject=Game%20Up%20League%20Enquiry">Email Us →</a>
-    <a class="btn outline" href="https://www.instagram.com/gameup.league" target="_blank" rel="noopener">Message on Instagram →</a>
-    <a class="btn outline" href="tel:+919730380420">Call +91 97303 80420</a>
+    <a class="btn gold" id="contactEmailBtn" href="#">Email Us →</a>
+    <a class="btn outline" id="contactInstagramBtn" href="#" target="_blank" rel="noopener">Message on Instagram →</a>
+    <a class="btn outline" id="contactPhoneBtn" href="#">Call</a>
    </div>
   </div>
  </div>
@@ -145,8 +145,57 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container footgrid">
   <div><img class="footlogo" src="assets/gul-logo.png" alt="Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 Game Up League. All rights reserved.</p></div>
   <div><h3>Explore</h3><p><a href="#season2">Season 2 · RE-LOADED</a></p><p><a href="#season1">Season 1 Archive</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
-  <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a href="mailto:gameupleague@gmail.com">gameupleague@gmail.com</a></p><p>Instagram: <a href="https://www.instagram.com/gameup.league" target="_blank" rel="noopener">@gameup.league</a></p><p>YouTube: channel link pending confirmation</p></div>
+  <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p id="footerYoutube"></p></div>
  </div>
 </footer>
+
+<script>
+fetch('content.json')
+  .then(r => r.json())
+  .then(c => {
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+    const setHref = (id, href) => { const el = document.getElementById(id); if (el) el.href = href; };
+
+    set('noticeBar', c.noticeBar);
+
+    set('heroKicker', c.hero.kicker);
+    set('heroLine1', c.hero.titleLine1);
+    set('heroLine2', c.hero.titleLine2);
+    set('heroLine3', c.hero.titleLine3);
+    set('heroDesc', c.hero.description);
+
+    set('season2Intro', c.season2.intro);
+    set('pillDates', c.season2.pillDates);
+    set('pillMatchDays', c.season2.pillMatchDays);
+    set('pillAuction', c.season2.pillAuction);
+    set('teamCountTitle', c.season2.teamCountTitle);
+    set('teamCountDesc', c.season2.teamCountDesc);
+    set('playersPerTeamTitle', c.season2.playersPerTeamTitle);
+    set('playersPerTeamDesc', c.season2.playersPerTeamDesc);
+    set('registrationNote', c.season2.registrationNote);
+
+    set('season1Note', c.season1.archiveNote);
+
+    set('contactEmailText', c.contact.email);
+    set('contactPhoneText', c.contact.phoneDisplay);
+    set('contactInstagramText', c.contact.instagramHandle);
+    setHref('contactEmailBtn', 'mailto:' + c.contact.email + '?subject=Game%20Up%20League%20Enquiry');
+    setHref('contactInstagramBtn', c.contact.instagramUrl);
+    set('contactPhoneBtn', 'Call ' + c.contact.phoneDisplay);
+    setHref('contactPhoneBtn', 'tel:' + c.contact.phoneHref);
+
+    set('footerEmail', c.contact.email);
+    setHref('footerEmail', 'mailto:' + c.contact.email);
+    set('footerInstagram', c.contact.instagramHandle);
+    setHref('footerInstagram', c.contact.instagramUrl);
+    set('footerYoutube', c.contact.youtubeNote);
+
+    document.title = 'Game Up League — ' + c.hero.titleLine2 + ' ' + c.hero.titleLine3;
+  })
+  .catch(err => {
+    console.error('Could not load content.json', err);
+    document.getElementById('noticeBar').textContent = 'Could not load website content. Please refresh, or contact the site admin if this continues.';
+  });
+</script>
 </body>
 </html>
