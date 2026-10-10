@@ -341,7 +341,7 @@ function renderActions(containerId, promptText) {
   });
 }
 
-const basePrompt = (team, colors) => `Anime art style, consistent with the Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. Do not alter or redraw the Game Up League logo or wolf mascot if they appear - keep those exactly as provided.`;
+const basePrompt = (team, colors) => `Vertical Instagram poster, 4:5 portrait aspect ratio. Anime art style, consistent with the Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. The top-left corner and the very bottom strip of the image must be left as plain, uncluttered background (sky, stadium blur, etc.) - no text, no logo, no badges there - those areas will be added separately afterwards.`;
 
 document.getElementById('occasion').addEventListener('change', (e) => {
   document.getElementById('awardFieldWrap').style.display = e.target.value === 'award' ? 'block' : 'none';
@@ -362,7 +362,7 @@ document.getElementById('genPlayerBtn').addEventListener('click', () => {
   else if (occasion === 'award') occasionLine = `This celebrates ${player} winning "${award || 'an award'}" for ${team}. Include a subtle trophy or medal element.`;
   else occasionLine = `This is a matchday hype image for ${player} ahead of a Game Up League match.`;
 
-  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nPlayer name to reflect in the mood/energy (do not write text on the image unless asked): ${player}.`;
+  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nPlayer name to reflect in the mood/energy (do not write text on the image unless asked, since a text headline is added separately): ${player}.`;
 
   document.getElementById('playerPromptOut').textContent = prompt;
   document.getElementById('playerPromptOut').classList.add('show');
@@ -377,7 +377,7 @@ document.getElementById('genFestivalBtn').addEventListener('click', () => {
 
   if (!occasionDesc) { toast('Pick a festival or describe the occasion first.', 'err'); return; }
 
-  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\nAnime art style, Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports anime look, Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football. High quality, vibrant lighting, caption-ready composition with some empty space for text to be added later.`;
+  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\nVertical Instagram poster, 4:5 portrait aspect ratio. Anime/premium 3D-toon art style, Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports look, Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football, surrounded by elements of the occasion. High quality, vibrant lighting. The top-left corner and the very bottom strip of the image must be left as plain, uncluttered background - no text, no logo, no badges there - those areas will be added separately afterwards.`;
 
   document.getElementById('festivalPromptOut').textContent = prompt;
   document.getElementById('festivalPromptOut').classList.add('show');
@@ -406,6 +406,119 @@ function activePrompt() {
   return text && text.trim() ? text : null;
 }
 
+// ---- Fixed brand overlay: official logo + standard footer bar, never touched by AI ----
+const BRAND = {
+  youtube: 'GameUpLeague',
+  instagram: '@gameup.league',
+  location: 'Game Up Turf',
+  email: 'gameupleague@gmail.com',
+};
+
+function loadImage(src, crossOrigin) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    if (crossOrigin) img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function toDataURL(url) {
+  const resp = await fetch(url);
+  const blob = await resp.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+async function applyBrandOverlay(aiImageUrl) {
+  const [aiImg, logoImg] = await Promise.all([
+    loadImage(aiImageUrl, true),
+    loadImage('../assets/gul-logo.png'),
+  ]);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = aiImg.naturalWidth;
+  canvas.height = aiImg.naturalHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(aiImg, 0, 0, canvas.width, canvas.height);
+
+  // Fixed logo, top-left - always the exact official file, never AI-drawn.
+  const logoW = canvas.width * 0.16;
+  const logoH = logoW * (logoImg.naturalHeight / logoImg.naturalWidth);
+  const margin = canvas.width * 0.035;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.45)';
+  ctx.shadowBlur = canvas.width * 0.012;
+  ctx.drawImage(logoImg, margin, margin, logoW, logoH);
+  ctx.restore();
+
+  // Fixed footer bar, bottom - same text/layout on every single post.
+  const barH = canvas.height * 0.052;
+  const barMargin = canvas.width * 0.03;
+  const barY = canvas.height - barH - barMargin;
+  const barW = canvas.width - barMargin * 2;
+  ctx.fillStyle = 'rgba(8,16,36,.94)';
+  roundRect(ctx, barMargin, barY, barW, barH, barH * 0.5);
+  ctx.fill();
+
+  const items = [
+    { icon: '▶', color: '#ff3b30', text: BRAND.youtube },
+    { icon: '📷', color: '#e1306c', text: BRAND.instagram },
+    { icon: '📍', color: '#f5b51b', text: BRAND.location },
+    { icon: '✉', color: '#4fa3ff', text: BRAND.email },
+  ];
+  ctx.textBaseline = 'middle';
+  const usableW = barW * 0.92;
+  let fontSize = barH * 0.32;
+  let gap = barW * 0.03;
+  let widths, totalContentW;
+  for (let i = 0; i < 12; i++) {
+    ctx.font = `600 ${fontSize}px Inter, Arial, sans-serif`;
+    widths = items.map(it => ctx.measureText(it.icon + '  ' + it.text).width);
+    totalContentW = widths.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
+    if (totalContentW <= usableW) break;
+    fontSize *= 0.92;
+    gap *= 0.92;
+  }
+  let cursorX = barMargin + (barW - totalContentW) / 2;
+  const midY = barY + barH / 2;
+  items.forEach((it, i) => {
+    ctx.fillStyle = it.color;
+    ctx.font = `${fontSize}px Arial, sans-serif`;
+    ctx.fillText(it.icon, cursorX, midY);
+    const iconW = ctx.measureText(it.icon + '  ').width;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `600 ${fontSize}px Inter, Arial, sans-serif`;
+    ctx.fillText(it.text, cursorX + iconW, midY);
+    cursorX += widths[i] + gap;
+    if (i < items.length - 1) {
+      ctx.strokeStyle = 'rgba(255,255,255,.25)';
+      ctx.lineWidth = Math.max(1, fontSize * 0.04);
+      ctx.beginPath();
+      ctx.moveTo(cursorX - gap / 2, barY + barH * 0.22);
+      ctx.lineTo(cursorX - gap / 2, barY + barH * 0.78);
+      ctx.stroke();
+    }
+  });
+
+  return canvas.toDataURL('image/png');
+}
+
 async function runAutoGenerate(type, btn) {
   const prompt = activePrompt();
   if (!prompt) { toast('Click "Generate Prompt" first.', 'err'); return; }
@@ -418,6 +531,14 @@ async function runAutoGenerate(type, btn) {
   resultBox.classList.remove('show');
 
   try {
+    let referenceImages;
+    if (type === 'image') {
+      referenceImages = await Promise.all([
+        toDataURL('../assets/gul-mascot.png'),
+        toDataURL('../assets/gul-logo.png'),
+      ]);
+    }
+
     const resp = await fetch(`${window.GUL_SUPABASE_URL}/functions/v1/generate-media`, {
       method: 'POST',
       headers: {
@@ -425,16 +546,22 @@ async function runAutoGenerate(type, btn) {
         apikey: window.GUL_SUPABASE_ANON_KEY,
         Authorization: 'Bearer ' + window.GUL_SUPABASE_ANON_KEY,
       },
-      body: JSON.stringify({ type, prompt }),
+      body: JSON.stringify({ type, prompt, referenceImages }),
     });
     const data = await resp.json();
     if (!resp.ok) { toast(data.error || resp.statusText, 'err'); return; }
 
     const costRupees = (data.cost_paise / 100).toFixed(2);
-    resultBox.innerHTML = (type === 'video'
-      ? `<video src="${data.url}" controls></video>`
-      : `<img src="${data.url}" alt="Generated result">`) +
-      `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${data.url}" download>⬇ Download</a></div>`;
+
+    if (type === 'video') {
+      resultBox.innerHTML = `<video src="${data.url}" controls></video>` +
+        `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${data.url}" download>⬇ Download</a></div>`;
+    } else {
+      btn.innerHTML = `<span class="spinner"></span> Applying official logo + footer…`;
+      const finalDataUrl = await applyBrandOverlay(data.url);
+      resultBox.innerHTML = `<img src="${finalDataUrl}" alt="Generated result">` +
+        `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${finalDataUrl}" download="gul-post-${Date.now()}.png">⬇ Download</a></div>`;
+    }
     resultBox.classList.add('show');
     toast('Generated successfully!', 'ok');
   } catch (e) {
