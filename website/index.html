@@ -130,10 +130,11 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container">
   <div class="section-head"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
   <div class="cta">
-   <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 <span id="contactEmailText"></span></p><p class="sub" style="margin:0 0 4px">📞 <span id="contactPhoneText"></span></p><p class="sub" style="margin:0">📸 <span id="contactInstagramText"></span></p></div>
+   <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 <span id="contactEmailText"></span></p><p class="sub" style="margin:0 0 4px">📞 <span id="contactPhoneText"></span></p><p class="sub" style="margin:0 0 4px">📸 <span id="contactInstagramText"></span></p><p class="sub" style="margin:0">▶️ <span id="contactYoutubeText"></span></p></div>
    <div class="contact-actions">
     <a class="btn gold" id="contactEmailBtn" href="#">Email Us →</a>
     <a class="btn outline" id="contactInstagramBtn" href="#" target="_blank" rel="noopener">Message on Instagram →</a>
+    <a class="btn outline" id="contactYoutubeBtn" href="#" target="_blank" rel="noopener">Watch on YouTube →</a>
     <a class="btn outline" id="contactPhoneBtn" href="#">Call</a>
    </div>
   </div>
@@ -145,7 +146,7 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container footgrid">
   <div><img class="footlogo" src="assets/gul-logo.png" alt="Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 Game Up League. All rights reserved.</p></div>
   <div><h3>Explore</h3><p><a href="#season2">Season 2 · RE-LOADED</a></p><p><a href="#season1">Season 1 Archive</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
-  <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p id="footerYoutube"></p></div>
+  <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p>YouTube: <a id="footerYoutube" href="#" target="_blank" rel="noopener"></a></p></div>
  </div>
 </footer>
 
@@ -179,8 +180,10 @@ fetch('content.json')
     set('contactEmailText', c.contact.email);
     set('contactPhoneText', c.contact.phoneDisplay);
     set('contactInstagramText', c.contact.instagramHandle);
+    set('contactYoutubeText', c.contact.youtubeHandle);
     setHref('contactEmailBtn', 'mailto:' + c.contact.email + '?subject=Game%20Up%20League%20Enquiry');
     setHref('contactInstagramBtn', c.contact.instagramUrl);
+    setHref('contactYoutubeBtn', c.contact.youtubeUrl);
     set('contactPhoneBtn', 'Call ' + c.contact.phoneDisplay);
     setHref('contactPhoneBtn', 'tel:' + c.contact.phoneHref);
 
@@ -188,7 +191,8 @@ fetch('content.json')
     setHref('footerEmail', 'mailto:' + c.contact.email);
     set('footerInstagram', c.contact.instagramHandle);
     setHref('footerInstagram', c.contact.instagramUrl);
-    set('footerYoutube', c.contact.youtubeNote);
+    set('footerYoutube', c.contact.youtubeHandle);
+    setHref('footerYoutube', c.contact.youtubeUrl);
 
     document.title = 'Game Up League — ' + c.hero.titleLine2 + ' ' + c.hero.titleLine3;
   })
