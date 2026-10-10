@@ -60,6 +60,28 @@
     ]
   },
 
+  "leadership": {
+    "_instructions": "photo is a filename inside website/assets/leadership/ (e.g. 'ansel.jpg'). Leave as null until Vishal provides photos - a placeholder with initials will show instead.",
+    "_source": "Names from GUL_MASTER_KNOWLEDGE.md. Social Media and Marketing/PR entries are flagged unconfirmed in docs/QUESTIONS_FOR_GUL_LEADERSHIP.md - not yet locked in.",
+    "members": [
+      { "role": "President", "name": "Ansel", "photo": null },
+      { "role": "Vice President", "name": "Abhay", "photo": null },
+      { "role": "Chairperson", "name": "Vishal", "photo": null },
+      { "role": "Treasurer", "name": "Anmol", "photo": null },
+      { "role": "Technical Director", "name": "Neil", "photo": null },
+      { "role": "League Commissioner", "name": "Snedden", "photo": null },
+      { "role": "Social Media (unconfirmed)", "name": "Mandar", "photo": null },
+      { "role": "Marketing / PR (spelling unconfirmed)", "name": "Sheryans", "photo": null },
+      { "role": "League Marshal", "name": "Anslem & Clyde", "photo": null },
+      { "role": "League Coordinator", "name": "Ronnie", "photo": null }
+    ]
+  },
+
+  "gallery": {
+    "_instructions": "Add images here once Vishal provides them. Each item: { \"src\": \"assets/gallery/filename.jpg\", \"caption\": \"short caption\" }",
+    "images": []
+  },
+
   "contact": {
     "email": "gameupleague@gmail.com",
     "phoneDisplay": "+91 97303 80420",

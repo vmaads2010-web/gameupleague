@@ -101,11 +101,28 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 .awardCard .ttl{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
 .awardCard .team{font-size:12px;color:var(--muted);margin-top:2px}
+.leaderGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.leaderCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.leaderCard:hover{transform:translateY(-5px);border-color:rgba(245,181,27,.4)}
+.leaderAvatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#101c31;object-fit:cover}
+.leaderName{font-size:15px;font-weight:800}
+.leaderRole{font-size:11.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.6px;margin-top:3px;font-weight:800}
+.galleryGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.galleryItem{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#07172f;border:1px solid var(--line)}
+.galleryItem img{width:100%;height:100%;object-fit:cover;display:block}
+.galleryCaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);color:#fff;font-size:12.5px;padding:18px 12px 10px}
 .mobile{display:none}
+.hamburgerBtn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#fff;font-size:20px;width:44px;height:44px;border-radius:10px;cursor:pointer;line-height:1}
+.mobileMenu{display:none;flex-direction:column;background:#081a37;border-top:1px solid var(--line);padding:8px 0}
+.mobileMenu.open{display:flex}
+.mobileMenu a{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);color:#d8e1f2;font-size:14.5px;font-weight:700}
+.mobileMenu a:hover{color:var(--gold);background:rgba(255,255,255,.03)}
 @media(max-width:850px){
  .links{display:none}.mobile{display:block}.hero{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:60px 0 20px}.hero-art{height:440px}.mascot{height:420px}
  .cards{grid-template-columns:1fr}.feature{grid-template-columns:1fr}.cta{flex-direction:column;align-items:flex-start}.footgrid{grid-template-columns:1fr}
+ .navin{gap:10px}
 }
+@media(min-width:851px){ .hamburgerBtn,.mobileMenu{display:none!important} }
 
 /* Prominent live-offer banner */
 .offerBanner{position:relative;overflow:hidden;background:linear-gradient(90deg,#d53c35,#e3262e 35%,#123b83 100%);background-size:200% 100%;padding:12px 0;z-index:40}
@@ -135,9 +152,19 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container navin">
   <a class="brand" href="#home"><img src="assets/gul-logo.png" alt="Game Up League logo"><span>GAME UP LEAGUE</span></a>
   <nav class="links">
-   <a href="#season2">Season 2 · RE-LOADED</a><a href="#season1">Season 1 Archive</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
+   <a href="#season2">Season 2 · RE-LOADED</a><a href="#season1">Season 1 Archive</a><a href="#leadership">Leadership</a><a href="#gallery">Gallery</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
   </nav>
   <a class="btn gold mobile" href="register.html">Register</a>
+  <button class="mobile hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
+ </div>
+ <div class="mobileMenu" id="mobileMenu">
+  <a href="#season2">Season 2 · RE-LOADED</a>
+  <a href="#season1">Season 1 Archive</a>
+  <a href="#leadership">Leadership</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#turf">Game Up Turf</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
  </div>
 </header>
 
@@ -208,6 +235,21 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  </div>
 </section>
 
+<section class="section" id="leadership">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">The team behind GUL</div><h2>Leadership</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:20px">Photos coming soon — roles and names confirmed, some roles still pending final confirmation.</p>
+  <div class="leaderGrid reveal-stagger" id="leaderGrid"></div>
+ </div>
+</section>
+
+<section class="section" id="gallery">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>Gallery</h2></div></div>
+  <div id="galleryWrap"></div>
+ </div>
+</section>
+
 <section class="section" id="contact">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
@@ -233,12 +275,23 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <footer class="footer">
  <div class="container footgrid">
   <div><img class="footlogo" src="assets/gul-logo.png" alt="Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 Game Up League. All rights reserved.</p></div>
-  <div><h3>Explore</h3><p><a href="#season2">Season 2 · RE-LOADED</a></p><p><a href="#season1">Season 1 Archive</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
+  <div><h3>Explore</h3><p><a href="#season2">Season 2 · RE-LOADED</a></p><p><a href="#season1">Season 1 Archive</a></p><p><a href="#leadership">Leadership</a></p><p><a href="#gallery">Gallery</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
   <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p>YouTube: <a id="footerYoutube" href="#" target="_blank" rel="noopener"></a></p></div>
  </div>
 </footer>
 
 <script>
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburgerBtn.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+  hamburgerBtn.textContent = mobileMenu.classList.contains('open') ? '✕' : '☰';
+});
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mobileMenu.classList.remove('open');
+  hamburgerBtn.textContent = '☰';
+}));
+
 if ('IntersectionObserver' in window) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
@@ -298,6 +351,28 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a =>
       `<div class="awardCard r-item"><div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${a.team}</div>` : ''}</div>`
     ).join('');
+
+    const initials = (name) => name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const avatarColors = ['#f5b51b', '#1459c7', '#e3262e', '#16865c', '#9b59b6'];
+    const colorFor = (name) => avatarColors[[...name].reduce((s, ch) => s + ch.charCodeAt(0), 0) % avatarColors.length];
+    document.getElementById('leaderGrid').innerHTML = (c.leadership ? c.leadership.members : []).map(m => `
+      <div class="leaderCard r-item">
+        ${m.photo
+          ? `<img class="leaderAvatar" src="assets/leadership/${m.photo}" alt="${m.name}">`
+          : `<div class="leaderAvatar" style="background:${colorFor(m.name)}">${initials(m.name)}</div>`}
+        <div class="leaderName">${m.name}</div>
+        <div class="leaderRole">${m.role}</div>
+      </div>`).join('');
+
+    const galleryImages = c.gallery ? c.gallery.images : [];
+    const galleryWrap = document.getElementById('galleryWrap');
+    if (galleryImages.length) {
+      galleryWrap.innerHTML = '<div class="galleryGrid reveal-stagger in">' + galleryImages.map(g =>
+        `<div class="galleryItem r-item"><img src="${g.src}" alt="${g.caption || ''}" loading="lazy">${g.caption ? `<div class="galleryCaption">${g.caption}</div>` : ''}</div>`
+      ).join('') + '</div>';
+    } else {
+      galleryWrap.innerHTML = '<div class="placeholder-box reveal in">Photos coming soon — match days, events and behind-the-scenes moments will be added here.</div>';
+    }
 
     set('contactEmailText', c.contact.email);
     set('contactPhoneText', c.contact.phoneDisplay);
