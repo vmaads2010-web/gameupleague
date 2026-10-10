@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUL Social Studio — Prompt Generator</title>
+<link rel="icon" href="../assets/gul-logo.png">
+<style>
+:root{--navy:#07152f;--blue:#1459c7;--gold:#f5b51b;--white:#f7f9ff;--muted:#a9b6cf;--line:rgba(255,255,255,.12);--card:#0d1f40}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#06132b,#081a37);color:var(--white);min-height:100vh}
+.loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.loginBox{width:min(420px,92vw);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px}
+label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#cfd9ef}
+input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#07172f;color:#fff;font-size:14px}
+textarea{min-height:100px;resize:vertical;font-family:inherit}
+button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
+.primaryBtn{background:var(--gold);color:#101c31;padding:12px 16px}
+.msg{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;display:none}
+.msg.show{display:block}
+.msg.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+
+.topbar{position:sticky;top:0;z-index:10;background:rgba(5,16,36,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:12px}
+.topbar img{width:36px;height:40px;object-fit:contain}
+.wrap{max-width:900px;margin:auto;padding:28px 24px 80px}
+h1{font-size:22px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 24px;line-height:1.6}
+.howto{background:rgba(245,181,27,.1);border:1px solid rgba(245,181,27,.35);border-radius:14px;padding:18px 20px;margin-bottom:28px;font-size:13.5px;line-height:1.7}
+.howto b{color:var(--gold)}
+.howto ol{margin:8px 0 0;padding-left:20px}
+.howto a{color:var(--gold);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:22px}
+.card h2{font-size:16px;margin:0 0 4px}
+.card .desc{color:var(--muted);font-size:12.5px;margin-bottom:16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.row2{grid-template-columns:1fr}}
+.promptOut{margin-top:16px;background:#07172f;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;display:none}
+.promptOut.show{display:block}
+.copyBtn{margin-top:10px;background:rgba(255,255,255,.08);color:#fff;padding:9px 14px}
+.festivalGrid{display:grid;gap:10px}
+.festivalItem{background:#07172f;border:1px solid var(--line);border-radius:12px;padding:14px}
+.festivalItem .name{font-weight:800;font-size:14px}
+.festivalItem .date{color:var(--gold);font-size:12px;margin:2px 0 8px}
+.festivalItem .promptText{font-size:12.5px;color:#cfd9ef;line-height:1.5;margin-bottom:10px}
+.festivalItem button{background:rgba(255,255,255,.08);color:#fff;padding:7px 12px;font-size:12px}
+.note{font-size:11.5px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="loginWrap">
+  <div class="loginBox">
+    <h1 style="font-size:20px">GUL Social Studio</h1>
+    <p class="sub" style="margin-top:6px">Admin-only tool — sign in to continue.</p>
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" required autocomplete="username">
+      <label>Password</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit" id="signInBtn" class="primaryBtn" style="width:100%;margin-top:18px">Sign In</button>
+    </form>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+</div>
+
+<div id="studioView" style="display:none">
+  <header class="topbar">
+    <img src="../assets/gul-logo.png" alt="Game Up League">
+    <div style="font-weight:900">GUL SOCIAL STUDIO</div>
+  </header>
+
+  <div class="wrap">
+    <h1>Anime Avatar & Festival Post — Prompt Generator</h1>
+    <p class="sub">This tool writes ready-to-use prompts. It does NOT generate images itself — no free tool can do that fully automatically. You copy the prompt, paste it (with the player's photo) into a free AI image tool, then upload the result to your dashboard.</p>
+
+    <div class="howto">
+      <b>How to use this (one-time setup + every time after):</b>
+      <ol>
+        <li>Go to <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a> and sign in with any free Google account (no payment needed)</li>
+        <li>Upload the player's photo there, then paste the generated prompt below it</li>
+        <li>Gemini will generate an anime-style image based on the photo + prompt</li>
+        <li>Download the result, then upload it wherever you need it (Instagram, admin dashboard, etc.)</li>
+      </ol>
+      <div class="note">I'm recommending Gemini because it accepts a photo + text together (needed to keep the player's likeness) — tools like Bing Image Creator are text-only and won't use the real photo. I haven't verified today's exact free-tier limits on Gemini — if you hit a cap, it resets, or ask me to check current terms before relying on heavy daily use.</div>
+    </div>
+
+    <div class="card">
+      <h2>Player / Team Anime Avatar</h2>
+      <div class="desc">Team names below are free text — Season 2 teams aren't finalized until the auction (13 Dec 2026), so just type whatever team name applies right now.</div>
+      <div class="row2">
+        <div><label>Player name *</label><input id="playerName" placeholder="e.g. Vishal Mishra"></div>
+        <div><label>Team name *</label><input id="teamName" placeholder="e.g. Atlanta FC"></div>
+      </div>
+      <div class="row2">
+        <div><label>Position (optional)</label><input id="playerPosition" placeholder="e.g. Striker"></div>
+        <div><label>Team colors (optional)</label><input id="teamColors" placeholder="e.g. blue and white"></div>
+      </div>
+      <label>Occasion</label>
+      <select id="occasion">
+        <option value="player_reveal">Player Reveal / Registration</option>
+        <option value="award">Award (MVP, Top Scorer, etc.)</option>
+        <option value="matchday">Matchday Hype</option>
+      </select>
+      <div id="awardFieldWrap" style="display:none"><label>Award name</label><input id="awardName" placeholder="e.g. Best Player of the Match"></div>
+      <button class="primaryBtn" id="genPlayerBtn" style="margin-top:16px">Generate Prompt</button>
+      <div id="playerPromptOut" class="promptOut"></div>
+      <button class="copyBtn" id="copyPlayerBtn" style="display:none">Copy Prompt</button>
+    </div>
+
+    <div class="card">
+      <h2>Festival Calendar — Mascot Posts</h2>
+      <div class="desc">Pre-written prompts for the Game Up League wolf mascot celebrating each occasion. Dates for Hindu/Islamic lunar festivals shift every year — double-check the exact date closer to the time; I've marked which ones to verify.</div>
+      <div class="festivalGrid" id="festivalGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+function showMsg(id, kind, text) { const el = document.getElementById(id); el.className = 'msg show ' + kind; el.textContent = text; }
+
+const basePrompt = (team, colors) => `Anime art style, consistent with the Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. Do not alter or redraw the Game Up League logo or wolf mascot if they appear - keep those exactly as provided.`;
+
+document.getElementById('occasion').addEventListener('change', (e) => {
+  document.getElementById('awardFieldWrap').style.display = e.target.value === 'award' ? 'block' : 'none';
+});
+
+document.getElementById('genPlayerBtn').addEventListener('click', () => {
+  const player = document.getElementById('playerName').value.trim();
+  const team = document.getElementById('teamName').value.trim();
+  const position = document.getElementById('playerPosition').value.trim();
+  const colors = document.getElementById('teamColors').value.trim();
+  const occasion = document.getElementById('occasion').value;
+  const award = document.getElementById('awardName').value.trim();
+
+  if (!player || !team) { alert('Please enter at least player name and team name.'); return; }
+
+  let occasionLine = '';
+  if (occasion === 'player_reveal') occasionLine = `This is a player reveal / registration announcement image for ${player}${position ? ', playing as ' + position : ''}.`;
+  else if (occasion === 'award') occasionLine = `This celebrates ${player} winning "${award || 'an award'}" for ${team}. Include a subtle trophy or medal element.`;
+  else occasionLine = `This is a matchday hype image for ${player} ahead of a Game Up League match.`;
+
+  const prompt = `${occasionLine}\n\n${basePrompt(team, colors)}\n\nPlayer name to reflect in the mood/energy (do not write text on the image unless asked): ${player}.`;
+
+  document.getElementById('playerPromptOut').textContent = prompt;
+  document.getElementById('playerPromptOut').classList.add('show');
+  document.getElementById('copyPlayerBtn').style.display = 'inline-block';
+});
+
+document.getElementById('copyPlayerBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('playerPromptOut').textContent);
+  const btn = document.getElementById('copyPlayerBtn');
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = 'Copy Prompt'; }, 1500);
+});
+
+const festivals = [
+  { name: 'Diwali / Deepavali', date: '~Oct/Nov (lunar - verify exact date)', verify: true, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) celebrating Diwali - surrounded by diyas (oil lamps), warm golden light, festive rangoli patterns, holding a football, navy/gold color scheme matching Game Up League branding. Caption-ready, festive and premium.' },
+  { name: 'Holi', date: '~March (lunar - verify exact date)', verify: true, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) joyfully celebrating Holi - covered in vibrant color powder (gulal), playful energetic pose, holding a football, bright festive colors blended with Game Up League navy/gold branding.' },
+  { name: 'Christmas', date: '25 December', verify: false, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) in a festive Christmas scene - wearing a Santa hat, snowy background, holding a football like a gift, warm red and gold color palette matching Game Up League branding.' },
+  { name: 'Eid-ul-Fitr', date: 'Lunar - verify exact date each year', verify: true, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) celebrating Eid - elegant crescent moon and lantern motifs in the background, festive warm tones, holding a football, respectful and celebratory mood, Game Up League navy/gold branding.' },
+  { name: 'Gandhi Jayanti', date: '2 October', verify: false, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) in a respectful, simple pose referencing unity and sportsmanship (no depiction of Gandhi himself), Indian tricolor accents subtly in the background, Game Up League navy/gold branding, calm and respectful tone.' },
+  { name: 'Independence Day', date: '15 August', verify: false, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) proudly celebrating Indian Independence Day - tricolor (saffron, white, green) flag elements, patriotic energetic pose with a football, Game Up League navy/gold branding blended in.' },
+  { name: 'Republic Day', date: '26 January', verify: false, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) celebrating Republic Day - tricolor flag elements, proud dynamic pose with a football, Game Up League navy/gold branding blended in.' },
+  { name: 'New Year', date: '1 January', verify: false, prompt: 'Anime art style, Game Up League grey wolf mascot (keep exact mascot design, do not redraw) celebrating New Year - fireworks in the background, confetti, holding a football, excited energetic pose, Game Up League navy/gold branding, "New Year, New Season" energy.' }
+];
+
+const grid = document.getElementById('festivalGrid');
+grid.innerHTML = festivals.map((f, i) => `
+  <div class="festivalItem">
+    <div class="name">${f.name}</div>
+    <div class="date">${f.date}${f.verify ? ' ⚠️ confirm date closer to the time' : ''}</div>
+    <div class="promptText">${f.prompt}</div>
+    <button data-idx="${i}">Copy Prompt</button>
+  </div>
+`).join('');
+
+grid.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-idx]');
+  if (!btn) return;
+  navigator.clipboard.writeText(festivals[btn.dataset.idx].prompt);
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = 'Copy Prompt'; }, 1500);
+});
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showMsg('loginMsg', 'err', 'supabase-config.js is not configured yet.');
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+
+  async function refreshAuthState() {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('studioView').style.display = 'none';
+      return;
+    }
+    const { data: isAdmin } = await client.rpc('is_admin');
+    if (!isAdmin) {
+      showMsg('loginMsg', 'err', 'Signed in, but this account is not an admin.');
+      await client.auth.signOut();
+      return;
+    }
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('studioView').style.display = 'block';
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('signInBtn');
+    btn.disabled = true;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    btn.disabled = false;
+    if (error) { showMsg('loginMsg', 'err', 'Sign in failed: ' + error.message); return; }
+    await refreshAuthState();
+  });
+
+  refreshAuthState();
+}
+</script>
+</body>
+</html>
