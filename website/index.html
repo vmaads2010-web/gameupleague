@@ -16,16 +16,42 @@
 body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
 linear-gradient(180deg,#06132b 0%,#081a37 48%,#061126 100%);color:var(--white);line-height:1.5}
 a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:auto}
+@media (prefers-reduced-motion: no-preference){
+ @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+ @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+ @keyframes glowPulse{0%,100%{opacity:.55}50%{opacity:1}}
+ @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+ .mascot{animation:floatY 5s ease-in-out infinite}
+ .hero-copy .kicker{opacity:0;animation:fadeUp .7s ease .05s forwards}
+ .hero-copy h1{opacity:0;animation:fadeUp .7s ease .18s forwards}
+ .hero-copy p{opacity:0;animation:fadeUp .7s ease .32s forwards}
+ .hero-copy .actions{opacity:0;animation:fadeUp .7s ease .46s forwards}
+ .hero-art:after{animation:glowPulse 4s ease-in-out infinite}
+ .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+ .reveal.in{opacity:1;transform:translateY(0)}
+ .reveal-stagger.in .r-item{animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) forwards}
+ .reveal-stagger .r-item{opacity:0}
+ .reveal-stagger.in .r-item:nth-child(1){animation-delay:.05s}
+ .reveal-stagger.in .r-item:nth-child(2){animation-delay:.15s}
+ .reveal-stagger.in .r-item:nth-child(3){animation-delay:.25s}
+}
+@media (prefers-reduced-motion: reduce){ .reveal{opacity:1!important;transform:none!important} }
 .notice-bar{background:#13285a;color:#dce6ff;font-size:12.5px;text-align:center;padding:9px 14px;border-bottom:1px solid var(--line)}
 .notice-bar b{color:var(--gold)}
 .nav{position:sticky;top:0;z-index:50;background:rgba(5,16,36,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
 .navin{height:78px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
-.brand img{width:52px;height:60px;object-fit:contain}
+.brand img{width:52px;height:60px;object-fit:contain;transition:transform .35s ease}
+.brand:hover img{transform:rotate(-8deg) scale(1.06)}
 .brand span{font-size:18px}.links{display:flex;gap:20px;font-size:13.5px;color:#d8e1f2;flex-wrap:wrap}
-.links a:hover{color:var(--gold)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:12px;font-weight:800;border:1px solid transparent;cursor:pointer}
+.links a{position:relative;padding-bottom:3px;transition:color .25s ease}
+.links a:after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--gold);transition:width .3s cubic-bezier(.2,.7,.3,1)}
+.links a:hover{color:var(--gold)}.links a:hover:after{width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:12px;font-weight:800;border:1px solid transparent;cursor:pointer;transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease,background .25s ease}
 .btn.gold{background:var(--gold);color:#101c31}.btn.outline{border-color:rgba(245,181,27,.55);color:#fff;background:rgba(255,255,255,.03)}
+.btn.gold:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(245,181,27,.35)}
+.btn.outline:hover{transform:translateY(-3px);background:rgba(245,181,27,.1);border-color:var(--gold)}
+.btn:active{transform:translateY(0)}
 .hero{min-height:600px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;overflow:hidden;position:relative}
 .hero:before{content:"";position:absolute;inset:0;background:
 radial-gradient(circle at 75% 42%,rgba(20,89,199,.42),transparent 32%),
@@ -42,7 +68,8 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .eyebrow{color:var(--gold);font-weight:900;letter-spacing:2px;font-size:12px;text-transform:uppercase}
 h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 .sub{color:var(--muted);max-width:680px}.grid{display:grid;gap:18px}
-.cards{grid-template-columns:repeat(3,1fr)}.card{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.cards{grid-template-columns:repeat(3,1fr)}.card{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.7,.3,1),border-color .35s ease,box-shadow .35s ease}
+.card:hover{transform:translateY(-6px);border-color:rgba(245,181,27,.4);box-shadow:0 22px 50px rgba(0,0,0,.4)}
 .card h3{margin:0 0 7px;font-size:19px}.card p{color:var(--muted);margin:0 0 14px}.tag{display:inline-block;padding:6px 9px;border-radius:999px;background:rgba(245,181,27,.12);color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase}
 .tag.pending{background:rgba(233,237,246,.12);color:#c6d0e6}
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.pill{border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:8px 12px;font-size:13px;color:#e4eaff}
@@ -84,31 +111,31 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 
 <section class="section" id="season2">
  <div class="container">
-  <div class="section-head"><div><div class="eyebrow">Coming up</div><h2>Season 2 — RE-LOADED</h2></div></div>
-  <p class="sub" id="season2Intro"></p>
-  <div class="pills">
+  <div class="section-head reveal"><div><div class="eyebrow">Coming up</div><h2>Season 2 — RE-LOADED</h2></div></div>
+  <p class="sub reveal" id="season2Intro"></p>
+  <div class="pills reveal">
    <span class="pill" id="pillDates"></span>
    <span class="pill" id="pillMatchDays"></span>
    <span class="pill" id="pillAuction"></span>
   </div>
-  <div class="grid cards" style="margin-top:10px">
-   <article class="card"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
-   <article class="card"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
-   <article class="card"><span class="tag pending">Pending</span><h3>Registration & Pricing</h3><p id="registrationNote"></p></article>
+  <div class="grid cards reveal-stagger" style="margin-top:10px">
+   <article class="card r-item"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
+   <article class="card r-item"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
+   <article class="card r-item"><span class="tag pending">Pending</span><h3>Registration & Pricing</h3><p id="registrationNote"></p></article>
   </div>
  </div>
 </section>
 
 <section class="section" id="season1">
  <div class="container">
-  <div class="section-head"><div><div class="eyebrow">Completed</div><h2>Season 1 Archive</h2></div></div>
-  <div class="placeholder-box" id="season1Note"></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Completed</div><h2>Season 1 Archive</h2></div></div>
+  <div class="placeholder-box reveal" id="season1Note"></div>
  </div>
 </section>
 
 <section class="section" id="turf">
  <div class="container">
-  <div class="feature">
+  <div class="feature reveal">
    <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><div class="actions"><a class="btn gold" href="#contact">Enquire About Turf</a></div></div>
    <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 Convenient location<br>📸 Event-ready environment</p></div>
   </div>
@@ -117,19 +144,19 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 
 <section class="section" id="about">
  <div class="container">
-  <div class="section-head"><div><div class="eyebrow">Who we are</div><h2>More than a game.</h2></div></div>
-  <div class="grid cards">
-   <article class="card"><h3>Our Mission</h3><p>Create better football experiences and connect players, teams and communities through competition.</p></article>
-   <article class="card"><h3>Our Community</h3><p>Players of every level, from grassroots footballers to serious competitors and football fans.</p></article>
-   <article class="card"><h3>Our Mascot</h3><p>The Game Up grey wolf represents energy, teamwork, confidence and the spirit to keep playing.</p></article>
+  <div class="section-head reveal"><div><div class="eyebrow">Who we are</div><h2>More than a game.</h2></div></div>
+  <div class="grid cards reveal-stagger">
+   <article class="card r-item"><h3>Our Mission</h3><p>Create better football experiences and connect players, teams and communities through competition.</p></article>
+   <article class="card r-item"><h3>Our Community</h3><p>Players of every level, from grassroots footballers to serious competitors and football fans.</p></article>
+   <article class="card r-item"><h3>Our Mascot</h3><p>The Game Up grey wolf represents energy, teamwork, confidence and the spirit to keep playing.</p></article>
   </div>
  </div>
 </section>
 
 <section class="section" id="contact">
  <div class="container">
-  <div class="section-head"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
-  <div class="cta">
+  <div class="section-head reveal"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
+  <div class="cta reveal">
    <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 <span id="contactEmailText"></span></p><p class="sub" style="margin:0 0 4px">📞 <span id="contactPhoneText"></span></p><p class="sub" style="margin:0 0 4px">📸 <span id="contactInstagramText"></span></p><p class="sub" style="margin:0">▶️ <span id="contactYoutubeText"></span></p></div>
    <div class="contact-actions">
     <a class="btn gold" id="contactEmailBtn" href="#">Email Us →</a>
@@ -151,6 +178,15 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 </footer>
 
 <script>
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => el.classList.add('in'));
+}
+
 fetch('content.json')
   .then(r => r.json())
   .then(c => {
