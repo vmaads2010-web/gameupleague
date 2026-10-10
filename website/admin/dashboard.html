@@ -123,6 +123,27 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="shotEmptyNote" class="emptyNote" style="display:none">No payment screenshots uploaded yet.</div>
     </div>
+
+    <div class="refreshRow" style="margin-top:34px">
+      <h2 style="margin:0;font-size:18px">Team Reference Library <span style="font-weight:400;font-size:13px;color:var(--muted)">(for Social Studio)</span></h2>
+    </div>
+    <div class="card" style="background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px;margin-bottom:16px">
+      <div class="formgrid">
+        <div class="field"><label>Team name</label><input class="input" id="refTeamName" placeholder="e.g. Atlanta FC"></div>
+        <div class="field"><label>Logo file</label><input class="input" id="refLogoFile" type="file" accept="image/*"></div>
+        <div class="field"><label>Jersey photo</label><input class="input" id="refJerseyFile" type="file" accept="image/*"></div>
+        <div class="field"><label>Notes (optional)</label><input class="input" id="refNotes" placeholder="e.g. navy blue and white kit"></div>
+      </div>
+      <button class="primary" id="refUploadBtn" style="margin-top:14px">Save Team Reference</button>
+      <div id="refMsg" class="mini" style="margin-top:8px"></div>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead><tr><th>Team</th><th>Logo</th><th>Jersey</th><th>Notes</th><th>Added</th><th>Actions</th></tr></thead>
+        <tbody id="refRows"></tbody>
+      </table>
+      <div id="refEmptyNote" class="emptyNote" style="display:none">No team references added yet.</div>
+    </div>
   </div>
 </div>
 
@@ -159,7 +180,74 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     renderTable(regs);
     await loadTeams();
     await loadScreenshots();
+    await loadTeamReferences();
   }
+
+  async function loadTeamReferences() {
+    const { data: refs, error } = await client
+      .from('team_references').select('*').order('team_name', { ascending: true });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load team references: ' + error.message); return; }
+    const tbody = document.getElementById('refRows');
+    document.getElementById('refEmptyNote').style.display = refs.length ? 'none' : 'block';
+    const publicUrl = (path) => window.GUL_SUPABASE_URL + '/storage/v1/object/public/team-references/' + path;
+    tbody.innerHTML = refs.map(r => `
+      <tr data-id="${r.id}">
+        <td>${esc(r.team_name)}</td>
+        <td>${r.logo_path ? `<a href="${publicUrl(r.logo_path)}" target="_blank" rel="noopener">View</a>` : '—'}</td>
+        <td>${r.jersey_path ? `<a href="${publicUrl(r.jersey_path)}" target="_blank" rel="noopener">View</a>` : '—'}</td>
+        <td>${esc(r.notes || '—')}</td>
+        <td>${new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</td>
+        <td><button class="dangerBtn" data-action="delete-ref">Delete</button></td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('refUploadBtn').addEventListener('click', async () => {
+    const teamName = document.getElementById('refTeamName').value.trim();
+    const logoFile = document.getElementById('refLogoFile').files[0];
+    const jerseyFile = document.getElementById('refJerseyFile').files[0];
+    const notes = document.getElementById('refNotes').value.trim();
+    const msgEl = document.getElementById('refMsg');
+
+    if (!teamName) { msgEl.textContent = 'Team name is required.'; return; }
+    if (!logoFile && !jerseyFile) { msgEl.textContent = 'Add at least a logo or jersey photo.'; return; }
+
+    msgEl.textContent = 'Uploading...';
+    const slug = teamName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    let logoPath = null, jerseyPath = null;
+
+    if (logoFile) {
+      logoPath = slug + '-logo-' + Date.now() + '.' + logoFile.name.split('.').pop();
+      const { error } = await client.storage.from('team-references').upload(logoPath, logoFile);
+      if (error) { msgEl.textContent = 'Logo upload failed: ' + error.message; return; }
+    }
+    if (jerseyFile) {
+      jerseyPath = slug + '-jersey-' + Date.now() + '.' + jerseyFile.name.split('.').pop();
+      const { error } = await client.storage.from('team-references').upload(jerseyPath, jerseyFile);
+      if (error) { msgEl.textContent = 'Jersey upload failed: ' + error.message; return; }
+    }
+
+    const { error: upsertErr } = await client.from('team_references').upsert({
+      team_name: teamName, logo_path: logoPath, jersey_path: jerseyPath, notes: notes || null
+    }, { onConflict: 'team_name' });
+    if (upsertErr) { msgEl.textContent = 'Save failed: ' + upsertErr.message; return; }
+
+    msgEl.textContent = '✅ Saved.';
+    document.getElementById('refTeamName').value = '';
+    document.getElementById('refLogoFile').value = '';
+    document.getElementById('refJerseyFile').value = '';
+    document.getElementById('refNotes').value = '';
+    await loadTeamReferences();
+  });
+
+  document.getElementById('refRows').addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-action="delete-ref"]');
+    if (!btn) return;
+    if (!confirm('Delete this team reference?')) return;
+    const id = btn.closest('tr').dataset.id;
+    const { error } = await client.from('team_references').delete().eq('id', id);
+    if (error) { showMsg('dashMsg', 'err', 'Delete failed: ' + error.message); return; }
+    await loadTeamReferences();
+  });
 
   async function loadTeams() {
     const { data: teams, error } = await client

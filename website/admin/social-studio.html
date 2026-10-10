@@ -68,6 +68,13 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
   </div>
 
   <div class="tabPanel active" id="tab-player">
+    <div class="card" id="refCard" style="display:none;margin-bottom:16px">
+      <h2 style="margin:0 0 4px;font-size:17px">Official Team References</h2>
+      <div class="desc">If your team has official logo/jersey references saved, pick it here to download them — attach these too for best consistency.</div>
+      <select id="refTeamPicker"><option value="">— Select a team —</option></select>
+      <div id="refDownloads" style="margin-top:12px;display:none"></div>
+    </div>
+
     <div class="card">
       <h2 style="margin:0 0 4px;font-size:17px">Player / Team Anime Avatar</h2>
       <div class="desc">Team names are free text — Season 2 teams aren't finalized until the auction (13 Dec 2026), so just type whatever applies right now.</div>
@@ -135,6 +142,8 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
   <div class="footer">Game Up League — Social Studio · Free tool, no login required · Generates text prompts only</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
 <script>
 document.querySelectorAll('.tabBtn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -211,6 +220,40 @@ document.getElementById('genFestivalBtn').addEventListener('click', () => {
   document.getElementById('festivalPromptOut').classList.add('show');
   renderActions('festivalActions', prompt);
 });
+
+// Optional: load saved team references if the database is reachable.
+// This tool still works fully without this - references are a nice-to-have.
+(async function loadTeamReferences() {
+  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE') || typeof supabase === 'undefined') return;
+  try {
+    const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+    const { data: refs, error } = await client.from('team_references').select('*').order('team_name');
+    if (error || !refs || !refs.length) return;
+
+    const picker = document.getElementById('refTeamPicker');
+    const publicUrl = (path) => window.GUL_SUPABASE_URL + '/storage/v1/object/public/team-references/' + path;
+    refs.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = r.team_name;
+      picker.appendChild(opt);
+    });
+    document.getElementById('refCard').style.display = 'block';
+
+    picker.addEventListener('change', () => {
+      const ref = refs.find(r => r.id === picker.value);
+      const out = document.getElementById('refDownloads');
+      if (!ref) { out.style.display = 'none'; return; }
+      document.getElementById('teamName').value = ref.team_name;
+      let html = '';
+      if (ref.logo_path) html += `<a class="dlBtn" href="${publicUrl(ref.logo_path)}" download style="margin-right:8px">⬇ Download ${ref.team_name} Logo</a>`;
+      if (ref.jersey_path) html += `<a class="dlBtn" href="${publicUrl(ref.jersey_path)}" download>⬇ Download ${ref.team_name} Jersey</a>`;
+      if (ref.notes) html += `<div class="note">${ref.notes}</div>`;
+      out.innerHTML = html;
+      out.style.display = 'block';
+    });
+  } catch (e) { /* silently skip - this is an optional enhancement */ }
+})();
 </script>
 </body>
 </html>
