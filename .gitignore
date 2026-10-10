@@ -1,3 +1,6 @@
 # Raw uploaded prototype ZIPs and knowledge pack — kept locally as reference only,
 # not part of the production codebase.
 _uploaded/
+
+# Supabase CLI local cache (project ref, pooler URL, version info) - machine-specific.
+supabase/.temp/
