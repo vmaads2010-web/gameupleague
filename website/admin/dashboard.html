@@ -97,6 +97,32 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="emptyNote" class="emptyNote" style="display:none">No registrations yet.</div>
     </div>
+
+    <div class="refreshRow" style="margin-top:34px">
+      <h2 style="margin:0;font-size:18px">Team Registrations — Season 2</h2>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead><tr>
+          <th>Code</th><th>Team Name</th><th>Owner</th><th>Mobile</th><th>Email</th>
+          <th>Type</th><th>Fee</th><th>Logo</th><th>Registered</th>
+          <th>Status</th><th>Payment</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="teamRows"></tbody>
+      </table>
+      <div id="teamEmptyNote" class="emptyNote" style="display:none">No team registrations yet.</div>
+    </div>
+
+    <div class="refreshRow" style="margin-top:34px">
+      <h2 style="margin:0;font-size:18px">Payment Screenshots</h2>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead><tr><th>Registration Code</th><th>Uploaded</th><th>Screenshot</th><th>Reviewed</th><th>Actions</th></tr></thead>
+        <tbody id="shotRows"></tbody>
+      </table>
+      <div id="shotEmptyNote" class="emptyNote" style="display:none">No payment screenshots uploaded yet.</div>
+    </div>
   </div>
 </div>
 
@@ -131,10 +157,61 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     renderStats(regs);
     renderTable(regs);
+    await loadTeams();
+    await loadScreenshots();
   }
 
-  function paymentFor(regId) {
-    return allPayments.find(p => p.player_registration_id === regId && p.status === 'paid');
+  async function loadTeams() {
+    const { data: teams, error } = await client
+      .from('team_registrations').select('*').order('created_at', { ascending: false });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load team registrations: ' + error.message); return; }
+    const tbody = document.getElementById('teamRows');
+    document.getElementById('teamEmptyNote').style.display = teams.length ? 'none' : 'block';
+    tbody.innerHTML = teams.map(t => {
+      const paid = !!paymentFor(t.id, 'team_registration_id');
+      const created = new Date(t.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      return `<tr data-id="${t.id}" data-kind="team">
+        <td>${esc(t.registration_code)}</td>
+        <td class="wrap-cell">${esc(t.proposed_team_name)}</td>
+        <td class="wrap-cell">${esc(t.owner_name)}</td>
+        <td>${esc(t.mobile)}</td>
+        <td class="wrap-cell">${esc(t.email)}</td>
+        <td>${t.team_type === 'new' ? 'New' : 'Existing'}</td>
+        <td>₹11,000</td>
+        <td>${t.team_logo_url ? `<button class="photoLink" data-logo="${esc(t.team_logo_url)}">View</button>` : '—'}</td>
+        <td>${created}</td>
+        <td><span class="pill ${t.status}">${esc(t.status)}</span></td>
+        <td><span class="pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
+        <td class="actionsCell">
+          ${t.status !== 'approved' ? `<button class="okBtn" data-action="approve-team">Approve</button>` : ''}
+          ${t.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject-team">Reject</button>` : ''}
+          ${!paid ? `<button class="secondaryBtn" data-action="markpaid-team">Mark Paid</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function loadScreenshots() {
+    const { data: shots, error } = await client
+      .from('payment_screenshots').select('*').order('created_at', { ascending: false });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load payment screenshots: ' + error.message); return; }
+    const tbody = document.getElementById('shotRows');
+    document.getElementById('shotEmptyNote').style.display = shots.length ? 'none' : 'block';
+    tbody.innerHTML = shots.map(s => {
+      const created = new Date(s.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      return `<tr data-id="${s.id}">
+        <td>${esc(s.registration_code)}</td>
+        <td>${created}</td>
+        <td><button class="photoLink" data-shot="${esc(s.image_path)}">View</button></td>
+        <td><span class="pill ${s.reviewed ? 'approved' : 'pending'}">${s.reviewed ? 'Reviewed' : 'Pending'}</span></td>
+        <td class="actionsCell">${!s.reviewed ? `<button class="okBtn" data-action="review-shot">Mark Reviewed</button>` : ''}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function paymentFor(regId, field) {
+    field = field || 'player_registration_id';
+    return allPayments.find(p => p[field] === regId && p.status === 'paid');
   }
 
   function renderStats(regs) {
@@ -210,6 +287,57 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       if (error) { showMsg('dashMsg', 'err', 'Mark paid failed: ' + error.message); btn.disabled = false; return; }
     }
     await loadDashboard();
+  });
+
+  document.getElementById('teamRows').addEventListener('click', async (e) => {
+    const logoBtn = e.target.closest('[data-logo]');
+    if (logoBtn) {
+      const { data, error } = await client.storage.from('team-logos').createSignedUrl(logoBtn.dataset.logo, 300);
+      if (error) { alert('Could not load logo: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.closest('tr').dataset.id;
+    btn.disabled = true;
+
+    if (btn.dataset.action === 'approve-team') {
+      const { error } = await client.from('team_registrations').update({ status: 'approved' }).eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Approve failed: ' + error.message); btn.disabled = false; return; }
+    } else if (btn.dataset.action === 'reject-team') {
+      const { error } = await client.from('team_registrations').update({ status: 'rejected' }).eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Reject failed: ' + error.message); btn.disabled = false; return; }
+    } else if (btn.dataset.action === 'markpaid-team') {
+      const { error } = await client.from('payments').insert({
+        team_registration_id: id,
+        amount_paise: 1100000,
+        currency: 'INR',
+        provider: 'manual_upi',
+        status: 'paid',
+        verified_via_webhook: false
+      });
+      if (error) { showMsg('dashMsg', 'err', 'Mark paid failed: ' + error.message); btn.disabled = false; return; }
+    }
+    await loadDashboard();
+  });
+
+  document.getElementById('shotRows').addEventListener('click', async (e) => {
+    const shotBtn = e.target.closest('[data-shot]');
+    if (shotBtn) {
+      const { data, error } = await client.storage.from('payment-screenshots').createSignedUrl(shotBtn.dataset.shot, 300);
+      if (error) { alert('Could not load screenshot: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const btn = e.target.closest('button[data-action="review-shot"]');
+    if (!btn) return;
+    const id = btn.closest('tr').dataset.id;
+    btn.disabled = true;
+    const { error } = await client.from('payment_screenshots').update({ reviewed: true }).eq('id', id);
+    if (error) { showMsg('dashMsg', 'err', 'Could not mark reviewed: ' + error.message); btn.disabled = false; return; }
+    await loadScreenshots();
   });
 
   document.getElementById('refreshBtn').addEventListener('click', loadDashboard);

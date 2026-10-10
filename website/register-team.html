@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player Registration — Game Up League</title>
-<meta name="description" content="Register your interest to play in Game Up League Season 2 — RE-LOADED.">
+<title>Team Owner Registration — Game Up League</title>
+<meta name="description" content="Register your team for Game Up League Season 2 — RE-LOADED.">
 <link rel="icon" href="assets/gul-logo.png">
 <style>
 :root{
@@ -40,28 +40,18 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
 .back{display:inline-block;margin-top:24px;color:var(--muted);font-size:13px}
 .back:hover{color:var(--gold)}
-.offerBox{position:relative;overflow:hidden;background:linear-gradient(135deg,#123b83 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(245,181,27,.4);border-radius:20px;padding:24px 24px 22px;margin-bottom:10px;box-shadow:0 20px 45px rgba(0,0,0,.35)}
-.offerBox:before{content:"";position:absolute;top:-40%;right:-10%;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.25),transparent 70%)}
-.offerBadge{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#101c31;font-weight:900;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;padding:6px 12px;border-radius:999px}
-.offerBadge .dot{width:7px;height:7px;border-radius:50%;background:#101c31;animation:pulseDot 1.6s ease-in-out infinite}
-@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.25}}
-.offerMain{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:14px;position:relative}
-.offerMain .price{font-size:44px;font-weight:900;line-height:1;letter-spacing:-1px}
-.offerMain .price small{font-size:16px;font-weight:700;color:var(--muted)}
-.offerMain .window{color:#cfe0ff;font-size:13.5px;font-weight:700;background:rgba(255,255,255,.08);padding:7px 12px;border-radius:10px}
-.offerNoteRow{color:#ffe6ab;font-size:13px;margin-top:12px;position:relative;line-height:1.5}
-.offerUrgency{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.18);font-size:13px;color:var(--muted);position:relative}
-.offerUrgency b{color:#ff9d9d}
-.photoPicker{display:flex;align-items:center;gap:14px}
-.photoPreview{width:64px;height:64px;border-radius:12px;background:#07172f;border:1px dashed rgba(255,255,255,.25);object-fit:cover;flex-shrink:0}
-.photoPickBtn{flex:1;padding:12px 13px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:#07172f;color:var(--muted);font-size:13px;text-align:center;cursor:pointer;transition:border-color .2s ease,color .2s ease}
-.photoPickBtn:hover{border-color:var(--gold);color:#fff}
-.photoHint{font-size:11.5px;color:var(--muted);margin-top:6px}
+.feeBox{position:relative;overflow:hidden;background:linear-gradient(135deg,#123b83 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(245,181,27,.4);border-radius:20px;padding:24px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.feeBox .label{font-size:12px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold)}
+.feeBox .price{font-size:38px;font-weight:900;margin-top:6px}
+.feeBox .price small{font-size:15px;font-weight:700;color:var(--muted)}
+.logoPicker{display:flex;align-items:center;gap:14px}
+.logoPreview{width:64px;height:64px;border-radius:12px;background:#07172f;border:1px dashed rgba(255,255,255,.25);object-fit:cover;flex-shrink:0}
+.logoPickBtn{flex:1;padding:12px 13px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:#07172f;color:var(--muted);font-size:13px;text-align:center;cursor:pointer;transition:border-color .2s ease,color .2s ease}
+.logoPickBtn:hover{border-color:var(--gold);color:#fff}
+.logoHint{font-size:11.5px;color:var(--muted);margin-top:6px}
 .payBox{margin-top:18px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:20px;text-align:center}
 .payBox h3{margin:0 0 4px;font-size:16px}
 .payBox .amt{font-size:30px;font-weight:900;color:var(--gold);margin:8px 0}
-.payBox canvas{background:#fff;padding:10px;border-radius:12px;margin:12px 0}
-.payBox .upiBtn{display:inline-block;width:auto;padding:12px 22px;margin-top:4px}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
 .screenshotBox{margin-top:16px;padding-top:16px;border-top:1px dashed rgba(255,255,255,.18)}
 .screenshotBox label{text-align:left}
@@ -73,53 +63,41 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 <div class="wrap">
  <div class="container">
   <div class="eyebrow">Season 2 — RE-LOADED</div>
-  <h1>Player Registration</h1>
-  <p class="sub">Reserve your spot for Season 2 — RE-LOADED.</p>
+  <h1>Team Owner Registration</h1>
+  <p class="sub">Register your team for Season 2. Final squad, auction/draft allocation and league rules are handled separately by GUL after registration.</p>
 
-  <div class="offerBox">
-   <div class="offerBadge"><span class="dot"></span><span id="offerLabel">Loading offer…</span></div>
-   <div class="offerMain">
-    <div class="price" id="offerPrice"></div>
-    <div class="window" id="offerWindow"></div>
-   </div>
-   <div class="offerNoteRow" id="offerExtraNote"></div>
-   <div class="offerUrgency" id="offerUrgency"></div>
+  <div class="feeBox">
+   <div><div class="label">Team Entry Fee</div></div>
+   <div class="price" id="feeAmount"></div>
   </div>
 
-  <div class="notice">⚠️ <b>Online payment is not connected yet.</b> Submitting this form reserves your spot at today's listed price and creates your record with GUL — it does not charge you anything here. GUL will contact you directly with payment instructions.</div>
+  <div class="notice">⚠️ <b>Online payment is not connected yet.</b> Submitting this form reserves your team entry and creates your record with GUL — it does not charge you anything here. GUL will contact you directly to confirm.</div>
 
   <div class="card">
    <form id="regForm">
-    <div class="field"><label>Full name *</label><input id="fullName" required></div>
+    <div class="field"><label>Proposed team name *</label><input id="teamName" required></div>
+    <div class="field"><label>Owner full name *</label><input id="ownerName" required></div>
     <div class="row2">
      <div class="field"><label>Mobile number *</label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
-     <div class="field"><label>Email</label><input id="email" type="email"></div>
-    </div>
-    <div class="row2">
-     <div class="field"><label>Date of birth</label><input id="dob" type="date"></div>
-     <div class="field"><label>City</label><input id="city"></div>
+     <div class="field"><label>Email *</label><input id="email" type="email" required></div>
     </div>
     <div class="field">
-     <label>Preferred position</label>
-     <select id="position">
-      <option value="">Select (optional)</option>
-      <option>Forward</option>
-      <option>Midfielder</option>
-      <option>Defender</option>
-      <option>Goalkeeper</option>
+     <label>Team type *</label>
+     <select id="teamType" required>
+      <option value="old">Existing / renewal team</option>
+      <option value="new">New team</option>
      </select>
     </div>
-    <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
     <div class="field">
-     <label>Player photo (optional)</label>
-     <div class="photoPicker">
-      <img class="photoPreview" id="photoPreview" alt="">
-      <label class="photoPickBtn" id="photoPickLabel" for="photoInput">Tap to choose a photo</label>
-      <input type="file" id="photoInput" accept="image/*" style="display:none">
+     <label>Team logo (optional)</label>
+     <div class="logoPicker">
+      <img class="logoPreview" id="logoPreview" alt="">
+      <label class="logoPickBtn" id="logoPickLabel" for="logoInput">Tap to choose a logo</label>
+      <input type="file" id="logoInput" accept="image/*" style="display:none">
      </div>
-     <div class="photoHint" id="photoHint">We automatically shrink the photo before uploading, to keep it small and fast.</div>
+     <div class="logoHint" id="logoHint">We automatically shrink the logo before uploading, to keep it small and fast.</div>
     </div>
-    <button type="submit" id="submitBtn">Submit Registration</button>
+    <button type="submit" id="submitBtn">Submit Team Registration</button>
    </form>
    <div id="status" class="status"></div>
    <div id="payBox" class="payBox" style="display:none">
@@ -127,23 +105,23 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
     <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
     <div class="amt" id="payAmt"></div>
     <div id="payQr" style="display:flex;justify-content:center"></div>
-    <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
-    <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code. You can also skip this and pay later when GUL contacts you.</div>
+    <div><a class="upiBtn btn gold" id="payUpiBtn" href="#" style="display:inline-block;width:auto;padding:12px 22px;margin-top:4px">Pay with UPI app →</a></div>
+    <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
 
     <div class="screenshotBox">
      <label>Already paid? Upload your payment screenshot</label>
-     <div class="photoPicker">
-      <img class="photoPreview" id="shotPreview" alt="" style="display:none">
-      <label class="photoPickBtn" id="shotPickLabel" for="shotInput">Tap to choose a screenshot</label>
+     <div class="logoPicker">
+      <img class="logoPreview" id="shotPreview" alt="" style="display:none">
+      <label class="logoPickBtn" id="shotPickLabel" for="shotInput">Tap to choose a screenshot</label>
       <input type="file" id="shotInput" accept="image/*" style="display:none">
      </div>
-     <div class="photoHint" id="shotHint"></div>
+     <div class="logoHint" id="shotHint"></div>
      <button type="button" id="shotUploadBtn" style="margin-top:12px" disabled>Upload Screenshot</button>
     </div>
    </div>
   </div>
 
-  <p class="sub" style="margin-top:18px">Registering a team instead? <a href="register-team.html" style="color:var(--gold);font-weight:700">Team Owner Registration →</a></p>
+  <p class="sub" style="margin-top:18px">Registering as a player instead? <a href="register.html" style="color:var(--gold);font-weight:700">Player Registration →</a></p>
   <a class="back" href="index.html">← Back to website</a>
  </div>
 </div>
@@ -157,11 +135,9 @@ function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; sta
 
 function regCode() {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return 'GUL-S2-PLY-' + Date.now().toString(36).toUpperCase() + rand;
+  return 'GUL-S2-TEAM-' + Date.now().toString(36).toUpperCase() + rand;
 }
 
-// Shrinks a photo to at most 500px on the longest side and compresses it to JPEG,
-// so each upload stays small (usually 30-120 KB) - important on a free storage plan.
 function compressImage(file, maxDim = 500, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -185,30 +161,26 @@ function compressImage(file, maxDim = 500, quality = 0.7) {
   });
 }
 
-let selectedPhotoBlob = null;
-
-document.getElementById('photoInput').addEventListener('change', async (e) => {
+let selectedLogoBlob = null;
+document.getElementById('logoInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  const hint = document.getElementById('photoHint');
-  const label = document.getElementById('photoPickLabel');
+  const hint = document.getElementById('logoHint');
   hint.textContent = 'Compressing...';
   try {
     const originalKB = Math.round(file.size / 1024);
-    selectedPhotoBlob = await compressImage(file);
-    const compressedKB = Math.round(selectedPhotoBlob.size / 1024);
-    document.getElementById('photoPreview').src = URL.createObjectURL(selectedPhotoBlob);
-    label.textContent = 'Change photo';
-    hint.textContent = 'Original ' + originalKB + ' KB → compressed to ' + compressedKB + ' KB. Looks good.';
+    selectedLogoBlob = await compressImage(file);
+    const compressedKB = Math.round(selectedLogoBlob.size / 1024);
+    document.getElementById('logoPreview').src = URL.createObjectURL(selectedLogoBlob);
+    document.getElementById('logoPickLabel').textContent = 'Change logo';
+    hint.textContent = 'Original ' + originalKB + ' KB → compressed to ' + compressedKB + ' KB.';
   } catch (err) {
-    selectedPhotoBlob = null;
-    hint.textContent = 'Could not process that photo: ' + err.message + ' Try a different file, or skip the photo.';
+    selectedLogoBlob = null;
+    hint.textContent = 'Could not process that file: ' + err.message;
   }
 });
 
 let selectedShotBlob = null;
-let lastRegCode = null;
-
 document.getElementById('shotInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -227,28 +199,16 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
   }
 });
 
-let currentOffer = null;
+let teamFee = 11000;
+let lastRegCode = null;
 
 fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
   .then(r => r.json())
   .then(c => {
-    currentOffer = c.registration[c.registration.activeOffer];
-    document.getElementById('offerLabel').textContent = currentOffer.label + ' Registration — Open Now';
-    document.getElementById('offerWindow').textContent = currentOffer.window || '';
-    document.getElementById('offerPrice').innerHTML = '₹' + currentOffer.price.toLocaleString('en-IN') + '<small> / player</small>';
-    document.getElementById('offerExtraNote').textContent = currentOffer.note || '';
-
-    const regular = c.registration.regular;
-    const urgencyEl = document.getElementById('offerUrgency');
-    if (c.registration.activeOffer !== 'regular' && regular.price > currentOffer.price) {
-      urgencyEl.innerHTML = '⏳ This rate won\'t last — once this offer closes, the price goes up to <b>₹' + regular.price.toLocaleString('en-IN') + '/player</b>. Register now to lock in ₹' + currentOffer.price.toLocaleString('en-IN') + '.';
-    } else {
-      urgencyEl.style.display = 'none';
-    }
+    teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
+    document.getElementById('feeAmount').innerHTML = '₹' + teamFee.toLocaleString('en-IN') + '<small> / team</small>';
   })
-  .catch(() => {
-    document.getElementById('offerLabel').textContent = 'Could not load current pricing';
-  });
+  .catch(() => { document.getElementById('feeAmount').textContent = '₹11,000'; });
 
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
@@ -264,7 +224,6 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     const { data: season, error: seasonErr } = await client
       .from('seasons').select('id').eq('name', 'Season 2 — RE-LOADED').maybeSingle();
-
     if (seasonErr) {
       showStatus('err', 'Could not reach the database: ' + seasonErr.message);
       btn.disabled = false;
@@ -272,69 +231,52 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     }
 
     const code = regCode();
-    let photoPath = null;
+    let logoPath = null;
 
-    if (selectedPhotoBlob) {
-      showStatus('ok', 'Uploading photo...');
-      // Store just the object key (relative to the player-photos bucket), not
-      // prefixed with the bucket name - that's what the Storage SDK expects
-      // when generating a signed URL later from the admin dashboard.
-      photoPath = code + '.jpg';
+    if (selectedLogoBlob) {
+      showStatus('ok', 'Uploading logo...');
+      logoPath = code + '.jpg';
       const { error: uploadErr } = await client.storage
-        .from('player-photos')
-        .upload(code + '.jpg', selectedPhotoBlob, { contentType: 'image/jpeg' });
+        .from('team-logos')
+        .upload(code + '.jpg', selectedLogoBlob, { contentType: 'image/jpeg' });
       if (uploadErr) {
-        showStatus('err', 'Photo upload failed: ' + uploadErr.message + '\n\nYou can remove the photo and submit without it, or try again.');
+        showStatus('err', 'Logo upload failed: ' + uploadErr.message + '\n\nYou can remove the logo and submit without it, or try again.');
         btn.disabled = false;
         return;
       }
     }
 
     showStatus('ok', 'Submitting...');
-
     const payload = {
       registration_code: code,
       season_id: season ? season.id : null,
-      full_name: document.getElementById('fullName').value.trim(),
+      proposed_team_name: document.getElementById('teamName').value.trim(),
+      owner_name: document.getElementById('ownerName').value.trim(),
       mobile: document.getElementById('mobile').value.trim(),
-      email: document.getElementById('email').value.trim() || null,
-      dob: document.getElementById('dob').value || null,
-      city: document.getElementById('city').value.trim() || null,
-      position: document.getElementById('position').value || null,
-      referral_code: document.getElementById('referral').value.trim() || null,
-      photo_url: photoPath,
-      offer_applied: currentOffer ? currentOffer.label : null,
-      quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null
+      email: document.getElementById('email').value.trim(),
+      team_type: document.getElementById('teamType').value,
+      team_logo_url: logoPath
     };
 
-    // No .select() here on purpose: the public can INSERT a registration but
-    // cannot READ registrations back (that's admin-only, by design, for privacy).
-    // We already have the registration_code client-side from payload, so there's
-    // nothing to read back anyway.
-    const { error } = await client.from('player_registrations').insert(payload);
-
+    const { error } = await client.from('team_registrations').insert(payload);
     btn.disabled = false;
     if (error) {
       showStatus('err', 'Registration failed: ' + error.message);
       return;
     }
 
-    lastRegCode = payload.registration_code;
+    lastRegCode = code;
     document.getElementById('regForm').style.display = 'none';
-    showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + payload.registration_code +
-      (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
-      '\n\nSave this code. GUL will contact you on ' + payload.mobile +
-      (payload.email ? ' or ' + payload.email : '') +
-      ' with payment instructions.\n\nThis does not confirm a spot or process any payment yet.');
+    showStatus('ok', '✅ Team registration received!\n\nYour reference code: ' + code +
+      '\nEntry fee: ₹' + teamFee.toLocaleString('en-IN') +
+      '\n\nSave this code. GUL will contact you on ' + payload.mobile + ' or ' + payload.email + ' with payment instructions.\n\nThis does not confirm a spot or process any payment yet.');
 
-    if (currentOffer && window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
-      const amount = currentOffer.price;
-      const note = 'GUL ' + payload.registration_code;
+    if (window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
+      const note = 'GUL ' + code;
       const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
         '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'Game Up League') +
-        '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
-
-      document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
+        '&am=' + teamFee + '&cu=INR&tn=' + encodeURIComponent(note);
+      document.getElementById('payAmt').textContent = '₹' + teamFee.toLocaleString('en-IN');
       document.getElementById('payUpiBtn').href = upiLink;
       new QRCode(document.getElementById('payQr'), { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
       document.getElementById('payBox').style.display = 'block';

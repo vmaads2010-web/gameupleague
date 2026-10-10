@@ -34,6 +34,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
  .reveal-stagger.in .r-item:nth-child(1){animation-delay:.05s}
  .reveal-stagger.in .r-item:nth-child(2){animation-delay:.15s}
  .reveal-stagger.in .r-item:nth-child(3){animation-delay:.25s}
+ .reveal-stagger.in .r-item:nth-child(4){animation-delay:.35s}
 }
 @media (prefers-reduced-motion: reduce){ .reveal{opacity:1!important;transform:none!important} }
 .notice-bar{background:#13285a;color:#dce6ff;font-size:12.5px;text-align:center;padding:9px 14px;border-bottom:1px solid var(--line)}
@@ -79,14 +80,40 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 .cta{background:linear-gradient(120deg,#123b83,#0b2149);border-radius:26px;border:1px solid var(--line);padding:38px;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
 .contact-actions{display:flex;flex-direction:column;gap:12px}
 .footer{padding:50px 0 28px;border-top:1px solid var(--line);background:#040d1e}.footgrid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:30px}.footer p,.footer a{color:#9eadc5;font-size:14px}.footer a:hover{color:#fff}.footlogo{width:90px;height:110px;object-fit:contain}
+.contactRow{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+.contactIcon{width:38px;height:38px;border-radius:11px;background:rgba(245,181,27,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold)}
+.contactIcon svg{width:19px;height:19px}
+.contactLabel{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}
+.contactValue{font-size:14.5px;font-weight:700;color:#fff}
 .mobile{display:none}
 @media(max-width:850px){
  .links{display:none}.mobile{display:block}.hero{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:60px 0 20px}.hero-art{height:440px}.mascot{height:420px}
  .cards{grid-template-columns:1fr}.feature{grid-template-columns:1fr}.cta{flex-direction:column;align-items:flex-start}.footgrid{grid-template-columns:1fr}
 }
+
+/* Prominent live-offer banner */
+.offerBanner{position:relative;overflow:hidden;background:linear-gradient(90deg,#d53c35,#e3262e 35%,#123b83 100%);background-size:200% 100%;padding:12px 0;z-index:40}
+@media (prefers-reduced-motion: no-preference){.offerBanner{animation:bannerShift 6s ease-in-out infinite}}
+@keyframes bannerShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.offerBannerIn{width:min(1160px,92%);margin:auto;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
+.offerBannerDot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0}
+@media (prefers-reduced-motion: no-preference){.offerBannerDot{animation:pulseDot 1.4s ease-in-out infinite}}
+@keyframes pulseDot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{opacity:.4;box-shadow:0 0 0 6px rgba(255,255,255,0)}}
+.offerBannerText{font-weight:800;font-size:13.5px;color:#fff;letter-spacing:.2px}
+.offerBannerText b{color:var(--gold);font-size:15px}
+.offerBannerBtn{background:#fff;color:#101c31;font-weight:900;font-size:12.5px;padding:7px 16px;border-radius:999px;white-space:nowrap;transition:transform .25s ease}
+.offerBannerBtn:hover{transform:translateY(-2px) scale(1.04)}
+@media(max-width:600px){.offerBannerText{font-size:12px}.offerBannerText b{font-size:13px}}
 </style>
 </head>
 <body>
+<div class="offerBanner" id="offerBanner" style="display:none">
+ <div class="offerBannerIn">
+  <span class="offerBannerDot"></span>
+  <span class="offerBannerText" id="offerBannerText"></span>
+  <a class="offerBannerBtn" href="register.html">Register Now →</a>
+ </div>
+</div>
 <div class="notice-bar" id="noticeBar">Loading…</div>
 <header class="nav">
  <div class="container navin">
@@ -123,6 +150,7 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
    <article class="card r-item"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
    <article class="card r-item"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
    <article class="card r-item"><span class="tag" id="offerTag">Open</span><h3 id="offerTitle"></h3><p id="offerNote"></p><a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a></article>
+   <article class="card r-item"><span class="tag">Team Owners</span><h3 id="teamFeeTitle"></h3><p>Register your team — proposed name + logo. Final squad via auction/draft.</p><a class="btn outline" href="register-team.html" style="margin-top:4px">Register a Team →</a></article>
   </div>
  </div>
 </section>
@@ -158,7 +186,13 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Let's connect</div><h2>Contact Game Up League</h2></div></div>
   <div class="cta reveal">
-   <div><h3 style="margin:0 0 8px">Game Up League</h3><p class="sub" style="margin:0 0 4px">📧 <span id="contactEmailText"></span></p><p class="sub" style="margin:0 0 4px">📞 <span id="contactPhoneText"></span></p><p class="sub" style="margin:0 0 4px">📸 <span id="contactInstagramText"></span></p><p class="sub" style="margin:0">▶️ <span id="contactYoutubeText"></span></p></div>
+   <div>
+    <h3 style="margin:0 0 16px">Game Up League</h3>
+    <div class="contactRow"><span class="contactIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><div><div class="contactLabel">Email</div><div class="contactValue" id="contactEmailText"></div></div></div>
+    <div class="contactRow"><span class="contactIcon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.8 21 3 13.2 3 3.9c0-.5.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1l-2.2 2.2z"/></svg></span><div><div class="contactLabel">Phone</div><div class="contactValue" id="contactPhoneText"></div></div></div>
+    <div class="contactRow"><span class="contactIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></span><div><div class="contactLabel">Instagram</div><div class="contactValue" id="contactInstagramText"></div></div></div>
+    <div class="contactRow"><span class="contactIcon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 7.2c-.3-1.2-1.2-2-2.3-2.3C18.2 4.5 12 4.5 12 4.5s-6.2 0-8.2.4c-1.1.3-2 1.2-2.3 2.3C1 9.2 1 12 1 12s0 2.8.5 4.8c.3 1.2 1.2 2 2.3 2.3 2 .4 8.2.4 8.2.4s6.2 0 8.2-.4c1.1-.3 2-1.2 2.3-2.3.5-2 .5-4.8.5-4.8s0-2.8-.5-4.8zM9.8 15.3V8.7l6 3.3-6 3.3z"/></svg></span><div><div class="contactLabel">YouTube</div><div class="contactValue" id="contactYoutubeText"></div></div></div>
+   </div>
    <div class="contact-actions">
     <a class="btn gold" id="contactEmailBtn" href="#">Email Us →</a>
     <a class="btn outline" id="contactInstagramBtn" href="#" target="_blank" rel="noopener">Message on Instagram →</a>
@@ -216,6 +250,14 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     set('offerTitle', offer.label + ' — ₹' + offer.price.toLocaleString('en-IN') + '/player');
     set('offerNote', (offer.window ? offer.window + '. ' : '') + (offer.note || ''));
 
+    const teamFee = c.teamRegistration ? c.teamRegistration.fee : 11000;
+    set('teamFeeTitle', '₹' + teamFee.toLocaleString('en-IN') + ' / team');
+
+    document.getElementById('offerBannerText').innerHTML =
+      '🔥 ' + offer.label.toUpperCase() + ' REGISTRATION IS OPEN — <b>₹' + offer.price.toLocaleString('en-IN') + '/player</b>' +
+      (offer.window ? ' · ' + offer.window : '');
+    document.getElementById('offerBanner').style.display = 'block';
+
     set('season1Note', c.season1.archiveNote);
 
     set('contactEmailText', c.contact.email);
@@ -242,5 +284,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('noticeBar').textContent = 'Could not load website content. Please refresh, or contact the site admin if this continues.';
   });
 </script>
+<script src="assets/wolf-chat.js" defer></script>
 </body>
 </html>

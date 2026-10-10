@@ -31,6 +31,11 @@
     "regular": { "label": "Regular", "price": 1800, "window": "From 15 Nov 2026", "note": "" }
   },
 
+  "teamRegistration": {
+    "_note": "Flat fee, no Early Bird tier for teams - confirmed by Vishal in chat 10 Oct 2026. This conflicts with an earlier note that mentioned a discount; flagged in docs/QUESTIONS_FOR_GUL_LEADERSHIP.md pending final confirmation.",
+    "fee": 11000
+  },
+
   "season1": {
     "archiveNote": "Season 1 is complete. Approved photos, videos and results from Season 1 will be added here once the archive is prepared."
   },
