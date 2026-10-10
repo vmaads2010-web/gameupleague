@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUL Admin — Login Test</title>
+<link rel="icon" href="../assets/gul-logo.png">
+<style>
+  :root{--navy:#07152f;--blue:#1459c7;--gold:#f5b51b;--white:#f7f9ff;--muted:#a9b6cf;--line:rgba(255,255,255,.12)}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#06132b,#081a37);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--white)}
+  .box{width:min(420px,92vw);background:#0d1f40;border:1px solid var(--line);border-radius:18px;padding:30px}
+  .box h1{font-size:20px;margin:0 0 4px}
+  .box p.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+  label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#cfd9ef}
+  input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#07172f;color:#fff;font-size:14px}
+  button{width:100%;margin-top:20px;padding:13px;border-radius:10px;border:0;background:var(--gold);color:#101c31;font-weight:800;font-size:14px;cursor:pointer}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  button.secondary{background:rgba(255,255,255,.08);color:#fff;margin-top:10px}
+  .status{margin-top:18px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;white-space:pre-wrap;display:none}
+  .status.show{display:block}
+  .status.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+  .status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+  .status.info{background:rgba(20,89,199,.18);color:#a9c6ff;border:1px solid rgba(20,89,199,.4)}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>GUL Admin — Login Test</h1>
+  <p class="sub">This is a test page to confirm admin login and database security work, before the real dashboard is built.</p>
+
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" required autocomplete="username">
+    <label>Password</label>
+    <input id="password" type="password" required autocomplete="current-password">
+    <button type="submit" id="signInBtn">Sign In</button>
+  </form>
+  <button class="secondary" id="signOutBtn" style="display:none">Sign Out</button>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+const statusEl = document.getElementById('status');
+function showStatus(kind, msg) {
+  statusEl.className = 'status show ' + kind;
+  statusEl.textContent = msg;
+}
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showStatus('err', 'supabase-config.js is not filled in yet. Add your Project URL and anon public key there first.');
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+
+  async function refreshState() {
+    const { data: { session } } = await client.auth.getSession();
+    document.getElementById('signOutBtn').style.display = session ? 'block' : 'none';
+    document.getElementById('loginForm').style.display = session ? 'none' : 'block';
+    if (session) {
+      showStatus('info', 'Checking admin access for ' + session.user.email + ' ...');
+      const { data: isAdminResult, error: adminErr } = await client.rpc('is_admin');
+      if (adminErr) {
+        showStatus('err', 'Signed in, but could not check admin status:\n' + adminErr.message);
+        return;
+      }
+      const { data: profile, error: profErr } = await client
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      if (profErr) {
+        showStatus('err', 'Signed in as ' + session.user.email + ', but reading profile failed:\n' + profErr.message);
+        return;
+      }
+      if (!profile) {
+        showStatus('err', 'Signed in as ' + session.user.email + ', but no row exists in profiles for this user yet.\nRun the profiles insert SQL for this email.');
+        return;
+      }
+      showStatus(isAdminResult ? 'ok' : 'err',
+        'Signed in as ' + session.user.email +
+        '\nName: ' + (profile.full_name || '(not set)') +
+        '\nRole: ' + profile.role +
+        '\nis_admin(): ' + isAdminResult +
+        (isAdminResult ? '\n\n✅ Admin login is working correctly.' : '\n\n❌ This user is not an admin yet.'));
+    }
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('signInBtn');
+    btn.disabled = true;
+    showStatus('info', 'Signing in...');
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    btn.disabled = false;
+    if (error) {
+      showStatus('err', 'Sign in failed: ' + error.message);
+      return;
+    }
+    await refreshState();
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await client.auth.signOut();
+    showStatus('info', 'Signed out.');
+    await refreshState();
+  });
+
+  refreshState();
+}
+</script>
+</body>
+</html>
