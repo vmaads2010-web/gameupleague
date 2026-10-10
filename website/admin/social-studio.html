@@ -4,61 +4,141 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUL Social Studio</title>
-<meta name="description" content="Generate anime-style avatar and festival post prompts for Game Up League, free.">
+<meta name="description" content="Generate anime-style avatars, festival posts and videos for Game Up League, free, no login.">
 <link rel="icon" href="../assets/gul-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#07152f;--blue:#1459c7;--gold:#f5b51b;--white:#f7f9ff;--muted:#a9b6cf;--line:rgba(255,255,255,.12);--card:#0d1f40}
+:root{
+  --navy:#060f22;--navy2:#0a1830;--panel:#0d1c3a;--panel-2:#112348;--line:rgba(255,255,255,.09);--line-strong:rgba(255,255,255,.16);
+  --blue:#1459c7;--blue-glow:#2d7bff;--gold:#f5b51b;--gold-dim:#caa050;--red:#e3262e;
+  --text:#f3f6ff;--muted:#8d9ac2;--muted-dim:#5f6c92;
+  --ok:#36d389;--radius:16px;--radius-sm:10px;
+  --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#06132b,#081a37);color:var(--white);min-height:100vh}
-label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#cfd9ef}
-input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#07172f;color:#fff;font-size:14px}
-textarea{min-height:100px;resize:vertical;font-family:inherit}
-button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
-.primaryBtn{background:var(--gold);color:#101c31;padding:12px 18px}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:
+  radial-gradient(1200px 600px at 15% -10%, rgba(20,89,199,.25), transparent 60%),
+  radial-gradient(900px 500px at 110% 10%, rgba(245,181,27,.10), transparent 55%),
+  linear-gradient(180deg,#050c1c,#081735 55%,#060f22);
+  background-attachment:fixed;color:var(--text);min-height:100vh;line-height:1.5}
+h1,h2,h3{font-family:Manrope,Inter,sans-serif;letter-spacing:-.3px}
+a{color:inherit}
+label{display:block;font-size:12.5px;font-weight:700;margin:16px 0 7px;color:#c3cdec;letter-spacing:.2px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:var(--radius-sm);border:1px solid var(--line);background:#071734;color:#fff;font-size:14.5px;font-family:inherit;transition:border-color .15s,background .15s}
+input::placeholder,textarea::placeholder{color:#55618a}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-glow);background:#081c40}
+textarea{min-height:100px;resize:vertical}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%238d9ac2' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+button{border:0;border-radius:var(--radius-sm);cursor:pointer;font-weight:700;font-size:13.5px;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s,opacity .15s}
+button:active{transform:scale(.98)}
+button:disabled{cursor:not-allowed;opacity:.55;transform:none}
+.primaryBtn{background:linear-gradient(135deg,var(--gold),#e39f14);color:#171107;padding:14px 20px;box-shadow:0 10px 24px -8px rgba(245,181,27,.45)}
+.primaryBtn:hover:not(:disabled){box-shadow:0 14px 30px -8px rgba(245,181,27,.6)}
 
-.hero{text-align:center;padding:56px 20px 36px;position:relative;overflow:hidden}
-.hero:before{content:"";position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.18),transparent 70%);pointer-events:none}
-.hero img{width:64px;height:72px;object-fit:contain;margin-bottom:14px;position:relative}
-.hero h1{font-size:clamp(26px,5vw,38px);margin:0 0 10px;letter-spacing:-.5px;position:relative}
+/* ---- top bar ---- */
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(6,14,32,.72);border-bottom:1px solid var(--line);padding:14px 20px}
+.topbar-inner{max-width:900px;margin:auto;display:flex;align-items:center;gap:12px}
+.topbar img{width:34px;height:38px;object-fit:contain}
+.topbar .brandtext{display:flex;flex-direction:column;line-height:1.2}
+.topbar .brandtext b{font-size:15px;font-weight:800}
+.topbar .brandtext span{font-size:11px;color:var(--muted)}
+.statusChip{margin-left:auto;display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.statusChip .dot{width:7px;height:7px;border-radius:50%;background:var(--muted-dim);flex-shrink:0}
+.statusChip.live .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(54,211,137,.18)}
+.statusChip.live{color:#9df0c4}
+
+.hero{text-align:center;padding:52px 20px 32px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.16),transparent 70%);pointer-events:none}
+.hero img{width:66px;height:74px;object-fit:contain;margin-bottom:16px;position:relative;filter:drop-shadow(0 8px 20px rgba(0,0,0,.4))}
+.hero h1{font-size:clamp(28px,5vw,40px);margin:0 0 10px;position:relative;font-weight:800}
 .hero h1 span{color:var(--gold)}
-.hero p{color:var(--muted);max-width:520px;margin:0 auto;font-size:14.5px;line-height:1.6;position:relative}
+.hero p{color:var(--muted);max-width:540px;margin:0 auto;font-size:15px;line-height:1.65;position:relative}
+.badgeRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px;position:relative}
+.pill{font-size:11.5px;font-weight:700;color:#cdd8f7;background:rgba(255,255,255,.06);border:1px solid var(--line);padding:6px 12px;border-radius:999px}
 
-.wrap{max-width:780px;margin:auto;padding:0 20px 80px}
-.tabs{display:flex;gap:8px;margin-bottom:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px}
-.tabBtn{flex:1;background:transparent;color:var(--muted);padding:12px;border-radius:10px;font-size:13.5px}
-.tabBtn.active{background:var(--gold);color:#101c31}
-.tabPanel{display:none}
+.wrap{max-width:820px;margin:auto;padding:0 20px 90px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:var(--shadow)}
+.tabBtn{flex:1;background:transparent;color:var(--muted);padding:13px;border-radius:10px;font-size:13.5px}
+.tabBtn.active{background:linear-gradient(135deg,var(--gold),#e39f14);color:#171107}
+.tabPanel{display:none;animation:fadeIn .25s ease}
 .tabPanel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
-.card .desc{color:var(--muted);font-size:12.5px;margin-bottom:18px;line-height:1.5}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.card + .card{margin-top:16px}
+.card h2{margin:0 0 5px;font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+.card .desc{color:var(--muted);font-size:12.5px;margin-bottom:4px;line-height:1.6}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.row2{grid-template-columns:1fr}}
 
-.promptOut{margin-top:18px;background:#07172f;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;display:none}
-.promptOut.show{display:block}
-.actionRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;display:none}
+.promptOut{margin-top:18px;background:#05112a;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:13px;line-height:1.65;white-space:pre-wrap;display:none;color:#c9d3f0;max-height:220px;overflow:auto}
+.promptOut.show{display:block;animation:fadeIn .2s ease}
+.actionRow{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;display:none}
 .actionRow.show{display:flex}
-.actionRow button{background:rgba(255,255,255,.08);color:#fff;padding:10px 14px;font-size:12.5px;display:flex;align-items:center;gap:6px}
-.actionRow button:hover{background:rgba(255,255,255,.14)}
-.actionRow .aiBtn{background:rgba(245,181,27,.12);color:var(--gold);border:1px solid rgba(245,181,27,.35)}
+.actionRow button{background:rgba(255,255,255,.06);color:#fff;padding:10px 14px;font-size:12.5px;display:flex;align-items:center;gap:6px;border:1px solid transparent}
+.actionRow button:hover{background:rgba(255,255,255,.12);border-color:var(--line-strong)}
+.actionRow .aiBtn{background:rgba(245,181,27,.12);color:var(--gold);border:1px solid rgba(245,181,27,.3)}
 .actionRow .aiBtn:hover{background:rgba(245,181,27,.2)}
 
-.howto{background:rgba(245,181,27,.08);border:1px solid rgba(245,181,27,.3);border-radius:14px;padding:16px 18px;margin-top:24px;font-size:12.5px;line-height:1.7;color:#ffe6ab}
-.howto b{color:var(--gold)}
-.note{font-size:11px;color:var(--muted);margin-top:10px}
-.dlBtn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:#fff;padding:9px 14px;border-radius:9px;font-size:12.5px;font-weight:800;text-decoration:none}
-.dlBtn:hover{background:rgba(255,255,255,.18)}
+.sectionLabel{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-dim);margin:30px 0 12px;display:flex;align-items:center;gap:10px}
+.sectionLabel:after{content:"";flex:1;height:1px;background:var(--line)}
 
-.footer{text-align:center;color:var(--muted);font-size:11.5px;padding:30px 20px;border-top:1px solid var(--line);margin-top:30px}
+.howto{border-radius:var(--radius);padding:20px 22px;margin-top:16px;font-size:12.5px;line-height:1.75}
+.howto.warn{background:linear-gradient(160deg,rgba(227,38,46,.14),rgba(227,38,46,.04));border:1px solid rgba(227,38,46,.3);color:#ffd4d1}
+.howto.info{background:linear-gradient(160deg,rgba(20,89,199,.16),rgba(20,89,199,.04));border:1px solid rgba(20,89,199,.32);color:#cfe0ff}
+.howto.neutral{background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+.howto b{display:block;margin-bottom:6px;font-size:13.5px;color:#fff}
+.howto .note{font-size:11.5px;opacity:.85;margin-top:8px}
+.dlBtn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);color:#fff;padding:10px 15px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;text-decoration:none;border:1px solid var(--line-strong);transition:background .15s}
+.dlBtn:hover{background:rgba(255,255,255,.16)}
+
+.genGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+@media(max-width:560px){.genGrid{grid-template-columns:1fr}}
+.genBtn{padding:14px 16px;border-radius:var(--radius-sm);font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent}
+.genBtn.img{background:linear-gradient(135deg,var(--gold),#e39f14);color:#171107;box-shadow:0 10px 22px -8px rgba(245,181,27,.4)}
+.genBtn.vid{background:rgba(255,255,255,.07);color:#fff;border-color:var(--line-strong)}
+.genBtn:hover:not(:disabled){filter:brightness(1.07)}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.resultCard{margin-top:16px;display:none;background:#05112a;border:1px solid var(--line-strong);border-radius:var(--radius-sm);padding:14px;animation:fadeIn .3s ease}
+.resultCard.show{display:block}
+.resultCard img,.resultCard video{width:100%;border-radius:10px;display:block;background:#000}
+.resultCard .resultFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+.costTag{font-size:11.5px;color:var(--ok);font-weight:700;background:rgba(54,211,137,.1);padding:5px 10px;border-radius:999px;border:1px solid rgba(54,211,137,.25)}
+
+.footer{text-align:center;color:var(--muted-dim);font-size:11.5px;padding:34px 20px 10px;border-top:1px solid var(--line);margin-top:34px}
+
+#toastWrap{position:fixed;bottom:20px;right:20px;left:20px;display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:100;pointer-events:none}
+.toast{pointer-events:auto;max-width:360px;background:var(--panel-2);border:1px solid var(--line-strong);border-left:3px solid var(--blue-glow);padding:13px 16px;border-radius:12px;font-size:13px;box-shadow:0 14px 34px -10px rgba(0,0,0,.6);animation:toastIn .25s ease}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--ok)}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){#toastWrap{left:12px;right:12px;align-items:stretch}.toast{max-width:none}}
 </style>
 </head>
 <body>
 
+<div class="topbar">
+  <div class="topbar-inner">
+    <img src="../assets/gul-logo.png" alt="Game Up League">
+    <div class="brandtext"><b>GUL Social Studio</b><span>Free · No login required</span></div>
+    <div class="statusChip" id="statusChip"><span class="dot"></span><span id="statusChipText">Checking…</span></div>
+  </div>
+</div>
+
 <div class="hero">
-  <img src="../assets/gul-logo.png" alt="Game Up League">
-  <h1>GUL Social <span>Studio</span></h1>
-  <p>Free prompt generator for anime-style player avatars and festival posts — built for Game Up League. Generates a ready-to-use prompt, then opens your choice of free AI image tool to turn it into an image.</p>
+  <img src="../assets/gul-mascot.png" alt="Game Up League mascot">
+  <h1>Create anime-style <span>player art</span>,<br>in seconds.</h1>
+  <p>Built for Game Up League — generate player avatars, festival posts, images and short videos, on-brand every time. No account, no app install.</p>
+  <div class="badgeRow">
+    <span class="pill">⚡ Auto-generate (capped &amp; budgeted)</span>
+    <span class="pill">🆓 Manual prompt (free, unlimited)</span>
+  </div>
 </div>
 
 <div class="wrap">
@@ -69,14 +149,14 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
 
   <div class="tabPanel active" id="tab-player">
     <div class="card" id="refCard" style="display:none;margin-bottom:16px">
-      <h2 style="margin:0 0 4px;font-size:17px">Official Team References</h2>
+      <h2>🏷️ Official Team References</h2>
       <div class="desc">If your team has official logo/jersey references saved, pick it here to download them — attach these too for best consistency.</div>
-      <select id="refTeamPicker"><option value="">— Select a team —</option></select>
+      <select id="refTeamPicker" style="margin-top:12px"><option value="">— Select a team —</option></select>
       <div id="refDownloads" style="margin-top:12px;display:none"></div>
     </div>
 
     <div class="card">
-      <h2 style="margin:0 0 4px;font-size:17px">Player / Team Anime Avatar</h2>
+      <h2>🎨 Player / Team Anime Avatar</h2>
       <div class="desc">Team names are free text — Season 2 teams aren't finalized until the auction (13 Dec 2026), so just type whatever applies right now.</div>
       <div class="row2">
         <div><label>Player name *</label><input id="playerName" placeholder="e.g. Vishal Mishra"></div>
@@ -93,7 +173,7 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
         <option value="matchday">Matchday Hype</option>
       </select>
       <div id="awardFieldWrap" style="display:none"><label>Award name</label><input id="awardName" placeholder="e.g. Best Player of the Match"></div>
-      <button class="primaryBtn" id="genPlayerBtn" style="margin-top:18px;width:100%">Generate Prompt</button>
+      <button class="primaryBtn" id="genPlayerBtn" style="margin-top:20px;width:100%">✍️ Generate Prompt</button>
       <div id="playerPromptOut" class="promptOut"></div>
       <div class="actionRow" id="playerActions"></div>
     </div>
@@ -101,7 +181,7 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
 
   <div class="tabPanel" id="tab-festival">
     <div class="card">
-      <h2 style="margin:0 0 4px;font-size:17px">Festival / Special Day Post</h2>
+      <h2>🎉 Festival / Special Day Post</h2>
       <div class="desc">Pick a known occasion, or type your own (e.g. "today is Diwali", "Season 2 countdown day").</div>
       <label>Occasion</label>
       <select id="festivalPreset">
@@ -117,42 +197,58 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
       </select>
       <label>Or describe it yourself</label>
       <textarea id="festivalCustom" placeholder="e.g. today is Diwali, make a festive post with the mascot"></textarea>
-      <button class="primaryBtn" id="genFestivalBtn" style="margin-top:14px;width:100%">Generate Prompt</button>
+      <button class="primaryBtn" id="genFestivalBtn" style="margin-top:18px;width:100%">✍️ Generate Prompt</button>
       <div id="festivalPromptOut" class="promptOut"></div>
       <div class="actionRow" id="festivalActions"></div>
-      <div class="note">⚠️ Lunar-calendar festivals (Diwali, Holi, Eid) move every year — double check the actual date before posting.</div>
+      <div class="howto neutral" style="margin-top:16px;padding:12px 16px"><span class="note" style="margin:0">⚠️ Lunar-calendar festivals (Diwali, Holi, Eid) move every year — double check the actual date before posting.</span></div>
     </div>
   </div>
 
-  <div class="howto" style="background:rgba(227,38,46,.1);border-color:rgba(227,38,46,.35);color:#ffd4d1">
-    <b>⚠️ Important — do this every single time, or results will look random:</b> Gemini/ChatGPT don't know what the Game Up League mascot or logo actually look like from text alone. Always attach these two real reference images along with the prompt and the player's photo — this is what keeps every output visually consistent instead of random.
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+  <div class="sectionLabel">Keep every output on-brand</div>
+  <div class="howto warn">
+    <b>⚠️ Do this every single time, or results will look random</b>
+    Gemini/ChatGPT don't know what the Game Up League mascot or logo actually look like from text alone. Always attach these two real reference images along with the prompt and the player's photo — this is what keeps every output visually consistent instead of random.
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
       <a href="../assets/gul-mascot.png" download class="dlBtn">⬇ Download Mascot</a>
       <a href="../assets/gul-logo.png" download class="dlBtn">⬇ Download Logo</a>
     </div>
-    <div class="note" style="color:#ffd4d1">Even with reference images, different people's sessions will still vary somewhat — that's how generative AI works. Always review before posting; reject/regenerate anything that looks off-brand. That review step is what actually guarantees consistency, not the AI alone.</div>
+    <div class="note">Even with reference images, different people's sessions will still vary somewhat — that's how generative AI works. Always review before posting; reject/regenerate anything that looks off-brand.</div>
   </div>
 
-  <div class="howto" id="autoGenBox" style="background:rgba(20,89,199,.12);border-color:rgba(20,89,199,.35);color:#cfe0ff">
-    <b>⚡ Automatic generation (uses Vishal's small Google budget — capped at 10/day, ₹500/month):</b>
-    <div id="usageLine" class="note" style="color:#cfe0ff">Checking today's usage…</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-      <button id="autoImgBtn" class="primaryBtn" style="padding:10px 16px">🎨 Auto-generate Image</button>
-      <button id="autoVidBtn" class="primaryBtn" style="padding:10px 16px;background:rgba(255,255,255,.12);color:#fff">🎬 Auto-generate Video (5s)</button>
+  <div class="sectionLabel">Automatic generation</div>
+  <div class="howto info" id="autoGenBox">
+    <b>⚡ Generate the actual image/video right here</b>
+    <div id="usageLine" class="note" style="margin:0 0 4px">Checking status…</div>
+    <div class="genGrid" style="margin-top:14px">
+      <button id="autoImgBtn" class="genBtn img">🎨 Auto-generate Image</button>
+      <button id="autoVidBtn" class="genBtn vid">🎬 Auto-generate Video (5s)</button>
     </div>
-    <div id="autoGenResult" style="margin-top:14px;display:none"></div>
+    <div id="autoGenResult" class="resultCard"></div>
   </div>
 
-  <div class="howto">
-    <b>How this works (manual, free, unlimited):</b> Click "Open in Gemini" (best option — it accepts photos + text together) or try ChatGPT/Bing. The prompt is copied to your clipboard automatically; paste it there along with the mascot/logo images above and the player's photo, then generate. Free-tier limits on the manual tools can change — if one runs out for the day, try another from the buttons above.
+  <div class="sectionLabel">Manual, free &amp; unlimited</div>
+  <div class="howto neutral">
+    <b>How this works</b>
+    Click "Open in Gemini" (best option — it accepts photos + text together) or try ChatGPT/Bing. The prompt is copied to your clipboard automatically; paste it there along with the mascot/logo images above and the player's photo, then generate. Free-tier limits on the manual tools can change — if one runs out for the day, try another from the buttons above.
   </div>
 
-  <div class="footer">Game Up League — Social Studio · Free tool, no login required · Generates text prompts only</div>
+  <div class="footer">Game Up League — Social Studio · Free tool, no login required</div>
 </div>
+
+<div id="toastWrap"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
 <script>
+function toast(msg, type) {
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 4200);
+}
+
 document.querySelectorAll('.tabBtn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
@@ -177,6 +273,7 @@ function renderActions(containerId, promptText) {
   document.getElementById(containerId + '-copy').onclick = (e) => {
     navigator.clipboard.writeText(promptText);
     e.target.textContent = '✓ Copied';
+    toast('Prompt copied to clipboard', 'ok');
     setTimeout(() => { e.target.textContent = '📋 Copy Prompt'; }, 1500);
   };
   el.querySelectorAll('[data-ai]').forEach(btn => {
@@ -201,7 +298,7 @@ document.getElementById('genPlayerBtn').addEventListener('click', () => {
   const occasion = document.getElementById('occasion').value;
   const award = document.getElementById('awardName').value.trim();
 
-  if (!player || !team) { alert('Please enter at least player name and team name.'); return; }
+  if (!player || !team) { toast('Please enter at least player name and team name.', 'err'); return; }
 
   let occasionLine = '';
   if (occasion === 'player_reveal') occasionLine = `This is a player reveal / registration announcement image for ${player}${position ? ', playing as ' + position : ''}.`;
@@ -213,6 +310,7 @@ document.getElementById('genPlayerBtn').addEventListener('click', () => {
   document.getElementById('playerPromptOut').textContent = prompt;
   document.getElementById('playerPromptOut').classList.add('show');
   renderActions('playerActions', prompt);
+  document.getElementById('autoGenBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
 document.getElementById('genFestivalBtn').addEventListener('click', () => {
@@ -220,7 +318,7 @@ document.getElementById('genFestivalBtn').addEventListener('click', () => {
   const custom = document.getElementById('festivalCustom').value.trim();
   const occasionDesc = custom || preset;
 
-  if (!occasionDesc) { alert('Pick a festival or describe the occasion first.'); return; }
+  if (!occasionDesc) { toast('Pick a festival or describe the occasion first.', 'err'); return; }
 
   const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\nAnime art style, Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports anime look, Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football. High quality, vibrant lighting, caption-ready composition with some empty space for text to be added later.`;
 
@@ -229,8 +327,20 @@ document.getElementById('genFestivalBtn').addEventListener('click', () => {
   renderActions('festivalActions', prompt);
 });
 
-// ---- Automatic generation (calls the Edge Function, enforces 10/day & ₹500/month) ----
+// ---- Automatic generation ----
 const DAILY_CAP = 10;
+const configured = !!(window.GUL_SUPABASE_URL && !window.GUL_SUPABASE_URL.includes('PASTE'));
+
+function setStatus(live, text) {
+  const chip = document.getElementById('statusChip');
+  chip.classList.toggle('live', live);
+  document.getElementById('statusChipText').textContent = text;
+}
+setStatus(configured, configured ? 'Auto-generation live' : 'Manual mode only');
+document.getElementById('usageLine').textContent = configured
+  ? `Shared budget across everyone using this tool: up to ${DAILY_CAP} generations/day, capped monthly.`
+  : 'Automatic generation is not set up yet — use the manual option below.';
+
 function activePrompt() {
   const playerTab = document.getElementById('tab-player').classList.contains('active');
   const text = playerTab
@@ -239,38 +349,16 @@ function activePrompt() {
   return text && text.trim() ? text : null;
 }
 
-async function refreshUsageLine() {
-  const el = document.getElementById('usageLine');
-  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
-    el.textContent = 'Automatic generation not set up yet.';
-    return;
-  }
-  try {
-    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
-    const resp = await fetch(
-      `${window.GUL_SUPABASE_URL}/rest/v1/generation_usage?select=id&created_at=gte.${startOfDay.toISOString()}`,
-      { headers: { apikey: window.GUL_SUPABASE_ANON_KEY, Authorization: 'Bearer ' + window.GUL_SUPABASE_ANON_KEY, Prefer: 'count=exact' } }
-    );
-    // generation_usage has no anon SELECT grant by design, so this will normally be blocked -
-    // show a generic cap reminder instead of a confusing error.
-    el.textContent = `Up to ${DAILY_CAP} generations/day allowed, shared across everyone using this tool.`;
-  } catch (e) {
-    el.textContent = `Up to ${DAILY_CAP} generations/day allowed, shared across everyone using this tool.`;
-  }
-}
-refreshUsageLine();
-
 async function runAutoGenerate(type, btn) {
   const prompt = activePrompt();
-  if (!prompt) { alert('Click "Generate Prompt" first.'); return; }
-  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
-    alert('Automatic generation is not set up yet.'); return;
-  }
+  if (!prompt) { toast('Click "Generate Prompt" first.', 'err'); return; }
+  if (!configured) { toast('Automatic generation is not set up yet.', 'err'); return; }
+
   const resultBox = document.getElementById('autoGenResult');
-  const originalText = btn.textContent;
+  const originalHTML = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = type === 'video' ? '⏳ Generating video (can take ~1-2 min)…' : '⏳ Generating image…';
-  resultBox.style.display = 'none';
+  btn.innerHTML = `<span class="spinner"></span> ${type === 'video' ? 'Generating video (~1-2 min)…' : 'Generating image…'}`;
+  resultBox.classList.remove('show');
 
   try {
     const resp = await fetch(`${window.GUL_SUPABASE_URL}/functions/v1/generate-media`, {
@@ -283,27 +371,30 @@ async function runAutoGenerate(type, btn) {
       body: JSON.stringify({ type, prompt }),
     });
     const data = await resp.json();
-    if (!resp.ok) { alert('Could not generate: ' + (data.error || resp.statusText)); return; }
+    if (!resp.ok) { toast(data.error || resp.statusText, 'err'); return; }
 
-    resultBox.style.display = 'block';
-    resultBox.innerHTML = type === 'video'
-      ? `<video src="${data.url}" controls style="width:100%;border-radius:10px"></video><br><a class="dlBtn" style="margin-top:10px" href="${data.url}" download>⬇ Download Video</a>`
-      : `<img src="${data.url}" style="width:100%;border-radius:10px"><br><a class="dlBtn" style="margin-top:10px" href="${data.url}" download>⬇ Download Image</a>`;
+    const costRupees = (data.cost_paise / 100).toFixed(2);
+    resultBox.innerHTML = (type === 'video'
+      ? `<video src="${data.url}" controls></video>`
+      : `<img src="${data.url}" alt="Generated result">`) +
+      `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${data.url}" download>⬇ Download</a></div>`;
+    resultBox.classList.add('show');
+    toast('Generated successfully!', 'ok');
   } catch (e) {
-    alert('Generation failed: ' + e.message);
+    toast('Generation failed: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = originalText;
+    btn.innerHTML = originalHTML;
   }
 }
 
-document.getElementById('autoImgBtn').addEventListener('click', (e) => runAutoGenerate('image', e.target));
-document.getElementById('autoVidBtn').addEventListener('click', (e) => runAutoGenerate('video', e.target));
+document.getElementById('autoImgBtn').addEventListener('click', (e) => runAutoGenerate('image', e.currentTarget));
+document.getElementById('autoVidBtn').addEventListener('click', (e) => runAutoGenerate('video', e.currentTarget));
 
 // Optional: load saved team references if the database is reachable.
 // This tool still works fully without this - references are a nice-to-have.
 (async function loadTeamReferences() {
-  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE') || typeof supabase === 'undefined') return;
+  if (!configured || typeof supabase === 'undefined') return;
   try {
     const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
     const { data: refs, error } = await client.from('team_references').select('*').order('team_name');
@@ -327,7 +418,7 @@ document.getElementById('autoVidBtn').addEventListener('click', (e) => runAutoGe
       let html = '';
       if (ref.logo_path) html += `<a class="dlBtn" href="${publicUrl(ref.logo_path)}" download style="margin-right:8px">⬇ Download ${ref.team_name} Logo</a>`;
       if (ref.jersey_path) html += `<a class="dlBtn" href="${publicUrl(ref.jersey_path)}" download>⬇ Download ${ref.team_name} Jersey</a>`;
-      if (ref.notes) html += `<div class="note">${ref.notes}</div>`;
+      if (ref.notes) html += `<div class="howto neutral" style="margin-top:10px;padding:10px 14px">${ref.notes}</div>`;
       out.innerHTML = html;
       out.style.display = 'block';
     });
