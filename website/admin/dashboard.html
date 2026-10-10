@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUL Admin Dashboard</title>
+<link rel="icon" href="../assets/gul-logo.png">
+<style>
+:root{--navy:#07152f;--blue:#1459c7;--gold:#f5b51b;--white:#f7f9ff;--muted:#a9b6cf;--line:rgba(255,255,255,.12);--card:#0d1f40;--green:#16a34a;--red:#e3262e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#06132b,#081a37);color:var(--white);min-height:100vh}
+a{color:inherit}
+.loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.loginBox{width:min(420px,92vw);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px}
+.loginBox h1{font-size:20px;margin:0 0 20px}
+label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#cfd9ef}
+input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#07172f;color:#fff;font-size:14px}
+button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
+.primaryBtn{background:var(--gold);color:#101c31;padding:12px 16px}
+.primaryBtn:disabled{opacity:.6;cursor:not-allowed}
+.secondaryBtn{background:rgba(255,255,255,.08);color:#fff;padding:9px 13px}
+.dangerBtn{background:rgba(227,38,46,.15);color:#ff9d9d;padding:7px 11px}
+.okBtn{background:rgba(22,134,92,.2);color:#6be3b3;padding:7px 11px}
+.msg{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;white-space:pre-wrap;display:none}
+.msg.show{display:block}
+.msg.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+.msg.info{background:rgba(20,89,199,.18);color:#a9c6ff;border:1px solid rgba(20,89,199,.4)}
+
+.topbar{position:sticky;top:0;z-index:10;background:rgba(5,16,36,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.topbar img{width:36px;height:40px;object-fit:contain}
+.wrap{max-width:1200px;margin:auto;padding:24px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat .num{font-size:28px;font-weight:900}
+.stat .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.tableWrap{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:1100px}
+th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td.wrap-cell{white-space:normal;max-width:180px}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.pill.pending{background:rgba(245,181,27,.15);color:var(--gold)}
+.pill.approved{background:rgba(22,134,92,.2);color:#6be3b3}
+.pill.rejected{background:rgba(227,38,46,.15);color:#ff9d9d}
+.pill.paid{background:rgba(22,134,92,.2);color:#6be3b3}
+.pill.unpaid{background:rgba(255,255,255,.08);color:var(--muted)}
+.actionsCell{display:flex;gap:6px;flex-wrap:wrap}
+.emptyNote{padding:40px;text-align:center;color:var(--muted)}
+.refreshRow{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.photoLink{color:var(--gold);font-size:12px;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="loginWrap">
+  <div class="loginBox">
+    <h1>GUL Admin Dashboard</h1>
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" required autocomplete="username">
+      <label>Password</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit" id="signInBtn" class="primaryBtn" style="width:100%;margin-top:18px">Sign In</button>
+    </form>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+</div>
+
+<div id="dashView" style="display:none">
+  <header class="topbar">
+    <div class="brand"><img src="../assets/gul-logo.png" alt="Game Up League"><span>GUL ADMIN</span></div>
+    <div style="display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)">
+      <span id="whoami"></span>
+      <button class="secondaryBtn" id="signOutBtn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Player Registrations — Season 2</h2>
+      <button class="secondaryBtn" id="refreshBtn">↻ Refresh</button>
+    </div>
+
+    <div id="dashMsg" class="msg"></div>
+
+    <div class="tableWrap">
+      <table>
+        <thead><tr>
+          <th>Code</th><th>Name</th><th>Mobile</th><th>Email</th><th>Position</th>
+          <th>Offer</th><th>Quoted Fee</th><th>Photo</th><th>Registered</th>
+          <th>Status</th><th>Payment</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="regRows"></tbody>
+      </table>
+      <div id="emptyNote" class="emptyNote" style="display:none">No registrations yet.</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+function showMsg(id, kind, text) {
+  const el = document.getElementById(id);
+  el.className = 'msg show ' + kind;
+  el.textContent = text;
+}
+function hideMsg(id) { document.getElementById(id).className = 'msg'; }
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showMsg('loginMsg', 'err', 'supabase-config.js is not configured yet.');
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+  let allPayments = [];
+
+  const money = (paise) => paise == null ? '—' : '₹' + (paise / 100).toLocaleString('en-IN');
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  async function loadDashboard() {
+    hideMsg('dashMsg');
+    const { data: regs, error: regErr } = await client
+      .from('player_registrations').select('*').order('created_at', { ascending: false });
+    if (regErr) { showMsg('dashMsg', 'err', 'Could not load registrations: ' + regErr.message); return; }
+
+    const { data: payments, error: payErr } = await client.from('payments').select('*');
+    if (payErr) { showMsg('dashMsg', 'err', 'Could not load payments: ' + payErr.message); return; }
+    allPayments = payments || [];
+
+    renderStats(regs);
+    renderTable(regs);
+  }
+
+  function paymentFor(regId) {
+    return allPayments.find(p => p.player_registration_id === regId && p.status === 'paid');
+  }
+
+  function renderStats(regs) {
+    const total = regs.length;
+    const pending = regs.filter(r => r.status === 'pending').length;
+    const approved = regs.filter(r => r.status === 'approved').length;
+    const paid = regs.filter(r => paymentFor(r.id)).length;
+    document.getElementById('stats').innerHTML = [
+      ['Total Registrations', total], ['Pending Review', pending],
+      ['Approved', approved], ['Paid', paid]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+  }
+
+  function renderTable(regs) {
+    const tbody = document.getElementById('regRows');
+    document.getElementById('emptyNote').style.display = regs.length ? 'none' : 'block';
+    tbody.innerHTML = regs.map(r => {
+      const paid = !!paymentFor(r.id);
+      const created = new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      return `<tr data-id="${r.id}">
+        <td>${esc(r.registration_code)}</td>
+        <td class="wrap-cell">${esc(r.full_name)}</td>
+        <td>${esc(r.mobile)}</td>
+        <td class="wrap-cell">${esc(r.email || '—')}</td>
+        <td>${esc(r.position || '—')}</td>
+        <td>${esc(r.offer_applied || '—')}</td>
+        <td>${money(r.quoted_fee_paise)}</td>
+        <td>${r.photo_url ? `<button class="photoLink" data-photo="${esc(r.photo_url)}">View</button>` : '—'}</td>
+        <td>${created}</td>
+        <td><span class="pill ${r.status}">${esc(r.status)}</span></td>
+        <td><span class="pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
+        <td class="actionsCell">
+          ${r.status !== 'approved' ? `<button class="okBtn" data-action="approve">Approve</button>` : ''}
+          ${r.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject">Reject</button>` : ''}
+          ${!paid ? `<button class="secondaryBtn" data-action="markpaid">Mark Paid</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.getElementById('regRows').addEventListener('click', async (e) => {
+    const photoBtn = e.target.closest('[data-photo]');
+    if (photoBtn) {
+      const path = photoBtn.dataset.photo;
+      const { data, error } = await client.storage.from('player-photos').createSignedUrl(path, 300);
+      if (error) { alert('Could not load photo: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const row = btn.closest('tr');
+    const id = row.dataset.id;
+    btn.disabled = true;
+
+    if (btn.dataset.action === 'approve') {
+      const { error } = await client.from('player_registrations').update({ status: 'approved' }).eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Approve failed: ' + error.message); btn.disabled = false; return; }
+    } else if (btn.dataset.action === 'reject') {
+      const { error } = await client.from('player_registrations').update({ status: 'rejected' }).eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Reject failed: ' + error.message); btn.disabled = false; return; }
+    } else if (btn.dataset.action === 'markpaid') {
+      const reg = (await client.from('player_registrations').select('*').eq('id', id).single()).data;
+      const { error } = await client.from('payments').insert({
+        player_registration_id: id,
+        amount_paise: reg.quoted_fee_paise || 0,
+        currency: 'INR',
+        provider: 'manual_upi',
+        status: 'paid',
+        verified_via_webhook: false
+      });
+      if (error) { showMsg('dashMsg', 'err', 'Mark paid failed: ' + error.message); btn.disabled = false; return; }
+    }
+    await loadDashboard();
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+
+  async function refreshAuthState() {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('dashView').style.display = 'none';
+      return;
+    }
+    const { data: isAdmin } = await client.rpc('is_admin');
+    if (!isAdmin) {
+      showMsg('loginMsg', 'err', 'Signed in as ' + session.user.email + ', but this account is not an admin.');
+      await client.auth.signOut();
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('dashView').style.display = 'none';
+      return;
+    }
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('dashView').style.display = 'block';
+    document.getElementById('whoami').textContent = session.user.email;
+    await loadDashboard();
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('signInBtn');
+    btn.disabled = true;
+    hideMsg('loginMsg');
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    btn.disabled = false;
+    if (error) { showMsg('loginMsg', 'err', 'Sign in failed: ' + error.message); return; }
+    await refreshAuthState();
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await client.auth.signOut();
+    await refreshAuthState();
+  });
+
+  refreshAuthState();
+}
+</script>
+</body>
+</html>

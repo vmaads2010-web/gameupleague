@@ -241,7 +241,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     if (selectedPhotoBlob) {
       showStatus('ok', 'Uploading photo...');
-      photoPath = 'player-photos/' + code + '.jpg';
+      // Store just the object key (relative to the player-photos bucket), not
+      // prefixed with the bucket name - that's what the Storage SDK expects
+      // when generating a signed URL later from the admin dashboard.
+      photoPath = code + '.jpg';
       const { error: uploadErr } = await client.storage
         .from('player-photos')
         .upload(code + '.jpg', selectedPhotoBlob, { contentType: 'image/jpeg' });
