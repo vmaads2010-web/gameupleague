@@ -35,6 +35,9 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
  .reveal-stagger.in .r-item:nth-child(2){animation-delay:.15s}
  .reveal-stagger.in .r-item:nth-child(3){animation-delay:.25s}
  .reveal-stagger.in .r-item:nth-child(4){animation-delay:.35s}
+ .reveal-stagger.in .r-item:nth-child(5){animation-delay:.42s}
+ .reveal-stagger.in .r-item:nth-child(6){animation-delay:.49s}
+ .reveal-stagger.in .r-item:nth-child(7){animation-delay:.56s}
 }
 @media (prefers-reduced-motion: reduce){ .reveal{opacity:1!important;transform:none!important} }
 .notice-bar{background:#13285a;color:#dce6ff;font-size:12.5px;text-align:center;padding:9px 14px;border-bottom:1px solid var(--line)}
@@ -85,6 +88,19 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 .contactIcon svg{width:19px;height:19px}
 .contactLabel{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}
 .contactValue{font-size:14.5px;font-weight:700;color:#fff}
+.trophyBanner{position:relative;overflow:hidden;background:linear-gradient(135deg,#1b3a7a 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(245,181,27,.4);border-radius:22px;padding:30px;margin-bottom:22px}
+.trophyBanner:before{content:"";position:absolute;top:-30%;left:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.18),transparent 70%)}
+.trophyRow{display:flex;gap:28px;flex-wrap:wrap;position:relative}
+.trophyItem{flex:1;min-width:200px}
+.trophyItem .ico{font-size:28px}
+.trophyItem .ttl{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-top:8px}
+.trophyItem .name{font-size:24px;font-weight:900;margin-top:4px}
+.trophyItem .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.awardsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.awardCard .ttl{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
+.awardCard .team{font-size:12px;color:var(--muted);margin-top:2px}
 .mobile{display:none}
 @media(max-width:850px){
  .links{display:none}.mobile{display:block}.hero{grid-template-columns:1fr;min-height:auto}.hero-copy{padding:60px 0 20px}.hero-art{height:440px}.mascot{height:420px}
@@ -158,7 +174,17 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <section class="section" id="season1">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Completed</div><h2>Season 1 Archive</h2></div></div>
-  <div class="placeholder-box reveal" id="season1Note"></div>
+  <p class="sub reveal" id="season1Note" style="margin-bottom:20px"></p>
+
+  <div class="trophyBanner reveal">
+   <div class="trophyRow">
+    <div class="trophyItem"><div class="ico">🏆</div><div class="ttl">Champions</div><div class="name" id="s1Champion"></div><div class="sub">Season 1 — Game Up League</div></div>
+    <div class="trophyItem"><div class="ico">🥈</div><div class="ttl">Runners Up</div><div class="name" id="s1RunnerUp"></div><div class="sub">Season 1 — Game Up League</div></div>
+    <div class="trophyItem"><div class="ico">🏅</div><div class="ttl">Super Cup Champions</div><div class="name" id="s1SuperCupChampion"></div><div class="sub">Runners Up: <span id="s1SuperCupRunnerUp"></span></div></div>
+   </div>
+  </div>
+
+  <div class="awardsGrid reveal-stagger" id="s1Awards"></div>
  </div>
 </section>
 
@@ -265,6 +291,13 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('offerBanner').style.display = 'block';
 
     set('season1Note', c.season1.archiveNote);
+    set('s1Champion', c.season1.champion);
+    set('s1RunnerUp', c.season1.runnerUp);
+    set('s1SuperCupChampion', c.season1.superCupChampion);
+    set('s1SuperCupRunnerUp', c.season1.superCupRunnerUp);
+    document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a =>
+      `<div class="awardCard r-item"><div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${a.team}</div>` : ''}</div>`
+    ).join('');
 
     set('contactEmailText', c.contact.email);
     set('contactPhoneText', c.contact.phoneDisplay);

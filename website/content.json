@@ -43,7 +43,21 @@
   },
 
   "season1": {
-    "archiveNote": "Season 1 is complete. Approved photos, videos and results from Season 1 will be added here once the archive is prepared."
+    "_source": "Transcribed from GUL's own public Instagram posts (thegameupleague), 10 Oct 2026. Full points-table/fixtures were not accessible without Instagram login - only award/result posts. More can be added if official screenshots are provided.",
+    "archiveNote": "Full match-by-match results and the points table are being compiled. The headline results and awards below are confirmed from GUL's official Instagram posts.",
+    "champion": "Atlanta FC",
+    "runnerUp": "Palmerios",
+    "superCupChampion": "Yeshua FC",
+    "superCupRunnerUp": "Globalnet Computers",
+    "awards": [
+      { "title": "Best Player (MVP)", "winner": "Alex Jerry Fernandes", "team": "Atlanta FC" },
+      { "title": "Highest Goal Scorer", "winner": "Roshan", "team": "" },
+      { "title": "Best Goalkeeper", "winner": "Pratik Gupta", "team": "Atlanta FC" },
+      { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "" },
+      { "title": "Emerging Player", "winner": "Rosswell", "team": "" },
+      { "title": "Best Manager", "winner": "Dony", "team": "Palmerios" },
+      { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" }
+    ]
   },
 
   "contact": {
