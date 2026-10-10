@@ -165,8 +165,8 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
 <section class="section" id="turf">
  <div class="container">
   <div class="feature reveal">
-   <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><div class="actions"><a class="btn gold" href="#contact">Enquire About Turf</a></div></div>
-   <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 Convenient location<br>📸 Event-ready environment</p></div>
+   <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><p class="sub" style="margin-top:8px">📍 <span id="turfLocation"></span> — <a id="turfMapsLink" href="#" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Get Directions →</a></p><div class="actions"><a class="btn gold" href="#contact">Enquire About Turf</a></div></div>
+   <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 <span id="turfLocation2"></span><br>📸 Event-ready environment</p></div>
   </div>
  </div>
 </section>
@@ -252,6 +252,12 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
 
     const teamFee = c.teamRegistration ? c.teamRegistration.fee : 11000;
     set('teamFeeTitle', '₹' + teamFee.toLocaleString('en-IN') + ' / team');
+
+    if (c.turf) {
+      set('turfLocation', c.turf.location);
+      set('turfLocation2', c.turf.location);
+      setHref('turfMapsLink', c.turf.mapsUrl);
+    }
 
     document.getElementById('offerBannerText').innerHTML =
       '🔥 ' + offer.label.toUpperCase() + ' REGISTRATION IS OPEN — <b>₹' + offer.price.toLocaleString('en-IN') + '/player</b>' +
