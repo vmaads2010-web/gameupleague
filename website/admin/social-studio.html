@@ -183,20 +183,77 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
     <div class="card">
       <h2>🎉 Festival / Special Day Post</h2>
       <div class="desc">Pick a known occasion, or type your own (e.g. "today is Diwali", "Season 2 countdown day").</div>
-      <label>Occasion</label>
+      <label>Occasion — full Indian calendar, January to December</label>
       <select id="festivalPreset">
-        <option value="">— Choose a festival, or type your own below —</option>
-        <option value="Diwali / Deepavali — festival of lights, diyas, rangoli">Diwali / Deepavali</option>
-        <option value="Holi — festival of colors, gulal powder">Holi</option>
-        <option value="Christmas — Santa hat, snowy festive scene">Christmas</option>
-        <option value="Eid — crescent moon, lanterns, warm festive tones">Eid</option>
-        <option value="Gandhi Jayanti — respectful tone, unity and sportsmanship, Indian tricolor accents">Gandhi Jayanti</option>
-        <option value="Independence Day (India) — tricolor flag, patriotic energy">Independence Day</option>
-        <option value="Republic Day (India) — tricolor flag, proud dynamic pose">Republic Day</option>
-        <option value="New Year — fireworks, confetti, fresh start energy">New Year</option>
+        <option value="">— Choose a festival/day, or type your own below —</option>
+        <optgroup label="January">
+          <option value="New Year's Day (1 Jan) — fireworks, confetti, fresh start energy">New Year's Day (1 Jan)</option>
+          <option value="Makar Sankranti / Pongal (~14 Jan) — kites, sugarcane, harvest colors">Makar Sankranti / Pongal (~14 Jan)</option>
+          <option value="Lohri (~13 Jan) — bonfire, Punjabi harvest festival warmth">Lohri (~13 Jan)</option>
+          <option value="Republic Day (26 Jan) — tricolor flag, proud dynamic pose, national holiday">Republic Day (26 Jan)</option>
+        </optgroup>
+        <optgroup label="February">
+          <option value="Vasant Panchami / Saraswati Puja (varies) — yellow theme, knowledge and arts">Vasant Panchami (varies)</option>
+          <option value="Maha Shivratri (varies) — devotional, night celebration, blue tones">Maha Shivratri (varies)</option>
+        </optgroup>
+        <optgroup label="March">
+          <option value="Holi — festival of colors, gulal powder, playful energy">Holi (varies)</option>
+          <option value="Good Friday / Easter (varies) — respectful, soft pastel spring tones">Good Friday / Easter (varies)</option>
+          <option value="Ugadi / Gudi Padwa (varies) — regional new year, festive doorway decorations">Ugadi / Gudi Padwa (varies)</option>
+        </optgroup>
+        <optgroup label="April">
+          <option value="Ram Navami (varies) — devotional, saffron and gold tones">Ram Navami (varies)</option>
+          <option value="Mahavir Jayanti (varies) — peaceful, white and gold tones">Mahavir Jayanti (varies)</option>
+          <option value="Baisakhi (~13 Apr) — Punjabi harvest festival, bhangra energy">Baisakhi (~13 Apr)</option>
+          <option value="Eid-ul-Fitr (varies) — crescent moon, lanterns, warm festive tones">Eid-ul-Fitr (varies)</option>
+          <option value="Ambedkar Jayanti (14 Apr) — respectful tone, national holiday">Ambedkar Jayanti (14 Apr)</option>
+        </optgroup>
+        <optgroup label="May">
+          <option value="Buddha Purnima (varies) — peaceful, soft light, lotus motifs">Buddha Purnima (varies)</option>
+          <option value="Mother's Day (2nd Sunday) — warm family tribute tones">Mother's Day (2nd Sunday)</option>
+        </optgroup>
+        <optgroup label="June">
+          <option value="Eid-ul-Adha / Bakrid (varies) — festive, warm tones">Eid-ul-Adha / Bakrid (varies)</option>
+          <option value="Father's Day (3rd Sunday) — warm family tribute tones">Father's Day (3rd Sunday)</option>
+          <option value="World Environment Day (5 Jun) — green, nature, sustainability theme">World Environment Day (5 Jun)</option>
+          <option value="Rath Yatra (varies) — chariot festival, vibrant colors">Rath Yatra (varies)</option>
+        </optgroup>
+        <optgroup label="July">
+          <option value="Muharram (varies) — solemn, respectful black and dark tones">Muharram (varies)</option>
+          <option value="Guru Purnima (varies) — devotional, warm tribute to teachers/mentors">Guru Purnima (varies)</option>
+        </optgroup>
+        <optgroup label="August">
+          <option value="Independence Day (15 Aug) — tricolor flag, patriotic energy, national holiday">Independence Day (15 Aug)</option>
+          <option value="Raksha Bandhan (varies) — rakhi thread, sibling bond warmth">Raksha Bandhan (varies)</option>
+          <option value="Janmashtami (varies) — Krishna theme, peacock feather, blue and gold">Janmashtami (varies)</option>
+          <option value="Friendship Day (1st Sunday) — bright, cheerful, bonding theme">Friendship Day (1st Sunday)</option>
+        </optgroup>
+        <optgroup label="September">
+          <option value="Ganesh Chaturthi (varies) — Ganesha theme, festive and auspicious">Ganesh Chaturthi (varies)</option>
+          <option value="Teacher's Day (5 Sep) — respectful tribute to mentors/coaches">Teacher's Day (5 Sep)</option>
+          <option value="Onam (varies) — Kerala harvest festival, pookalam flower colors">Onam (varies)</option>
+        </optgroup>
+        <optgroup label="October">
+          <option value="Gandhi Jayanti (2 Oct) — respectful tone, unity and sportsmanship, tricolor accents, national holiday">Gandhi Jayanti (2 Oct)</option>
+          <option value="Navratri / Durga Puja (varies) — nine-night festival, vibrant colors, goddess theme">Navratri / Durga Puja (varies)</option>
+          <option value="Dussehra / Vijayadashami (varies) — victory of good over evil, festive energy">Dussehra (varies)</option>
+          <option value="Karva Chauth (varies) — moonlit theme, marital devotion">Karva Chauth (varies)</option>
+        </optgroup>
+        <optgroup label="November">
+          <option value="Diwali / Deepavali (varies) — festival of lights, diyas, rangoli, fireworks">Diwali / Deepavali (varies)</option>
+          <option value="Bhai Dooj (varies) — sibling bond, warm festive tones">Bhai Dooj (varies)</option>
+          <option value="Chhath Puja (varies) — sunrise/sunset riverside devotional theme">Chhath Puja (varies)</option>
+          <option value="Children's Day (14 Nov) — playful, colorful, youthful energy">Children's Day (14 Nov)</option>
+          <option value="Guru Nanak Jayanti (varies) — peaceful, golden temple theme">Guru Nanak Jayanti (varies)</option>
+        </optgroup>
+        <optgroup label="December">
+          <option value="Milad-un-Nabi (varies) — green and gold festive tones, respectful">Milad-un-Nabi (varies)</option>
+          <option value="Christmas (25 Dec) — Santa hat, snowy festive scene">Christmas (25 Dec)</option>
+          <option value="New Year's Eve (31 Dec) — fireworks, countdown, celebratory energy">New Year's Eve (31 Dec)</option>
+        </optgroup>
       </select>
-      <label>Or describe it yourself</label>
-      <textarea id="festivalCustom" placeholder="e.g. today is Diwali, make a festive post with the mascot"></textarea>
+      <label>Or describe it yourself — any day, event, birthday, tribute etc.</label>
+      <textarea id="festivalCustom" placeholder="e.g. today is Diwali · Amitabh Bachchan's birthday special · in memory of [name] · Season 2 countdown day"></textarea>
       <button class="primaryBtn" id="genFestivalBtn" style="margin-top:18px;width:100%">✍️ Generate Prompt</button>
       <div id="festivalPromptOut" class="promptOut"></div>
       <div class="actionRow" id="festivalActions"></div>
