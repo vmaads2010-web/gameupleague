@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Registration — Game Up League</title>
+<meta name="description" content="Register your interest to play in Game Up League Season 2 — RE-LOADED.">
+<link rel="icon" href="assets/gul-logo.png">
+<style>
+:root{
+  --navy:#07152f; --blue:#1459c7; --gold:#f5b51b; --white:#f7f9ff; --muted:#a9b6cf;
+  --line:rgba(255,255,255,.11); --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+linear-gradient(180deg,#06132b 0%,#081a37 48%,#061126 100%);color:var(--white);line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}.container{width:min(640px,92%);margin:auto}
+.nav{position:sticky;top:0;z-index:50;background:rgba(5,16,36,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.navin{width:min(1160px,92%);margin:auto;height:78px;display:flex;align-items:center;gap:12px}
+.brand img{width:44px;height:50px;object-fit:contain}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900}
+.wrap{padding:50px 0 80px}
+.eyebrow{color:var(--gold);font-weight:900;letter-spacing:2px;font-size:12px;text-transform:uppercase}
+h1{font-size:clamp(28px,5vw,42px);margin:8px 0 10px;letter-spacing:-1px}
+.sub{color:var(--muted);margin:0 0 24px}
+.notice{background:rgba(245,181,27,.1);border:1px solid rgba(245,181,27,.35);border-radius:14px;padding:16px 18px;font-size:14px;color:#ffe6ab;margin-bottom:28px;line-height:1.6}
+.card{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.field{margin-bottom:16px}
+label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#cfd9ef}
+input,select{width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#07172f;color:#fff;font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+button{width:100%;margin-top:6px;padding:14px;border-radius:12px;border:0;background:var(--gold);color:#101c31;font-weight:800;font-size:15px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(245,181,27,.3)}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.status{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;display:none}
+.status.show{display:block}
+.status.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+.status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+.back{display:inline-block;margin-top:24px;color:var(--muted);font-size:13px}
+.back:hover{color:var(--gold)}
+</style>
+</head>
+<body>
+<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo.png" alt="Game Up League logo"><span>GAME UP LEAGUE</span></a></div></header>
+
+<div class="wrap">
+ <div class="container">
+  <div class="eyebrow">Season 2 — RE-LOADED</div>
+  <h1>Player Registration</h1>
+  <p class="sub">Reserve your spot for Season 2. This is a free registration of interest — no payment is collected here.</p>
+
+  <div class="notice">⚠️ <b>Pricing and final registration dates are still being confirmed by GUL leadership.</b> Registering now does not charge you anything and does not guarantee a spot — it puts your details on record so GUL can contact you directly once pricing, dates and payment instructions are finalized.</div>
+
+  <div class="card">
+   <form id="regForm">
+    <div class="field"><label>Full name *</label><input id="fullName" required></div>
+    <div class="row2">
+     <div class="field"><label>Mobile number *</label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
+     <div class="field"><label>Email</label><input id="email" type="email"></div>
+    </div>
+    <div class="row2">
+     <div class="field"><label>Date of birth</label><input id="dob" type="date"></div>
+     <div class="field"><label>City</label><input id="city"></div>
+    </div>
+    <div class="field">
+     <label>Preferred position</label>
+     <select id="position">
+      <option value="">Select (optional)</option>
+      <option>Forward</option>
+      <option>Midfielder</option>
+      <option>Defender</option>
+      <option>Goalkeeper</option>
+     </select>
+    </div>
+    <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
+    <button type="submit" id="submitBtn">Submit Registration</button>
+   </form>
+   <div id="status" class="status"></div>
+  </div>
+
+  <a class="back" href="index.html">← Back to website</a>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="admin/supabase-config.js"></script>
+<script>
+const statusEl = document.getElementById('status');
+function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
+
+function regCode() {
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return 'GUL-S2-PLY-' + Date.now().toString(36).toUpperCase() + rand;
+}
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
+  document.getElementById('submitBtn').disabled = true;
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+
+  document.getElementById('regForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    showStatus('ok', 'Submitting...');
+
+    const { data: season, error: seasonErr } = await client
+      .from('seasons').select('id').eq('name', 'Season 2 — RE-LOADED').maybeSingle();
+
+    if (seasonErr) {
+      showStatus('err', 'Could not reach the database: ' + seasonErr.message);
+      btn.disabled = false;
+      return;
+    }
+
+    const payload = {
+      registration_code: regCode(),
+      season_id: season ? season.id : null,
+      full_name: document.getElementById('fullName').value.trim(),
+      mobile: document.getElementById('mobile').value.trim(),
+      email: document.getElementById('email').value.trim() || null,
+      dob: document.getElementById('dob').value || null,
+      city: document.getElementById('city').value.trim() || null,
+      position: document.getElementById('position').value || null,
+      referral_code: document.getElementById('referral').value.trim() || null
+    };
+
+    const { data, error } = await client.from('player_registrations').insert(payload).select().single();
+
+    btn.disabled = false;
+    if (error) {
+      showStatus('err', 'Registration failed: ' + error.message);
+      return;
+    }
+
+    document.getElementById('regForm').style.display = 'none';
+    showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + data.registration_code +
+      '\n\nSave this code. GUL will contact you on ' + payload.mobile +
+      (payload.email ? ' or ' + payload.email : '') +
+      ' once pricing and payment details are finalized.\n\nThis does not confirm a spot or process any payment.');
+  });
+}
+</script>
+</body>
+</html>
