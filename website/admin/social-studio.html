@@ -133,10 +133,18 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
     <div class="note" style="color:#ffd4d1">Even with reference images, different people's sessions will still vary somewhat — that's how generative AI works. Always review before posting; reject/regenerate anything that looks off-brand. That review step is what actually guarantees consistency, not the AI alone.</div>
   </div>
 
+  <div class="howto" id="autoGenBox" style="background:rgba(20,89,199,.12);border-color:rgba(20,89,199,.35);color:#cfe0ff">
+    <b>⚡ Automatic generation (uses Vishal's small Google budget — capped at 10/day, ₹500/month):</b>
+    <div id="usageLine" class="note" style="color:#cfe0ff">Checking today's usage…</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button id="autoImgBtn" class="primaryBtn" style="padding:10px 16px">🎨 Auto-generate Image</button>
+      <button id="autoVidBtn" class="primaryBtn" style="padding:10px 16px;background:rgba(255,255,255,.12);color:#fff">🎬 Auto-generate Video (5s)</button>
+    </div>
+    <div id="autoGenResult" style="margin-top:14px;display:none"></div>
+  </div>
+
   <div class="howto">
-    <b>How this works:</b> This tool only writes the prompt text — no free service can fully automate photo-to-anime image generation. Click "Open in Gemini" (best option — it accepts photos + text together) or try ChatGPT/Bing. The prompt is copied to your clipboard automatically; paste it there along with the mascot/logo images above and the player's photo, then generate.
-    <div class="note">Why can't this button just generate the image automatically? Checked Google's own pricing page just now: the Gemini API (what a tool like this would need to call) charges per image (~₹2.5–₹12 depending on quality) even though using Gemini's website yourself is free — they're different products. If you ever want real one-click automation, it needs a small per-image budget; tell me and I'll build it properly with usage limits so costs stay predictable.</div>
-    <div class="note">Free-tier limits on the manual tools can change — if one runs out for the day, try another from the buttons above.</div>
+    <b>How this works (manual, free, unlimited):</b> Click "Open in Gemini" (best option — it accepts photos + text together) or try ChatGPT/Bing. The prompt is copied to your clipboard automatically; paste it there along with the mascot/logo images above and the player's photo, then generate. Free-tier limits on the manual tools can change — if one runs out for the day, try another from the buttons above.
   </div>
 
   <div class="footer">Game Up League — Social Studio · Free tool, no login required · Generates text prompts only</div>
@@ -220,6 +228,77 @@ document.getElementById('genFestivalBtn').addEventListener('click', () => {
   document.getElementById('festivalPromptOut').classList.add('show');
   renderActions('festivalActions', prompt);
 });
+
+// ---- Automatic generation (calls the Edge Function, enforces 10/day & ₹500/month) ----
+const DAILY_CAP = 10;
+function activePrompt() {
+  const playerTab = document.getElementById('tab-player').classList.contains('active');
+  const text = playerTab
+    ? document.getElementById('playerPromptOut').textContent
+    : document.getElementById('festivalPromptOut').textContent;
+  return text && text.trim() ? text : null;
+}
+
+async function refreshUsageLine() {
+  const el = document.getElementById('usageLine');
+  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+    el.textContent = 'Automatic generation not set up yet.';
+    return;
+  }
+  try {
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const resp = await fetch(
+      `${window.GUL_SUPABASE_URL}/rest/v1/generation_usage?select=id&created_at=gte.${startOfDay.toISOString()}`,
+      { headers: { apikey: window.GUL_SUPABASE_ANON_KEY, Authorization: 'Bearer ' + window.GUL_SUPABASE_ANON_KEY, Prefer: 'count=exact' } }
+    );
+    // generation_usage has no anon SELECT grant by design, so this will normally be blocked -
+    // show a generic cap reminder instead of a confusing error.
+    el.textContent = `Up to ${DAILY_CAP} generations/day allowed, shared across everyone using this tool.`;
+  } catch (e) {
+    el.textContent = `Up to ${DAILY_CAP} generations/day allowed, shared across everyone using this tool.`;
+  }
+}
+refreshUsageLine();
+
+async function runAutoGenerate(type, btn) {
+  const prompt = activePrompt();
+  if (!prompt) { alert('Click "Generate Prompt" first.'); return; }
+  if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+    alert('Automatic generation is not set up yet.'); return;
+  }
+  const resultBox = document.getElementById('autoGenResult');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = type === 'video' ? '⏳ Generating video (can take ~1-2 min)…' : '⏳ Generating image…';
+  resultBox.style.display = 'none';
+
+  try {
+    const resp = await fetch(`${window.GUL_SUPABASE_URL}/functions/v1/generate-media`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: window.GUL_SUPABASE_ANON_KEY,
+        Authorization: 'Bearer ' + window.GUL_SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ type, prompt }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) { alert('Could not generate: ' + (data.error || resp.statusText)); return; }
+
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = type === 'video'
+      ? `<video src="${data.url}" controls style="width:100%;border-radius:10px"></video><br><a class="dlBtn" style="margin-top:10px" href="${data.url}" download>⬇ Download Video</a>`
+      : `<img src="${data.url}" style="width:100%;border-radius:10px"><br><a class="dlBtn" style="margin-top:10px" href="${data.url}" download>⬇ Download Image</a>`;
+  } catch (e) {
+    alert('Generation failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+document.getElementById('autoImgBtn').addEventListener('click', (e) => runAutoGenerate('image', e.target));
+document.getElementById('autoVidBtn').addEventListener('click', (e) => runAutoGenerate('video', e.target));
 
 // Optional: load saved team references if the database is reachable.
 // This tool still works fully without this - references are a nice-to-have.
