@@ -12,7 +12,7 @@
   },
 
   "season2": {
-    "intro": "Confirmed details only. Registration pricing and some dates are still being finalized by GUL leadership and will appear here once confirmed.",
+    "intro": "Confirmed registration details below. Format details (playoff structure, auction venue) are still being finalized by GUL leadership.",
     "pillDates": "16 Jan – 13 Mar 2027",
     "pillMatchDays": "Match days: Saturdays",
     "pillAuction": "Player auction: 13 Dec 2026, 10 AM–2 PM (venue TBC)",
@@ -20,7 +20,15 @@
     "teamCountDesc": "Home-and-away league format. Full playoff/knockout structure to be confirmed.",
     "playersPerTeamTitle": "8 Players per Team",
     "playersPerTeamDesc": "Squad size for Season 2 RE-LOADED.",
-    "registrationNote": "Registration windows and fees are still being confirmed. Follow our Instagram or email us to be notified the moment registration opens."
+    "registrationWindow": "Registrations open 1 Nov – 2 Dec 2026"
+  },
+
+  "registration": {
+    "_instructions_activeOffer": "Change activeOffer to exactly one of: early_bird, referral, regular. This controls which price shows on the website and registration page right now - it does NOT switch automatically by date, so you control exactly when each phase goes live.",
+    "activeOffer": "early_bird",
+    "early_bird": { "label": "Early Bird", "price": 1500, "window": "1 – 7 Nov 2026", "note": "" },
+    "referral": { "label": "Referral", "price": 1500, "window": "8 – 14 Nov 2026", "note": "Minimum 3 players must register together to get this rate." },
+    "regular": { "label": "Regular", "price": 1800, "window": "From 15 Nov 2026", "note": "" }
   },
 
   "season1": {

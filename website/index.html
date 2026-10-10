@@ -117,11 +117,12 @@ h2{font-size:clamp(28px,4vw,44px);margin:7px 0 0;letter-spacing:-1.3px}
    <span class="pill" id="pillDates"></span>
    <span class="pill" id="pillMatchDays"></span>
    <span class="pill" id="pillAuction"></span>
+   <span class="pill" id="pillRegWindow"></span>
   </div>
   <div class="grid cards reveal-stagger" style="margin-top:10px">
    <article class="card r-item"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
    <article class="card r-item"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
-   <article class="card r-item"><span class="tag pending">Pending</span><h3>Registration & Pricing</h3><p id="registrationNote"></p><a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a></article>
+   <article class="card r-item"><span class="tag" id="offerTag">Open</span><h3 id="offerTitle"></h3><p id="offerNote"></p><a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a></article>
   </div>
  </div>
 </section>
@@ -209,7 +210,11 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     set('teamCountDesc', c.season2.teamCountDesc);
     set('playersPerTeamTitle', c.season2.playersPerTeamTitle);
     set('playersPerTeamDesc', c.season2.playersPerTeamDesc);
-    set('registrationNote', c.season2.registrationNote);
+    set('pillRegWindow', c.season2.registrationWindow);
+
+    const offer = c.registration[c.registration.activeOffer];
+    set('offerTitle', offer.label + ' — ₹' + offer.price.toLocaleString('en-IN') + '/player');
+    set('offerNote', (offer.window ? offer.window + '. ' : '') + (offer.note || ''));
 
     set('season1Note', c.season1.archiveNote);
 

@@ -40,6 +40,10 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
 .back{display:inline-block;margin-top:24px;color:var(--muted);font-size:13px}
 .back:hover{color:var(--gold)}
+.offerBox{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(135deg,#0d2d63,#0b1935);border:1px solid rgba(245,181,27,.35);border-radius:16px;padding:18px 20px;margin-bottom:22px;flex-wrap:wrap}
+.offerBox .label{font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)}
+.offerBox .price{font-size:26px;font-weight:900;margin-top:4px}
+.offerBox .window{color:var(--muted);font-size:13px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -49,9 +53,15 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
  <div class="container">
   <div class="eyebrow">Season 2 — RE-LOADED</div>
   <h1>Player Registration</h1>
-  <p class="sub">Reserve your spot for Season 2. This is a free registration of interest — no payment is collected here.</p>
+  <p class="sub">Reserve your spot for Season 2 — RE-LOADED.</p>
 
-  <div class="notice">⚠️ <b>Pricing and final registration dates are still being confirmed by GUL leadership.</b> Registering now does not charge you anything and does not guarantee a spot — it puts your details on record so GUL can contact you directly once pricing, dates and payment instructions are finalized.</div>
+  <div class="offerBox">
+   <div><div class="label" id="offerLabel">Loading offer…</div><div class="window" id="offerWindow"></div></div>
+   <div class="price" id="offerPrice"></div>
+  </div>
+  <p class="sub" id="offerExtraNote" style="margin-top:-14px"></p>
+
+  <div class="notice">⚠️ <b>Online payment is not connected yet.</b> Submitting this form reserves your spot at today's listed price and creates your record with GUL — it does not charge you anything here. GUL will contact you directly with payment instructions.</div>
 
   <div class="card">
    <form id="regForm">
@@ -95,6 +105,21 @@ function regCode() {
   return 'GUL-S2-PLY-' + Date.now().toString(36).toUpperCase() + rand;
 }
 
+let currentOffer = null;
+
+fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
+  .then(r => r.json())
+  .then(c => {
+    currentOffer = c.registration[c.registration.activeOffer];
+    document.getElementById('offerLabel').textContent = currentOffer.label + ' Registration';
+    document.getElementById('offerWindow').textContent = currentOffer.window || '';
+    document.getElementById('offerPrice').textContent = '₹' + currentOffer.price.toLocaleString('en-IN') + ' / player';
+    document.getElementById('offerExtraNote').textContent = currentOffer.note || '';
+  })
+  .catch(() => {
+    document.getElementById('offerLabel').textContent = 'Could not load current pricing';
+  });
+
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
   document.getElementById('submitBtn').disabled = true;
@@ -125,7 +150,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       dob: document.getElementById('dob').value || null,
       city: document.getElementById('city').value.trim() || null,
       position: document.getElementById('position').value || null,
-      referral_code: document.getElementById('referral').value.trim() || null
+      referral_code: document.getElementById('referral').value.trim() || null,
+      offer_applied: currentOffer ? currentOffer.label : null,
+      quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null
     };
 
     const { data, error } = await client.from('player_registrations').insert(payload).select().single();
@@ -138,9 +165,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     document.getElementById('regForm').style.display = 'none';
     showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + data.registration_code +
+      (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
       '\n\nSave this code. GUL will contact you on ' + payload.mobile +
       (payload.email ? ' or ' + payload.email : '') +
-      ' once pricing and payment details are finalized.\n\nThis does not confirm a spot or process any payment.');
+      ' with payment instructions.\n\nThis does not confirm a spot or process any payment yet.');
   });
 }
 </script>
