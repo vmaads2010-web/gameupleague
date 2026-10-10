@@ -187,7 +187,7 @@ if ('IntersectionObserver' in window) {
   document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => el.classList.add('in'));
 }
 
-fetch('content.json')
+fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
   .then(r => r.json())
   .then(c => {
     const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
