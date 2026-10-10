@@ -33,14 +33,14 @@
   const btn = document.createElement('button');
   btn.className = 'wolfBtn';
   btn.setAttribute('aria-label', 'Open GUL assistant');
-  btn.innerHTML = `<img src="${assetsBase}assets/gul-mascot.png" alt="">`;
+  btn.innerHTML = `<img src="${assetsBase}assets/gul-mascot-avatar.png" alt="">`;
   document.body.appendChild(btn);
 
   const panel = document.createElement('div');
   panel.className = 'wolfPanel';
   panel.innerHTML = `
     <div class="wolfHead">
-      <img src="${assetsBase}assets/gul-mascot.png" alt="">
+      <img src="${assetsBase}assets/gul-mascot-avatar.png" alt="">
       <div><b>GUL Assistant</b><span>Quick answers · not live chat</span></div>
       <button class="wolfClose" aria-label="Close">×</button>
     </div>
