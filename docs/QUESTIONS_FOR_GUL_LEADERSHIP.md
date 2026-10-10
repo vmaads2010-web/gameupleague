@@ -4,6 +4,7 @@ Prepared 9 October 2026, updated 10 October 2026. These decisions are currently 
 ## ✅ Confirmed (resolved, no longer open)
 - **YouTube channel**: https://www.youtube.com/@gameupleague — confirmed by Vishal in chat, 10 Oct 2026. Website updated.
 - **Instagram**: confirmed as https://www.instagram.com/thegameupleague/ (handle `@thegameupleague`) by Vishal in chat, 10 Oct 2026. **Note:** this is a different handle than `gameup.league`, which is what the original knowledge pack documented — flagging in case `gameup.league` is also a real, separate GUL-affiliated account that should be linked too.
+- **Team count**: confirmed as **9 teams** by Vishal in chat, 10 Oct 2026 (the earlier "10 Teams" on the live site was a test edit, reverted). The 9-vs-top4/bottom4 playoff math question below is still open.
 
 ## Registration pricing & dates
 1. Player registration window: **1 Nov – 2 Dec 2026** (Sept 2026 announcement) or **ends 30 Nov 2026** (Aug 2025 minutes)?
@@ -12,7 +13,7 @@ Prepared 9 October 2026, updated 10 October 2026. These decisions are currently 
 4. Team entry fee: **₹10,000 existing / ₹12,000 new**, or **₹11,000 regular with a possible ₹1,500 discount** (and if so, who qualifies)?
 
 ## Season 2 format
-5. With **9 teams**, the "top 4 Champions playoff + bottom 4 knockout" format only covers 8 teams. How is the 9th team handled (bye, play-in match, different group size)? **Note:** the website briefly showed "10 Teams" after a direct edit on 9/10 Oct 2026 — unclear if that's a real confirmed change or a test edit. Please confirm the actual team count explicitly.
+5. With **9 teams** (confirmed), the "top 4 Champions playoff + bottom 4 knockout" format only covers 8 teams. How is the 9th team handled (bye, play-in match, different group size)?
 6. Auction venue — is **"Phaka Fast"** confirmed, or still pending?
 7. Exhibition match: is it fully free for players, and are there any other details to confirm?
 8. Women's exhibition (4 teams, 3 matches, min. 24 players, knockout 5+3) — confirm this is actually happening, or drop it from planning for now?
