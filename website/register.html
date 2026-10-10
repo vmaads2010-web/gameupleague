@@ -155,7 +155,11 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null
     };
 
-    const { data, error } = await client.from('player_registrations').insert(payload).select().single();
+    // No .select() here on purpose: the public can INSERT a registration but
+    // cannot READ registrations back (that's admin-only, by design, for privacy).
+    // We already have the registration_code client-side from payload, so there's
+    // nothing to read back anyway.
+    const { error } = await client.from('player_registrations').insert(payload);
 
     btn.disabled = false;
     if (error) {
@@ -164,7 +168,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     }
 
     document.getElementById('regForm').style.display = 'none';
-    showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + data.registration_code +
+    showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + payload.registration_code +
       (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
       '\n\nSave this code. GUL will contact you on ' + payload.mobile +
       (payload.email ? ' or ' + payload.email : '') +
