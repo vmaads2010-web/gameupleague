@@ -173,9 +173,11 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
         <option value="matchday">Matchday Hype</option>
       </select>
       <div id="awardFieldWrap" style="display:none"><label>Award name</label><input id="awardName" placeholder="e.g. Best Player of the Match"></div>
-      <button class="primaryBtn" id="genPlayerBtn" style="margin-top:20px;width:100%">✍️ Generate Prompt</button>
-      <div id="playerPromptOut" class="promptOut"></div>
-      <div class="actionRow" id="playerActions"></div>
+      <div class="genGrid" style="margin-top:20px">
+        <button id="playerImgBtn" class="genBtn img">🎨 Generate Image</button>
+        <button id="playerVidBtn" class="genBtn vid">🎬 Generate Video (5s)</button>
+      </div>
+      <div id="playerResult" class="resultCard"></div>
     </div>
   </div>
 
@@ -254,39 +256,18 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
       </select>
       <label>Or describe it yourself — any day, event, birthday, tribute etc.</label>
       <textarea id="festivalCustom" placeholder="e.g. today is Diwali · Amitabh Bachchan's birthday special · in memory of [name] · Season 2 countdown day"></textarea>
-      <button class="primaryBtn" id="genFestivalBtn" style="margin-top:18px;width:100%">✍️ Generate Prompt</button>
-      <div id="festivalPromptOut" class="promptOut"></div>
-      <div class="actionRow" id="festivalActions"></div>
-      <div class="howto neutral" style="margin-top:16px;padding:12px 16px"><span class="note" style="margin:0">⚠️ Lunar-calendar festivals (Diwali, Holi, Eid) move every year — double check the actual date before posting.</span></div>
+      <div class="howto neutral" style="margin-top:14px;padding:12px 16px"><span class="note" style="margin:0">⚠️ Lunar-calendar festivals (Diwali, Holi, Eid) move every year — double check the actual date before posting.</span></div>
+      <div class="genGrid" style="margin-top:14px">
+        <button id="festivalImgBtn" class="genBtn img">🎨 Generate Image</button>
+        <button id="festivalVidBtn" class="genBtn vid">🎬 Generate Video (5s)</button>
+      </div>
+      <div id="festivalResult" class="resultCard"></div>
     </div>
   </div>
 
-  <div class="sectionLabel">Keep every output on-brand</div>
-  <div class="howto warn">
-    <b>⚠️ Do this every single time, or results will look random</b>
-    Gemini/ChatGPT don't know what the Game Up League mascot or logo actually look like from text alone. Always attach these two real reference images along with the prompt and the player's photo — this is what keeps every output visually consistent instead of random.
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-      <a href="../assets/gul-mascot.png" download class="dlBtn">⬇ Download Mascot</a>
-      <a href="../assets/gul-logo.png" download class="dlBtn">⬇ Download Logo</a>
-    </div>
-    <div class="note">Even with reference images, different people's sessions will still vary somewhat — that's how generative AI works. Always review before posting; reject/regenerate anything that looks off-brand.</div>
-  </div>
-
-  <div class="sectionLabel">Automatic generation</div>
-  <div class="howto info" id="autoGenBox">
-    <b>⚡ Generate the actual image/video right here</b>
-    <div id="usageLine" class="note" style="margin:0 0 4px">Checking status…</div>
-    <div class="genGrid" style="margin-top:14px">
-      <button id="autoImgBtn" class="genBtn img">🎨 Auto-generate Image</button>
-      <button id="autoVidBtn" class="genBtn vid">🎬 Auto-generate Video (5s)</button>
-    </div>
-    <div id="autoGenResult" class="resultCard"></div>
-  </div>
-
-  <div class="sectionLabel">Manual, free &amp; unlimited</div>
-  <div class="howto neutral">
-    <b>How this works</b>
-    Click "Open in Gemini" (best option — it accepts photos + text together) or try ChatGPT/Bing. The prompt is copied to your clipboard automatically; paste it there along with the mascot/logo images above and the player's photo, then generate. Free-tier limits on the manual tools can change — if one runs out for the day, try another from the buttons above.
+  <div class="howto info" id="statusNote" style="margin-top:18px">
+    <b>⚡ Every post uses the same fixed logo + footer, automatically</b>
+    <div id="usageLine" class="note" style="margin:0">Checking status…</div>
   </div>
 
   <div class="footer">Game Up League — Social Studio · Free tool, no login required</div>
@@ -315,74 +296,47 @@ document.querySelectorAll('.tabBtn').forEach(btn => {
   });
 });
 
-const AI_TOOLS = [
-  { name: 'Gemini (Recommended)', url: 'https://gemini.google.com', cls: 'aiBtn' },
-  { name: 'ChatGPT', url: 'https://chat.openai.com', cls: '' },
-  { name: 'Bing Image Creator', url: 'https://www.bing.com/images/create', cls: '' }
-];
-
-function renderActions(containerId, promptText) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = `<button id="${containerId}-copy">📋 Copy Prompt</button>` +
-    AI_TOOLS.map((t, i) => `<button class="${t.cls}" data-ai="${i}" data-container="${containerId}">Open in ${t.name} →</button>`).join('');
-  el.classList.add('show');
-
-  document.getElementById(containerId + '-copy').onclick = (e) => {
-    navigator.clipboard.writeText(promptText);
-    e.target.textContent = '✓ Copied';
-    toast('Prompt copied to clipboard', 'ok');
-    setTimeout(() => { e.target.textContent = '📋 Copy Prompt'; }, 1500);
-  };
-  el.querySelectorAll('[data-ai]').forEach(btn => {
-    btn.onclick = () => {
-      navigator.clipboard.writeText(promptText);
-      window.open(AI_TOOLS[btn.dataset.ai].url, '_blank');
-    };
-  });
-}
-
-const basePrompt = (team, colors) => `Vertical Instagram poster, 4:5 portrait aspect ratio. Anime art style, consistent with the Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. The top-left corner and the very bottom strip of the image must be left as plain, uncluttered background (sky, stadium blur, etc.) - no text, no logo, no badges there - those areas will be added separately afterwards.`;
+const basePrompt = (team, colors) => `Vertical Instagram poster, 4:5 portrait aspect ratio. Anime art style, consistent with the Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background (sky, stadium blur, etc.) - no text, no logos, no badges there - those areas are added separately afterwards.`;
 
 document.getElementById('occasion').addEventListener('change', (e) => {
   document.getElementById('awardFieldWrap').style.display = e.target.value === 'award' ? 'block' : 'none';
 });
 
-document.getElementById('genPlayerBtn').addEventListener('click', () => {
+function buildPlayerPrompt() {
   const player = document.getElementById('playerName').value.trim();
   const team = document.getElementById('teamName').value.trim();
   const position = document.getElementById('playerPosition').value.trim();
   const colors = document.getElementById('teamColors').value.trim();
   const occasion = document.getElementById('occasion').value;
   const award = document.getElementById('awardName').value.trim();
-
-  if (!player || !team) { toast('Please enter at least player name and team name.', 'err'); return; }
+  if (!player || !team) { toast('Please enter at least player name and team name.', 'err'); return null; }
 
   let occasionLine = '';
   if (occasion === 'player_reveal') occasionLine = `This is a player reveal / registration announcement image for ${player}${position ? ', playing as ' + position : ''}.`;
   else if (occasion === 'award') occasionLine = `This celebrates ${player} winning "${award || 'an award'}" for ${team}. Include a subtle trophy or medal element.`;
   else occasionLine = `This is a matchday hype image for ${player} ahead of a Game Up League match.`;
 
-  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nPlayer name to reflect in the mood/energy (do not write text on the image unless asked, since a text headline is added separately): ${player}.`;
+  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nDo not write any text on the image - a name banner is added separately afterwards.`;
+  return { prompt, headline: player, subline: team };
+}
 
-  document.getElementById('playerPromptOut').textContent = prompt;
-  document.getElementById('playerPromptOut').classList.add('show');
-  renderActions('playerActions', prompt);
-  document.getElementById('autoGenBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-});
+// Short clean name for the headline banner, derived from a preset's label
+// (text before the first " (") or from whatever the custom box has typed.
+function cleanFestivalName(raw) {
+  return raw.split(' (')[0].split(' —')[0].trim();
+}
 
-document.getElementById('genFestivalBtn').addEventListener('click', () => {
+function buildFestivalPrompt() {
   const preset = document.getElementById('festivalPreset').value;
+  const presetLabel = document.getElementById('festivalPreset').selectedOptions[0]?.textContent || '';
   const custom = document.getElementById('festivalCustom').value.trim();
   const occasionDesc = custom || preset;
+  if (!occasionDesc) { toast('Pick a festival or describe the occasion first.', 'err'); return null; }
 
-  if (!occasionDesc) { toast('Pick a festival or describe the occasion first.', 'err'); return; }
-
-  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\nVertical Instagram poster, 4:5 portrait aspect ratio. Anime/premium 3D-toon art style, Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports look, Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football, surrounded by elements of the occasion. High quality, vibrant lighting. The top-left corner and the very bottom strip of the image must be left as plain, uncluttered background - no text, no logo, no badges there - those areas will be added separately afterwards.`;
-
-  document.getElementById('festivalPromptOut').textContent = prompt;
-  document.getElementById('festivalPromptOut').classList.add('show');
-  renderActions('festivalActions', prompt);
-});
+  const prompt = `[Reference images attached: Game Up League official mascot and logo - match their exact design, colors and style]\n\nVertical Instagram poster, 4:5 portrait aspect ratio. Anime/premium 3D-toon art style, Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports look, Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football, surrounded by elements of the occasion. High quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background - no text, no logos, no badges there - those areas are added separately afterwards.`;
+  const headline = 'HAPPY ' + cleanFestivalName(custom ? custom : presetLabel).toUpperCase();
+  return { prompt, headline, subline: '' };
+}
 
 // ---- Automatic generation ----
 const DAILY_CAP = 10;
@@ -393,18 +347,10 @@ function setStatus(live, text) {
   chip.classList.toggle('live', live);
   document.getElementById('statusChipText').textContent = text;
 }
-setStatus(configured, configured ? 'Auto-generation live' : 'Manual mode only');
+setStatus(configured, configured ? 'Generation live' : 'Not set up yet');
 document.getElementById('usageLine').textContent = configured
-  ? `Shared budget across everyone using this tool: up to ${DAILY_CAP} generations/day, capped monthly.`
-  : 'Automatic generation is not set up yet — use the manual option below.';
-
-function activePrompt() {
-  const playerTab = document.getElementById('tab-player').classList.contains('active');
-  const text = playerTab
-    ? document.getElementById('playerPromptOut').textContent
-    : document.getElementById('festivalPromptOut').textContent;
-  return text && text.trim() ? text : null;
-}
+  ? `Shared budget across everyone using this tool: up to ${DAILY_CAP} generations/day, capped monthly. Logo + footer are added automatically to every image.`
+  : 'Automatic generation is not set up yet.';
 
 // ---- Fixed brand overlay: official logo + standard footer bar, never touched by AI ----
 const BRAND = {
@@ -445,7 +391,48 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-async function applyBrandOverlay(aiImageUrl) {
+function drawHeadline(ctx, canvas, logoBottomY, headline, subline) {
+  if (!headline) return;
+  const padX = canvas.width * 0.06;
+  const maxW = canvas.width - padX * 2;
+  let fontSize = canvas.width * 0.082;
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'center';
+  function fits(size) {
+    ctx.font = `800 ${size}px Manrope, Inter, Arial, sans-serif`;
+    return ctx.measureText(headline).width <= maxW;
+  }
+  while (fontSize > canvas.width * 0.035 && !fits(fontSize)) fontSize *= 0.93;
+  ctx.font = `800 ${fontSize}px Manrope, Inter, Arial, sans-serif`;
+
+  const topY = Math.max(logoBottomY + fontSize * 0.9, canvas.height * 0.14);
+  const cx = canvas.width / 2;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.55)';
+  ctx.shadowBlur = fontSize * 0.18;
+  ctx.shadowOffsetY = fontSize * 0.04;
+  ctx.lineWidth = fontSize * 0.09;
+  ctx.strokeStyle = 'rgba(6,14,32,.85)';
+  ctx.strokeText(headline, cx, topY);
+  ctx.fillStyle = '#f5b51b';
+  ctx.fillText(headline, cx, topY);
+  ctx.restore();
+
+  if (subline) {
+    const subSize = fontSize * 0.34;
+    ctx.font = `700 ${subSize}px Inter, Arial, sans-serif`;
+    const subY = topY + subSize * 1.5;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.6)';
+    ctx.shadowBlur = subSize * 0.3;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(subline.toUpperCase(), cx, subY);
+    ctx.restore();
+  }
+}
+
+async function applyBrandOverlay(aiImageUrl, headline, subline) {
   const [aiImg, logoImg] = await Promise.all([
     loadImage(aiImageUrl, true),
     loadImage('../assets/gul-logo.png'),
@@ -467,6 +454,10 @@ async function applyBrandOverlay(aiImageUrl) {
   ctx.drawImage(logoImg, margin, margin, logoW, logoH);
   ctx.restore();
 
+  // Fixed headline banner (e.g. "HAPPY ONAM!" or the player's name) - canvas
+  // text, not AI-drawn, so spelling/style never varies.
+  drawHeadline(ctx, canvas, margin + logoH, headline, subline);
+
   // Fixed footer bar, bottom - same text/layout on every single post.
   const barH = canvas.height * 0.052;
   const barMargin = canvas.width * 0.03;
@@ -477,19 +468,21 @@ async function applyBrandOverlay(aiImageUrl) {
   ctx.fill();
 
   const items = [
-    { icon: '▶', color: '#ff3b30', text: BRAND.youtube },
-    { icon: '📷', color: '#e1306c', text: BRAND.instagram },
-    { icon: '📍', color: '#f5b51b', text: BRAND.location },
-    { icon: '✉', color: '#4fa3ff', text: BRAND.email },
+    { draw: drawPlayIcon, color: '#ff3b30', text: BRAND.youtube },
+    { draw: drawCameraIcon, color: '#e1306c', text: BRAND.instagram },
+    { draw: drawPinIcon, color: '#f5b51b', text: BRAND.location },
+    { draw: drawEnvelopeIcon, color: '#4fa3ff', text: BRAND.email },
   ];
   ctx.textBaseline = 'middle';
   const usableW = barW * 0.92;
-  let fontSize = barH * 0.32;
-  let gap = barW * 0.03;
+  let fontSize = barH * 0.3;
+  let gap = barW * 0.028;
+  let iconBox = fontSize * 1.3;
   let widths, totalContentW;
   for (let i = 0; i < 12; i++) {
     ctx.font = `600 ${fontSize}px Inter, Arial, sans-serif`;
-    widths = items.map(it => ctx.measureText(it.icon + '  ' + it.text).width);
+    iconBox = fontSize * 1.3;
+    widths = items.map(it => iconBox + ctx.measureText(it.text).width);
     totalContentW = widths.reduce((a, b) => a + b, 0) + gap * (items.length - 1);
     if (totalContentW <= usableW) break;
     fontSize *= 0.92;
@@ -498,13 +491,11 @@ async function applyBrandOverlay(aiImageUrl) {
   let cursorX = barMargin + (barW - totalContentW) / 2;
   const midY = barY + barH / 2;
   items.forEach((it, i) => {
-    ctx.fillStyle = it.color;
-    ctx.font = `${fontSize}px Arial, sans-serif`;
-    ctx.fillText(it.icon, cursorX, midY);
-    const iconW = ctx.measureText(it.icon + '  ').width;
+    it.draw(ctx, cursorX + iconBox / 2, midY, fontSize * 0.62, it.color);
     ctx.fillStyle = '#ffffff';
     ctx.font = `600 ${fontSize}px Inter, Arial, sans-serif`;
-    ctx.fillText(it.text, cursorX + iconW, midY);
+    ctx.textAlign = 'left';
+    ctx.fillText(it.text, cursorX + iconBox, midY);
     cursorX += widths[i] + gap;
     if (i < items.length - 1) {
       ctx.strokeStyle = 'rgba(255,255,255,.25)';
@@ -519,12 +510,63 @@ async function applyBrandOverlay(aiImageUrl) {
   return canvas.toDataURL('image/png');
 }
 
-async function runAutoGenerate(type, btn) {
-  const prompt = activePrompt();
-  if (!prompt) { toast('Click "Generate Prompt" first.', 'err'); return; }
-  if (!configured) { toast('Automatic generation is not set up yet.', 'err'); return; }
+// Hand-drawn vector icons - these never depend on emoji font support (which
+// varies wildly across phones/browsers), so they render identically everywhere.
+function drawPlayIcon(ctx, cx, cy, r, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  const s = r * 0.55;
+  ctx.beginPath();
+  ctx.moveTo(cx - s * 0.4, cy - s * 0.65);
+  ctx.lineTo(cx - s * 0.4, cy + s * 0.65);
+  ctx.lineTo(cx + s * 0.75, cy);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function drawCameraIcon(ctx, cx, cy, r, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = Math.max(1.5, r * 0.18);
+  roundRect(ctx, cx - r, cy - r * 0.78, r * 2, r * 1.56, r * 0.45);
+  ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, r * 0.42, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(cx + r * 0.62, cy - r * 0.5, r * 0.12, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawPinIcon(ctx, cx, cy, r, color) {
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(cx, cy - r * 0.15, r * 0.72, Math.PI * 0.15, Math.PI * 0.85, true);
+  ctx.lineTo(cx, cy + r * 0.85);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#0b1f3f';
+  ctx.beginPath(); ctx.arc(cx, cy - r * 0.2, r * 0.28, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+function drawEnvelopeIcon(ctx, cx, cy, r, color) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = Math.max(1.5, r * 0.16);
+  ctx.lineJoin = 'round';
+  roundRect(ctx, cx - r, cy - r * 0.68, r * 2, r * 1.36, r * 0.2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - r * 0.9, cy - r * 0.5);
+  ctx.lineTo(cx, cy + r * 0.12);
+  ctx.lineTo(cx + r * 0.9, cy - r * 0.5);
+  ctx.stroke();
+  ctx.restore();
+}
 
-  const resultBox = document.getElementById('autoGenResult');
+async function runGenerate(type, btn, resultBoxId, buildFn) {
+  if (!configured) { toast('Automatic generation is not set up yet.', 'err'); return; }
+  const built = buildFn();
+  if (!built) return;
+  const { prompt, headline, subline } = built;
+
+  const resultBox = document.getElementById(resultBoxId);
   const originalHTML = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner"></span> ${type === 'video' ? 'Generating video (~1-2 min)…' : 'Generating image…'}`;
@@ -557,8 +599,8 @@ async function runAutoGenerate(type, btn) {
       resultBox.innerHTML = `<video src="${data.url}" controls></video>` +
         `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${data.url}" download>⬇ Download</a></div>`;
     } else {
-      btn.innerHTML = `<span class="spinner"></span> Applying official logo + footer…`;
-      const finalDataUrl = await applyBrandOverlay(data.url);
+      btn.innerHTML = `<span class="spinner"></span> Applying logo, headline + footer…`;
+      const finalDataUrl = await applyBrandOverlay(data.url, headline, subline);
       resultBox.innerHTML = `<img src="${finalDataUrl}" alt="Generated result">` +
         `<div class="resultFoot"><span class="costTag">Cost: ₹${costRupees}</span><a class="dlBtn" href="${finalDataUrl}" download="gul-post-${Date.now()}.png">⬇ Download</a></div>`;
     }
@@ -572,8 +614,10 @@ async function runAutoGenerate(type, btn) {
   }
 }
 
-document.getElementById('autoImgBtn').addEventListener('click', (e) => runAutoGenerate('image', e.currentTarget));
-document.getElementById('autoVidBtn').addEventListener('click', (e) => runAutoGenerate('video', e.currentTarget));
+document.getElementById('playerImgBtn').addEventListener('click', (e) => runGenerate('image', e.currentTarget, 'playerResult', buildPlayerPrompt));
+document.getElementById('playerVidBtn').addEventListener('click', (e) => runGenerate('video', e.currentTarget, 'playerResult', buildPlayerPrompt));
+document.getElementById('festivalImgBtn').addEventListener('click', (e) => runGenerate('image', e.currentTarget, 'festivalResult', buildFestivalPrompt));
+document.getElementById('festivalVidBtn').addEventListener('click', (e) => runGenerate('video', e.currentTarget, 'festivalResult', buildFestivalPrompt));
 
 // Optional: load saved team references if the database is reachable.
 // This tool still works fully without this - references are a nice-to-have.
