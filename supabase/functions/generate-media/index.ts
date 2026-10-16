@@ -15,9 +15,9 @@ const MAX_MONTH_PAISE = 50000; // ₹500
 // Real Google per-image cost (1K resolution Nano Banana 2.1), in paise.
 const IMAGE_COST_PAISE = 280;
 // Veo 3.1 Lite, per second, in paise (~₹4.2/sec) - video length is capped
-// at 5 seconds below to keep a single generation affordable and predictable.
+// at 6 seconds below to keep a single generation affordable and predictable.
 const VIDEO_COST_PER_SEC_PAISE = 420;
-const VIDEO_MAX_SECONDS = 5;
+const VIDEO_MAX_SECONDS = 6;
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
