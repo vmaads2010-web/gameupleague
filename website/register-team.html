@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Team Owner Registration — Game Up League</title>
-<meta name="description" content="Register your team for Game Up League Season 2 — RE-LOADED.">
+<meta name="description" content="Register your team for Game Up League RELOADED.">
 <link rel="icon" href="assets/gul-logo.png">
 <style>
 :root{
@@ -62,9 +62,9 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
 <div class="wrap">
  <div class="container">
-  <div class="eyebrow">Season 2 — RE-LOADED</div>
+  <div class="eyebrow">RELOADED</div>
   <h1>Team Owner Registration</h1>
-  <p class="sub">Register your team for Season 2. Final squad, auction/draft allocation and league rules are handled separately by GUL after registration.</p>
+  <p class="sub">Register your team for Game Up League RELOADED. Final squad, auction/draft allocation and league rules are handled separately by GUL after registration.</p>
 
   <div class="feeBox">
    <div><div class="label">Team Entry Fee</div></div>
@@ -135,7 +135,7 @@ function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; sta
 
 function regCode() {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return 'GUL-S2-TEAM-' + Date.now().toString(36).toUpperCase() + rand;
+  return 'GUL-TEAM-' + Date.now().toString(36).toUpperCase() + rand;
 }
 
 function compressImage(file, maxDim = 500, quality = 0.7) {
@@ -223,7 +223,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     showStatus('ok', 'Submitting...');
 
     const { data: season, error: seasonErr } = await client
-      .from('seasons').select('id').eq('name', 'Season 2 — RE-LOADED').maybeSingle();
+      .from('seasons').select('id').order('created_at', { ascending: false }).limit(1).maybeSingle();
     if (seasonErr) {
       showStatus('err', 'Could not reach the database: ' + seasonErr.message);
       btn.disabled = false;

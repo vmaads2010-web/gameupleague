@@ -95,9 +95,9 @@
         addMsg('bot', `Right now it's <b>${offer.label}</b> pricing:\n₹${offer.price.toLocaleString('en-IN')} per player${offer.window ? ' (' + offer.window + ')' : ''}.\n\nTeam entry is ₹${teamFee}.`);
         showMainMenu();
       }],
-      ['📅 When does Season 2 start?', async () => {
+      ['📅 When does RELOADED start?', async () => {
         const c = await getContent();
-        addMsg('bot', c ? `Season 2 — RE-LOADED runs ${c.season2.pillDates}, every Saturday.\n\n${c.season2.registrationWindow || ''}` : 'Season 2 — RE-LOADED: 16 Jan – 13 Mar 2027, every Saturday.');
+        addMsg('bot', c ? `RELOADED runs ${c.season2.pillDates}, every Saturday.\n\n${c.season2.registrationWindow || ''}` : 'RELOADED: 16 Jan – 13 Mar 2027, every Saturday.');
         showMainMenu();
       }],
       ['📝 How do I register?', () => {

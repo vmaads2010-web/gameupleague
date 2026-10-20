@@ -80,7 +80,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
     <div class="stats" id="stats"></div>
 
     <div class="refreshRow">
-      <h2 style="margin:0;font-size:18px">Player Registrations — Season 2</h2>
+      <h2 style="margin:0;font-size:18px">Player Registrations</h2>
       <button class="secondaryBtn" id="refreshBtn">↻ Refresh</button>
     </div>
 
@@ -90,7 +90,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <table>
         <thead><tr>
           <th>Code</th><th>Name</th><th>Mobile</th><th>Email</th><th>Position</th>
-          <th>Jersey/Shorts</th><th>Emergency Contact</th>
+          <th>Jersey/Shorts</th><th>Instagram</th><th>Emergency Contact</th>
           <th>Offer</th><th>Quoted Fee</th><th>Photo</th><th>Registered</th>
           <th>Status</th><th>Payment</th><th>Actions</th>
         </tr></thead>
@@ -100,7 +100,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
     </div>
 
     <div class="refreshRow" style="margin-top:34px">
-      <h2 style="margin:0;font-size:18px">Team Registrations — Season 2</h2>
+      <h2 style="margin:0;font-size:18px">Team Registrations</h2>
     </div>
     <div class="tableWrap">
       <table>
@@ -327,6 +327,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td class="wrap-cell">${esc(r.email || '—')}</td>
         <td>${esc(r.position || '—')}</td>
         <td class="wrap-cell">${esc(r.jersey_size || '—')} / ${esc(r.shorts_size || '—')}</td>
+        <td class="wrap-cell">${esc(r.player_insta_id || '—')}</td>
         <td class="wrap-cell">${esc(r.emergency_contact_name || '—')}${r.emergency_contact_number ? ' · ' + esc(r.emergency_contact_number) : ''}${r.emergency_contact_relationship ? ' (' + esc(r.emergency_contact_relationship) + ')' : ''}</td>
         <td>${esc(r.offer_applied || '—')}</td>
         <td>${money(r.quoted_fee_paise)}</td>
