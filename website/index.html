@@ -152,9 +152,11 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 h2{font-family:'Anton',Inter,sans-serif;font-weight:400;font-size:clamp(26px,4vw,42px);margin:9px 0 0;letter-spacing:-.5px;text-transform:uppercase}
 h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
-/* faint sitewide hex-grid texture, matching the RELOADED poster look - a single
-   tiny inline SVG background, no extra network request or storage cost */
-.section:before{
+/* faint hex-grid texture, matching the RELOADED poster look - a single tiny
+   inline SVG background, no extra network request or storage cost.
+   Excludes #season1 (Football Reimagined) on purpose: the robotic/RELOADED
+   visual theme belongs to RELOADED only, never the Football Reimagined archive. */
+.section:not(#season1):before{
   content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='24.2' viewBox='0 0 28 24.2'%3E%3Cpolygon points='14,0 28,7.2 28,17 14,24.2 0,17 0,7.2' fill='none' stroke='%23f5b51b' stroke-width='0.6'/%3E%3C/svg%3E");
 }
@@ -404,7 +406,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="season1">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">25–26 · Completed</div><h2>Football Reimagined</h2></div></div>
+  <div class="section-head reveal"><div style="display:flex;align-items:center;gap:16px"><img src="assets/s1-logo.png" alt="Football Reimagined logo" loading="lazy" style="width:64px;height:64px;border-radius:14px;flex-shrink:0"><div><div class="eyebrow">25–26 · Completed</div><h2>Football Reimagined</h2></div></div></div>
   <p class="sub reveal" id="season1Note" style="margin-bottom:20px"></p>
 
   <div class="trophyBanner reveal">
