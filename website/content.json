@@ -80,6 +80,16 @@
       { "rank": 6, "name": "Yash Kalekar", "team": "Global Net", "goals": 12 },
       { "rank": 9, "name": "Tanmay More", "team": "Atlanta", "goals": 9 },
       { "rank": 10, "name": "Royston Veigas", "team": "Yeshua", "goals": 8 }
+    ],
+    "owners": [
+      { "team": "Atlanta", "file": "atlanta", "name": "Allen Contractor", "role": "Owner" },
+      { "team": "Palmeiros", "file": "palmeiros", "name": "Donald Pereira", "role": "Owner" },
+      { "team": "FOF", "file": "fof", "name": "Alex Jerry Fernandes", "role": "Owner" },
+      { "team": "Truston", "file": "truston", "name": "Viren Trivedi", "role": "Owner & Player" },
+      { "team": "Helix", "file": "helix", "name": "Yash Gosavi", "role": "Owner" },
+      { "team": "Global Net", "file": "globalnet", "name": "Sligo Dmello", "role": "Owner" },
+      { "team": "Bassein Boys", "file": "bassein", "name": "Ayush Srivastava", "role": "Owner · Shantanu Tyagi, Co-Owner" },
+      { "team": "Yeshua", "file": "yeshua", "name": "Murgan Devendra", "role": "Owner" }
     ]
   },
 
