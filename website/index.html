@@ -195,6 +195,12 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .topScorersTable tr:last-child td{border-bottom:none}
 .topScorersTable td:first-child{color:var(--gold);font-weight:900;width:36px}
 .topScorersTable td:last-child{font-weight:900;color:#fff;text-align:right}
+.teamLogoCell{width:34px}
+.teamLogoCell img{width:28px;height:28px;object-fit:contain;display:block}
+.teamsGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
+.teamBadge{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center}
+.teamBadge img{width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 8px}
+.teamBadge .teamName{font-size:11.5px;font-weight:800;color:#dbe4f5}
 .awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 .awardCard .ttl{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
@@ -411,10 +417,15 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
   <div class="awardsGrid reveal-stagger" id="s1Awards"></div>
 
+  <div class="teamsStrip reveal" style="margin-top:34px">
+   <div class="eyebrow" style="margin-bottom:12px">The 8 Teams</div>
+   <div class="teamsGrid reveal-stagger" id="s1Teams"></div>
+  </div>
+
   <div class="topScorersWrap reveal" style="margin-top:34px">
    <div class="eyebrow" style="margin-bottom:12px">Final Golden Boot</div>
    <table class="topScorersTable">
-    <thead><tr><th>#</th><th>Player</th><th>Team</th><th>Goals</th></tr></thead>
+    <thead><tr><th>#</th><th></th><th>Player</th><th>Team</th><th>Goals</th></tr></thead>
     <tbody id="s1TopScorers"></tbody>
    </table>
   </div>
@@ -563,9 +574,25 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a =>
       `<div class="awardCard r-item"><div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${a.team}</div>` : ''}</div>`
     ).join('');
-    document.getElementById('s1TopScorers').innerHTML = (c.season1.topScorers || []).map(p =>
-      `<tr><td>${p.rank}</td><td>${p.name}</td><td>${p.team}</td><td>${p.goals}</td></tr>`
-    ).join('');
+    const teamLogos = {
+      'atlanta': 'atlanta', 'palmeiros': 'palmeiros', 'fof': 'fof', 'truston': 'truston',
+      'globalnet': 'globalnet', 'globalnetcomputers': 'globalnet', 'helix': 'helix',
+      'yeshua': 'yeshua', 'basseinboys': 'bassein'
+    };
+    const teamLogoSrc = (team) => {
+      const key = (team || '').toLowerCase().replace(/[^a-z]/g, '');
+      const file = teamLogos[key];
+      return file ? `assets/teams/${file}.png` : null;
+    };
+    document.getElementById('s1TopScorers').innerHTML = (c.season1.topScorers || []).map(p => {
+      const logo = teamLogoSrc(p.team);
+      return `<tr><td>${p.rank}</td><td class="teamLogoCell">${logo ? `<img src="${logo}" alt="${p.team}" loading="lazy">` : ''}</td><td>${p.name}</td><td>${p.team}</td><td>${p.goals}</td></tr>`;
+    }).join('');
+    const s1TeamNames = ['Atlanta', 'Palmeiros', 'FOF', 'Truston', 'Global Net', 'Helix', 'Yeshua', 'Bassein Boys'];
+    document.getElementById('s1Teams').innerHTML = s1TeamNames.map(t => {
+      const logo = teamLogoSrc(t);
+      return `<div class="teamBadge r-item">${logo ? `<img src="${logo}" alt="${t}" loading="lazy">` : ''}<div class="teamName">${t}</div></div>`;
+    }).join('');
 
     const initials = (name) => name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     const avatarColors = ['#f5b51b', '#1459c7', '#e3262e', '#16865c', '#9b59b6'];
