@@ -90,6 +90,16 @@
       { "team": "Global Net", "file": "globalnet", "name": "Sligo Dmello", "role": "Owner" },
       { "team": "Bassein Boys", "file": "bassein", "name": "Ayush Srivastava", "role": "Owner · Shantanu Tyagi, Co-Owner" },
       { "team": "Yeshua", "file": "yeshua", "name": "Murgan Devendra", "role": "Owner" }
+    ],
+    "mascots": [
+      { "team": "Atlanta", "file": "atlanta" },
+      { "team": "Palmeiros", "file": "palmeiros" },
+      { "team": "FOF", "file": "fof" },
+      { "team": "Truston", "file": "truston" },
+      { "team": "Helix", "file": "helix" },
+      { "team": "Global Net", "file": "globalnet" },
+      { "team": "Bassein Boys", "file": "bassein" },
+      { "team": "Yeshua", "file": "yeshua" }
     ]
   },
 
