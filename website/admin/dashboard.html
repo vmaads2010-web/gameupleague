@@ -90,6 +90,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <table>
         <thead><tr>
           <th>Code</th><th>Name</th><th>Mobile</th><th>Email</th><th>Position</th>
+          <th>Jersey/Shorts</th><th>Emergency Contact</th>
           <th>Offer</th><th>Quoted Fee</th><th>Photo</th><th>Registered</th>
           <th>Status</th><th>Payment</th><th>Actions</th>
         </tr></thead>
@@ -325,6 +326,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${esc(r.mobile)}</td>
         <td class="wrap-cell">${esc(r.email || '—')}</td>
         <td>${esc(r.position || '—')}</td>
+        <td class="wrap-cell">${esc(r.jersey_size || '—')} / ${esc(r.shorts_size || '—')}</td>
+        <td class="wrap-cell">${esc(r.emergency_contact_name || '—')}${r.emergency_contact_number ? ' · ' + esc(r.emergency_contact_number) : ''}${r.emergency_contact_relationship ? ' (' + esc(r.emergency_contact_relationship) + ')' : ''}</td>
         <td>${esc(r.offer_applied || '—')}</td>
         <td>${money(r.quoted_fee_paise)}</td>
         <td>${r.photo_url ? `<button class="photoLink" data-photo="${esc(r.photo_url)}">View</button>` : '—'}</td>

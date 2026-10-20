@@ -65,6 +65,22 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
 .screenshotBox{margin-top:16px;padding-top:16px;border-top:1px dashed rgba(255,255,255,.18)}
 .screenshotBox label{text-align:left}
+.sectionTitle{font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin:28px 0 14px;padding-top:18px;border-top:1px solid var(--line)}
+.sectionTitle:first-of-type{margin-top:0;padding-top:0;border-top:0}
+.checkRow{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#07172f;margin-bottom:8px;cursor:pointer}
+.checkRow input{width:auto;accent-color:var(--gold)}
+.checkRow span{font-size:13.5px}
+.radioRow{display:flex;align-items:center;gap:9px;padding:9px 0}
+.radioRow input{width:auto;accent-color:var(--gold)}
+.radioRow label{margin:0;font-weight:500;font-size:13.5px;color:var(--white)}
+details.terms{background:#07172f;border:1px solid var(--line);border-radius:12px;padding:4px 16px;margin-bottom:16px}
+details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--gold);cursor:pointer}
+.termsBody{font-size:12.5px;color:var(--muted);line-height:1.7;padding-bottom:16px;max-height:340px;overflow-y:auto}
+.termsBody h4{color:#cfd9ef;font-size:12.5px;margin:14px 0 4px}
+.termsBody h4:first-child{margin-top:0}
+.consentBox{background:rgba(245,181,27,.06);border:1px solid rgba(245,181,27,.25);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.consentBox .checkRow{background:transparent;border:0;padding:6px 0;margin-bottom:0}
+.required-star{color:#ff9d9d}
 </style>
 </head>
 <body>
@@ -90,28 +106,47 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
   <div class="card">
    <form id="regForm">
-    <div class="field"><label>Full name *</label><input id="fullName" required></div>
+
+    <div class="sectionTitle">1 · Personal Information</div>
+    <div class="field"><label>Full name <span class="required-star">*</span></label><input id="fullName" required></div>
     <div class="row2">
-     <div class="field"><label>Mobile number *</label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
-     <div class="field"><label>Email</label><input id="email" type="email"></div>
+     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="date" required></div>
+     <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
     </div>
     <div class="row2">
-     <div class="field"><label>Date of birth</label><input id="dob" type="date"></div>
-     <div class="field"><label>City</label><input id="city"></div>
+     <div class="field"><label>Email address</label><input id="email" type="email"></div>
+     <div class="field"><label>Area of residence</label><input id="city" placeholder="e.g. Vasai West"></div>
     </div>
+
+    <div class="sectionTitle">2 · Playing Position</div>
     <div class="field">
-     <label>Preferred position</label>
-     <select id="position">
+     <label>Position <span class="required-star">*</span> (select all that apply)</label>
+     <label class="checkRow"><input type="checkbox" name="position" value="Goalkeeper (GK)"><span>Goalkeeper (GK)</span></label>
+     <label class="checkRow"><input type="checkbox" name="position" value="Defence (DEF)"><span>Defence (DEF)</span></label>
+     <label class="checkRow"><input type="checkbox" name="position" value="Midfield (MID)"><span>Midfield (MID)</span></label>
+     <label class="checkRow"><input type="checkbox" name="position" value="Attack (ATT)"><span>Attack (ATT)</span></label>
+    </div>
+
+    <div class="sectionTitle">3 · Emergency Contact</div>
+    <div class="field"><label>Emergency contact person's name <span class="required-star">*</span></label><input id="emName" required></div>
+    <div class="row2">
+     <div class="field"><label>Emergency contact number <span class="required-star">*</span></label><input id="emNumber" required inputmode="tel"></div>
+     <div class="field"><label>Relationship with player <span class="required-star">*</span></label><input id="emRelation" required placeholder="e.g. Father, Sister"></div>
+    </div>
+
+    <div class="sectionTitle">4 · Additional Information</div>
+    <div class="field">
+     <label>How did you hear about Game Up League?</label>
+     <select id="heardFrom">
       <option value="">Select (optional)</option>
-      <option>Forward</option>
-      <option>Midfielder</option>
-      <option>Defender</option>
-      <option>Goalkeeper</option>
+      <option>Instagram</option>
+      <option>Friends</option>
+      <option>Previous participants</option>
+      <option>Other</option>
      </select>
     </div>
-    <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
     <div class="field">
-     <label>Player photo (optional)</label>
+     <label>Player photograph</label>
      <div class="photoPicker">
       <img class="photoPreview" id="photoPreview" alt="">
       <label class="photoPickBtn" id="photoPickLabel" for="photoInput">Tap to choose a photo</label>
@@ -119,6 +154,79 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
      </div>
      <div class="photoHint" id="photoHint">We automatically shrink the photo before uploading, to keep it small and fast.</div>
     </div>
+    <details class="terms">
+     <summary>View VAVA Arts size chart (chest / length, inches)</summary>
+     <div class="termsBody">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+       <tr style="color:#cfd9ef;font-weight:800"><td style="padding:4px 6px">Size</td><td style="padding:4px 6px">Chest</td><td style="padding:4px 6px">Length</td></tr>
+       <tr><td style="padding:4px 6px">8XS (1 yr)</td><td style="padding:4px 6px">20</td><td style="padding:4px 6px">18</td></tr>
+       <tr><td style="padding:4px 6px">7XS (2–4 yrs)</td><td style="padding:4px 6px">22</td><td style="padding:4px 6px">19</td></tr>
+       <tr><td style="padding:4px 6px">6XS (4–6 yrs)</td><td style="padding:4px 6px">24</td><td style="padding:4px 6px">20</td></tr>
+       <tr><td style="padding:4px 6px">5XS (6–8 yrs)</td><td style="padding:4px 6px">26</td><td style="padding:4px 6px">21</td></tr>
+       <tr><td style="padding:4px 6px">4XS</td><td style="padding:4px 6px">28</td><td style="padding:4px 6px">22</td></tr>
+       <tr><td style="padding:4px 6px">XXXS</td><td style="padding:4px 6px">30</td><td style="padding:4px 6px">23</td></tr>
+       <tr><td style="padding:4px 6px">XXS</td><td style="padding:4px 6px">32</td><td style="padding:4px 6px">24</td></tr>
+       <tr><td style="padding:4px 6px">XS</td><td style="padding:4px 6px">34</td><td style="padding:4px 6px">25</td></tr>
+       <tr><td style="padding:4px 6px">S</td><td style="padding:4px 6px">36</td><td style="padding:4px 6px">26</td></tr>
+       <tr><td style="padding:4px 6px">M</td><td style="padding:4px 6px">38</td><td style="padding:4px 6px">27</td></tr>
+       <tr><td style="padding:4px 6px">L</td><td style="padding:4px 6px">40</td><td style="padding:4px 6px">28</td></tr>
+       <tr><td style="padding:4px 6px">XL</td><td style="padding:4px 6px">42</td><td style="padding:4px 6px">29</td></tr>
+       <tr><td style="padding:4px 6px">XXL</td><td style="padding:4px 6px">44</td><td style="padding:4px 6px">30</td></tr>
+       <tr><td style="padding:4px 6px">XXXL</td><td style="padding:4px 6px">46</td><td style="padding:4px 6px">31</td></tr>
+       <tr><td style="padding:4px 6px">4XL</td><td style="padding:4px 6px">48</td><td style="padding:4px 6px">32</td></tr>
+       <tr><td style="padding:4px 6px">5XL</td><td style="padding:4px 6px">50</td><td style="padding:4px 6px">33</td></tr>
+      </table>
+     </div>
+    </details>
+    <div class="row2">
+     <div class="field"><label>Jersey size</label>
+      <select id="jerseySize">
+       <option value="">Select</option>
+       <option>8XS (1yrs)</option><option>7XS (2yrs-4yrs)</option><option>6XS (4yrs-6yrs)</option><option>5XS (6yrs-8yrs)</option>
+       <option>4XS</option><option>XXXS</option><option>XXS</option><option>XS</option>
+       <option>S</option><option>M</option><option>L</option><option>XL</option>
+       <option>XXL</option><option>XXXL</option><option>4XL</option><option>5XL</option>
+      </select>
+     </div>
+     <div class="field"><label>Shorts size</label>
+      <select id="shortsSize">
+       <option value="">Select</option>
+       <option>8XS (1yrs)</option><option>7XS (2yrs-4yrs)</option><option>6XS (4yrs-6yrs)</option><option>5XS (6yrs-8yrs)</option>
+       <option>4XS</option><option>XXXS</option><option>XXS</option><option>XS</option>
+       <option>S</option><option>M</option><option>L</option><option>XL</option>
+       <option>XXL</option><option>XXXL</option><option>4XL</option><option>5XL</option>
+      </select>
+     </div>
+    </div>
+    <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
+
+    <div class="sectionTitle">5 · Consent &amp; Declaration</div>
+    <details class="terms">
+     <summary>Read full Medical Consent, Code of Conduct &amp; Waiver terms</summary>
+     <div class="termsBody">
+      <h4>1. Medical Consent &amp; Liability Waiver</h4>
+      I acknowledge that football is a physical contact sport and carries inherent risks of injury. I agree that: I participate voluntarily and at my own risk. The league, its organizers, coaches, referees, and staff shall not be held liable for any accident, injury, illness, or medical expenses incurred during training, matches, or related activities. In case of a medical emergency, I authorize the league to arrange immediate medical treatment if required. I have disclosed any relevant medical conditions or allergies.
+      <h4>2. Code of Conduct</h4>
+      I agree to: Show respect to referees, teammates, opponents, and staff at all times. Avoid abusive language, harassment, discrimination, or violent behavior. Play fairly and uphold the spirit of the game.
+      <h4>3. Equipment &amp; Safety</h4>
+      I am responsible for wearing proper football gear (shin guards, boots, etc.). I will not use unsafe or unauthorized equipment. I accept responsibility for maintaining my own gear.
+      <h4>4. Damage &amp; Liability</h4>
+      I will be held responsible for any damage I cause to venues, facilities, or league equipment. The league is not responsible for loss, theft, or damage of personal belongings.
+      <h4>5. Insurance Disclaimer</h4>
+      I understand that personal sports/medical insurance is my responsibility unless explicitly provided by the league. I release the organizers from liability for costs related to injuries or accidents.
+      <h4>6. Photo/Video Consent</h4>
+      I grant permission for the league to capture and use photos/videos of me during matches and events for promotional, social media, or documentation purposes.
+      <h4>7. Management Decisions</h4>
+      I acknowledge that any rules, scheduling, or organizational changes made by the league management are final. Such decisions cannot be challenged and I agree to abide by them fully.
+      <h4>Declaration</h4>
+      I have read and understood the above terms and conditions. By signing this form, I agree to participate in the Football League under the stated rules and policies.
+     </div>
+    </details>
+    <div class="consentBox">
+     <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow GameUp League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to GameUp League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
+    </div>
+
     <button type="submit" id="submitBtn">Submit Registration</button>
    </form>
    <div id="status" class="status"></div>
@@ -259,6 +367,17 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   document.getElementById('regForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
+
+    const selectedPositionsCheck = Array.from(document.querySelectorAll('input[name="position"]:checked'));
+    if (!selectedPositionsCheck.length) {
+      showStatus('err', 'Please select at least one playing position (Section 2).');
+      return;
+    }
+    if (!document.getElementById('declarationAccepted').checked || !document.getElementById('mediaConsentAccepted').checked) {
+      showStatus('err', 'Please accept both consent checkboxes in Section 5 to continue.');
+      return;
+    }
+
     btn.disabled = true;
     showStatus('ok', 'Submitting...');
 
@@ -292,6 +411,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     showStatus('ok', 'Submitting...');
 
+    const selectedPositions = Array.from(document.querySelectorAll('input[name="position"]:checked')).map(el => el.value);
+
     const payload = {
       registration_code: code,
       season_id: season ? season.id : null,
@@ -300,11 +421,19 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       email: document.getElementById('email').value.trim() || null,
       dob: document.getElementById('dob').value || null,
       city: document.getElementById('city').value.trim() || null,
-      position: document.getElementById('position').value || null,
+      position: selectedPositions.length ? selectedPositions.join(', ') : null,
       referral_code: document.getElementById('referral').value.trim() || null,
       photo_url: photoPath,
       offer_applied: currentOffer ? currentOffer.label : null,
-      quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null
+      quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null,
+      emergency_contact_name: document.getElementById('emName').value.trim(),
+      emergency_contact_number: document.getElementById('emNumber').value.trim(),
+      emergency_contact_relationship: document.getElementById('emRelation').value.trim(),
+      heard_from: document.getElementById('heardFrom').value || null,
+      jersey_size: document.getElementById('jerseySize').value || null,
+      shorts_size: document.getElementById('shortsSize').value || null,
+      declaration_accepted: document.getElementById('declarationAccepted').checked,
+      media_consent_accepted: document.getElementById('mediaConsentAccepted').checked
     };
 
     // No .select() here on purpose: the public can INSERT a registration but
