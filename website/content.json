@@ -43,8 +43,8 @@
   },
 
   "season1": {
-    "_source": "Champion/runner-up/MVP-style awards transcribed from GUL's own public Instagram posts (thegameupleague), 10 Oct 2026. Golden Boot and Player-of-the-Match stats below are from GUL's own official 'Gameup Stats' scorebook (Google Sheets), pulled 20 Oct 2026 - these are exact, not Instagram guesses. A full win/draw/loss points table was not found in the Drive scorebook (only goals and POM were tracked there); fixtures/points table are still being compiled.",
-    "archiveNote": "Final Golden Boot and Player-of-the-Match stats below are from GUL's official scorebook. Full match-by-match results and points table are still being compiled.",
+    "_source": "Champion/runner-up/MVP-style awards transcribed from GUL's own public Instagram posts (thegameupleague), 10 Oct 2026. Golden Boot and Player-of-the-Match stats are from GUL's official 'Gameup Stats' scorebook, pulled 20 Oct 2026. Points table below is computed by Claude directly from GUL's own match scoresheets (Matchday 1-4, 32 real matches with referees/venues/dates, pulled from Drive 20 Oct 2026) - it is NOT a full-season table since scoresheets only exist for Matchdays 1-4 in the shared Drive (Matchday 5/6/7/8 either have no scoresheet or blank scores) - labeled accordingly, not presented as final.",
+    "archiveNote": "Final Golden Boot and Player-of-the-Match stats are from GUL's official scorebook. The points table reflects Matchdays 1-4 (32 real matches) - the only matchdays with complete scoresheets found; later rounds are still being compiled.",
     "champion": "Atlanta FC",
     "runnerUp": "Palmerios",
     "superCupChampion": "Yeshua FC",
@@ -58,6 +58,16 @@
       { "title": "Best Manager", "winner": "Dony", "team": "Palmerios" },
       { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" },
       { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros · 3 POM" }
+    ],
+    "pointsTable": [
+      { "rank": 1, "team": "Palmeiros", "p": 8, "w": 5, "d": 3, "l": 0, "gf": 29, "ga": 11, "pts": 18 },
+      { "rank": 2, "team": "Truston", "p": 8, "w": 5, "d": 2, "l": 1, "gf": 30, "ga": 13, "pts": 17 },
+      { "rank": 3, "team": "Atlanta", "p": 7, "w": 5, "d": 2, "l": 0, "gf": 18, "ga": 8, "pts": 17 },
+      { "rank": 4, "team": "Global Net", "p": 8, "w": 4, "d": 2, "l": 2, "gf": 26, "ga": 14, "pts": 14 },
+      { "rank": 5, "team": "FOF", "p": 7, "w": 3, "d": 1, "l": 3, "gf": 26, "ga": 17, "pts": 10 },
+      { "rank": 6, "team": "Bassein Boys", "p": 8, "w": 2, "d": 0, "l": 6, "gf": 22, "ga": 36, "pts": 6 },
+      { "rank": 7, "team": "Helix", "p": 8, "w": 1, "d": 0, "l": 7, "gf": 9, "ga": 27, "pts": 3 },
+      { "rank": 8, "team": "Yeshua", "p": 8, "w": 1, "d": 0, "l": 7, "gf": 13, "ga": 47, "pts": 3 }
     ],
     "topScorers": [
       { "rank": 1, "name": "Roshan Kishore", "team": "Truston", "goals": 28 },

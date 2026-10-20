@@ -197,6 +197,16 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .topScorersTable tr:last-child td{border-bottom:none}
 .topScorersTable td:first-child{color:var(--gold);font-weight:900;width:36px}
 .topScorersTable td:last-child{font-weight:900;color:#fff;text-align:right}
+.pointsTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:560px}
+.pointsTable th{text-align:center;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--gold);font-weight:900;padding:9px 8px;border-bottom:1px solid var(--line)}
+.pointsTable th:nth-child(3){text-align:left}
+.pointsTable td{padding:9px 8px;font-size:13px;color:#dbe4f5;border-bottom:1px solid rgba(255,255,255,.05);text-align:center}
+.pointsTable td:nth-child(3){text-align:left;font-weight:700}
+.pointsTable tr:last-child td{border-bottom:none}
+.pointsTable td:first-child{color:var(--gold);font-weight:900}
+.pointsTable td:last-child{font-weight:900;color:#fff}
+.pointsTable tr.leader td{background:rgba(245,181,27,.1)}
+.pointsTable tr.leader td:first-child{color:var(--gold)}
 .teamLogoCell{width:34px}
 .teamLogoCell img{width:28px;height:28px;object-fit:contain;display:block}
 .teamsGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:14px}
@@ -426,6 +436,17 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
   <div class="awardsGrid reveal-stagger" id="s1Awards"></div>
 
+  <div class="pointsTableWrap reveal" style="margin-top:34px">
+   <div class="eyebrow" style="margin-bottom:4px">Points Table — Matchdays 1–4</div>
+   <p class="sub" style="margin:0 0 12px;font-size:12.5px">Computed directly from GUL's real match scoresheets (32 matches, with referees/venues/dates). Later matchdays still being compiled.</p>
+   <div style="overflow-x:auto">
+   <table class="pointsTable">
+    <thead><tr><th>#</th><th></th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
+    <tbody id="s1PointsTable"></tbody>
+   </table>
+   </div>
+  </div>
+
   <div class="teamsStrip reveal" style="margin-top:34px">
    <div class="eyebrow" style="margin-bottom:12px">The 8 Teams</div>
    <div class="teamsGrid reveal-stagger" id="s1Teams"></div>
@@ -603,6 +624,11 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const file = teamLogos[key];
       return file ? `assets/teams/${file}.png` : null;
     };
+    document.getElementById('s1PointsTable').innerHTML = (c.season1.pointsTable || []).map(t => {
+      const logo = teamLogoSrc(t.team);
+      const gd = t.gf - t.ga;
+      return `<tr class="${t.rank === 1 ? 'leader' : ''}"><td>${t.rank}</td><td class="teamLogoCell">${logo ? `<img src="${logo}" alt="${t.team}" loading="lazy">` : ''}</td><td>${t.team}</td><td>${t.p}</td><td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf}</td><td>${t.ga}</td><td>${gd > 0 ? '+' : ''}${gd}</td><td>${t.pts}</td></tr>`;
+    }).join('');
     document.getElementById('s1TopScorers').innerHTML = (c.season1.topScorers || []).map(p => {
       const logo = teamLogoSrc(p.team);
       return `<tr><td>${p.rank}</td><td class="teamLogoCell">${logo ? `<img src="${logo}" alt="${p.team}" loading="lazy">` : ''}</td><td>${p.name}</td><td>${p.team}</td><td>${p.goals}</td></tr>`;
