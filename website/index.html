@@ -189,6 +189,12 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .trophyItem .name{font-size:24px;font-weight:900;margin-top:4px}
 .trophyItem .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .awardsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.topScorersTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.topScorersTable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);font-weight:900;padding:10px 14px;border-bottom:1px solid var(--line)}
+.topScorersTable td{padding:10px 14px;font-size:14px;color:#dbe4f5;border-bottom:1px solid rgba(255,255,255,.05)}
+.topScorersTable tr:last-child td{border-bottom:none}
+.topScorersTable td:first-child{color:var(--gold);font-weight:900;width:36px}
+.topScorersTable td:last-child{font-weight:900;color:#fff;text-align:right}
 .awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 .awardCard .ttl{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
@@ -244,7 +250,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container navin">
   <a class="brand" href="#home"><img src="assets/season2-logo.png" alt="Game Up League RELOADED logo"><span>GAME UP LEAGUE</span></a>
   <nav class="links">
-   <a href="#season2">RELOADED</a><a href="#timeline">Timeline</a><a href="#season1">Season 1 Archive</a><a href="#leadership">Leadership</a><a href="#gallery">Gallery</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
+   <a href="#season2">RELOADED</a><a href="#timeline">Timeline</a><a href="#season1">Football Reimagined</a><a href="#leadership">Leadership</a><a href="#gallery">Gallery</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
   </nav>
   <a class="btn gold mobile" href="register.html">Register</a>
   <button class="mobile hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
@@ -252,7 +258,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="mobileMenu" id="mobileMenu">
   <a href="#season2">RELOADED</a>
   <a href="#timeline">Timeline</a>
-  <a href="#season1">Season 1 Archive</a>
+  <a href="#season1">Football Reimagined</a>
   <a href="#leadership">Leadership</a>
   <a href="#gallery">Gallery</a>
   <a href="#turf">Game Up Turf</a>
@@ -392,18 +398,26 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="season1">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Completed</div><h2>Season 1 Archive</h2></div></div>
+  <div class="section-head reveal"><div><div class="eyebrow">25–26 · Completed</div><h2>Football Reimagined</h2></div></div>
   <p class="sub reveal" id="season1Note" style="margin-bottom:20px"></p>
 
   <div class="trophyBanner reveal">
    <div class="trophyRow">
-    <div class="trophyItem"><div class="ico">🏆</div><div class="ttl">Champions</div><div class="name" id="s1Champion"></div><div class="sub">Season 1 — Game Up League</div></div>
-    <div class="trophyItem"><div class="ico">🥈</div><div class="ttl">Runners Up</div><div class="name" id="s1RunnerUp"></div><div class="sub">Season 1 — Game Up League</div></div>
+    <div class="trophyItem"><div class="ico">🏆</div><div class="ttl">Champions</div><div class="name" id="s1Champion"></div><div class="sub">Football Reimagined — Game Up League</div></div>
+    <div class="trophyItem"><div class="ico">🥈</div><div class="ttl">Runners Up</div><div class="name" id="s1RunnerUp"></div><div class="sub">Football Reimagined — Game Up League</div></div>
     <div class="trophyItem"><div class="ico">🏅</div><div class="ttl">Super Cup Champions</div><div class="name" id="s1SuperCupChampion"></div><div class="sub">Runners Up: <span id="s1SuperCupRunnerUp"></span></div></div>
    </div>
   </div>
 
   <div class="awardsGrid reveal-stagger" id="s1Awards"></div>
+
+  <div class="topScorersWrap reveal" style="margin-top:34px">
+   <div class="eyebrow" style="margin-bottom:12px">Final Golden Boot</div>
+   <table class="topScorersTable">
+    <thead><tr><th>#</th><th>Player</th><th>Team</th><th>Goals</th></tr></thead>
+    <tbody id="s1TopScorers"></tbody>
+   </table>
+  </div>
  </div>
 </section>
 
@@ -467,7 +481,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 <footer class="footer">
  <div class="container footgrid">
   <div><img class="footlogo" src="assets/season2-logo.png" alt="Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 Game Up League. All rights reserved.</p></div>
-  <div><h3>Explore</h3><p><a href="#season2">RELOADED</a></p><p><a href="#season1">Season 1 Archive</a></p><p><a href="#leadership">Leadership</a></p><p><a href="#gallery">Gallery</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
+  <div><h3>Explore</h3><p><a href="#season2">RELOADED</a></p><p><a href="#season1">Football Reimagined</a></p><p><a href="#leadership">Leadership</a></p><p><a href="#gallery">Gallery</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
   <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p>YouTube: <a id="footerYoutube" href="#" target="_blank" rel="noopener"></a></p></div>
  </div>
 </footer>
@@ -548,6 +562,9 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     set('s1SuperCupRunnerUp', c.season1.superCupRunnerUp);
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a =>
       `<div class="awardCard r-item"><div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${a.team}</div>` : ''}</div>`
+    ).join('');
+    document.getElementById('s1TopScorers').innerHTML = (c.season1.topScorers || []).map(p =>
+      `<tr><td>${p.rank}</td><td>${p.name}</td><td>${p.team}</td><td>${p.goals}</td></tr>`
     ).join('');
 
     const initials = (name) => name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
