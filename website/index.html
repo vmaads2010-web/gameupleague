@@ -106,6 +106,45 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .posterBlock .sub{margin:0 0 16px;font-size:14px}
 .posterImgWrap{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .posterImgWrap img{width:100%;display:block}
+
+/* Timeline: Register/Archive (comic) on the left, upcoming seasons (robotics) on the right,
+   logo with a hover shine sweep in the center. */
+.tlGrid{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:22px;align-items:stretch}
+.tlPanel{border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:12px}
+.tlPanelTitle{font-family:'Anton',Inter,sans-serif;font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:0 0 4px}
+.tlItem{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;transition:transform .25s ease}
+.tlYear{font-weight:900;font-size:12.5px;flex-shrink:0;min-width:56px}
+.tlName{font-weight:700;font-size:14px}
+
+/* Comic-book theme */
+.comicPanel{background:#151027;border:3px solid var(--gold);box-shadow:6px 6px 0 rgba(227,38,46,.55);position:relative;overflow:hidden}
+.comicPanel:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1.4px,transparent 1.4px);background-size:9px 9px;opacity:.5;pointer-events:none}
+.comicPanel .tlPanelTitle{color:var(--gold);-webkit-text-stroke:.5px rgba(0,0,0,.4)}
+.comicPanel a.tlItem{background:rgba(245,181,27,.1);border:2px solid rgba(245,181,27,.4);color:#fff}
+.comicPanel a.tlItem:hover{transform:translate(-2px,-2px);background:rgba(245,181,27,.2);border-color:var(--gold);box-shadow:3px 3px 0 var(--red)}
+.comicPanel .tlYear{color:var(--red);-webkit-text-stroke:.3px rgba(0,0,0,.3)}
+
+/* Robotics theme */
+.roboPanel{background:#060c17;border:1px solid rgba(0,229,255,.35);position:relative;overflow:hidden}
+.roboPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
+.roboPanel .tlPanelTitle{color:#5fe8ff;font-family:'Courier New',monospace;letter-spacing:2px}
+.roboPanel .tlItem{border:1px solid rgba(0,229,255,.25);background:rgba(0,229,255,.04)}
+.roboPanel .tlItem.grayed{opacity:.42}
+.roboPanel .tlYear{color:#5fe8ff;font-family:'Courier New',monospace}
+.roboPanel .tlName{color:#cfe9f2}
+
+/* Center logo with hover shine sweep */
+.tlCenter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.shineLogo{position:relative;width:min(220px,70%);overflow:hidden;border-radius:16px;cursor:pointer}
+.shineLogo img{width:100%;display:block;border-radius:16px}
+.shineLogo:after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .7s ease}
+.shineLogo:hover:after{left:150%}
+.earlyBirdChip{background:var(--gold);color:#101c31;font-weight:900;font-size:10.5px;letter-spacing:1px;padding:5px 12px;border-radius:999px;text-transform:uppercase}
+.tlFooterLinks{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted)}
+.tlFooterLinks a{color:var(--muted);font-weight:700}
+.tlFooterLinks a:hover{color:var(--gold)}
+@media(max-width:850px){ .tlGrid{grid-template-columns:1fr}.tlCenter{order:-1} }
+
 .section{padding:72px 0;position:relative}
 .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap;position:relative;z-index:1}
 .eyebrow{color:var(--gold);font-weight:900;letter-spacing:2px;font-size:12px;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
@@ -205,13 +244,14 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container navin">
   <a class="brand" href="#home"><img src="assets/season2-logo.png" alt="Game Up League RELOADED logo"><span>GAME UP LEAGUE</span></a>
   <nav class="links">
-   <a href="#season2">RELOADED</a><a href="#season1">Season 1 Archive</a><a href="#leadership">Leadership</a><a href="#gallery">Gallery</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
+   <a href="#season2">RELOADED</a><a href="#timeline">Timeline</a><a href="#season1">Season 1 Archive</a><a href="#leadership">Leadership</a><a href="#gallery">Gallery</a><a href="#turf">Game Up Turf</a><a href="#about">About</a><a href="#contact">Contact</a><a href="register.html" style="color:var(--gold)">Register</a>
   </nav>
   <a class="btn gold mobile" href="register.html">Register</a>
   <button class="mobile hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
  <div class="mobileMenu" id="mobileMenu">
   <a href="#season2">RELOADED</a>
+  <a href="#timeline">Timeline</a>
   <a href="#season1">Season 1 Archive</a>
   <a href="#leadership">Leadership</a>
   <a href="#gallery">Gallery</a>
@@ -316,6 +356,34 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
     <div class="posterHead"><span class="posterIco">🪪</span><div><div class="posterEyebrow">RELOADED</div><h3>Player Introduction</h3></div></div>
     <p class="sub">How each player gets introduced once squads are set. Sample shown below.</p>
     <a href="assets/gul-player-card-example.jpg" target="_blank" rel="noopener" class="posterImgWrap"><img loading="lazy" src="assets/gul-player-card-example.jpg" alt="Player introduction card format - Game Up League RELOADED"></a>
+   </div>
+
+  </div>
+ </div>
+</section>
+
+<section class="section" id="timeline">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">The Journey</div><h2>Game Up League Timeline</h2></div></div>
+  <div class="tlGrid reveal">
+
+   <div class="tlPanel comicPanel">
+    <div class="tlPanelTitle">📖 Register &amp; Archive</div>
+    <a class="tlItem" href="#season1"><span class="tlYear">25–26</span><span class="tlName">Football Reimagined</span></a>
+    <a class="tlItem" href="#season2"><span class="tlYear">26–27</span><span class="tlName">Reloaded</span></a>
+   </div>
+
+   <div class="tlCenter">
+    <div class="earlyBirdChip">⏳ Early Bird Open</div>
+    <a class="shineLogo" href="#season2"><img src="assets/season2-logo.png" alt="Game Up League logo" loading="lazy"></a>
+    <div class="tlFooterLinks"><a href="#contact">Feedback</a><a href="#season1">Reimagined</a><a href="#contact">Contact Us</a></div>
+   </div>
+
+   <div class="tlPanel roboPanel">
+    <div class="tlPanelTitle">⚙ Upcoming</div>
+    <div class="tlItem grayed"><span class="tlYear">27–28</span><span class="tlName">No Mercy</span></div>
+    <div class="tlItem grayed"><span class="tlYear">28–29</span><span class="tlName">Unleashed</span></div>
+    <div class="tlItem grayed"><span class="tlYear">29–30</span><span class="tlName">Warzone</span></div>
    </div>
 
   </div>
