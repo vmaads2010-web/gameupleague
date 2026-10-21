@@ -82,7 +82,7 @@
       { "rank": 10, "name": "Royston Veigas", "team": "Yeshua", "goals": 8 }
     ],
     "owners": [
-      { "team": "Atlanta", "file": "atlanta", "name": "Allen Contractor", "role": "Owner" },
+      { "team": "Atlanta", "file": "atlanta", "name": "Alex Kamat", "role": "Owner" },
       { "team": "Palmeiros", "file": "palmeiros", "name": "Donald Pereira", "role": "Owner" },
       { "team": "FOF", "file": "fof", "name": "Alex Jerry Fernandes", "role": "Owner" },
       { "team": "Truston", "file": "truston", "name": "Viren Trivedi", "role": "Owner & Player" },
