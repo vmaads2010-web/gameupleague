@@ -187,6 +187,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .trophyRow{display:flex;gap:28px;flex-wrap:wrap;position:relative}
 .trophyItem{flex:1;min-width:200px}
 .trophyItem .ico{font-size:28px}
+.trophyItem .trophyLogo{width:44px;height:44px;object-fit:contain;display:block}
 .trophyItem .ttl{font-size:11px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-top:8px}
 .trophyItem .name{font-size:24px;font-weight:900;margin-top:4px}
 .trophyItem .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
@@ -233,10 +234,12 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .sponsorCard img{width:70px;height:70px;object-fit:contain;display:block;margin:0 auto 8px}
 .sponsorCard .sponsorName{font-size:12px;font-weight:800;color:#101c31}
 .sponsorCard .sponsorCat{font-size:10px;color:#5a6a85;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-.awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px;overflow:hidden}
+.awardCard .awardPhoto{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;display:block;margin:-16px -18px 12px;width:calc(100% + 36px)}
 .awardCard .ttl{font-size:10.5px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
-.awardCard .team{font-size:12px;color:var(--muted);margin-top:2px}
+.awardCard .team{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
+.awardCard .awardTeamLogo{width:18px;height:18px;object-fit:contain;flex-shrink:0}
 .leaderGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
 .leaderCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .leaderCard:hover{transform:translateY(-5px);border-color:rgba(245,181,27,.4)}
@@ -440,12 +443,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <p class="sub reveal" id="season1Note" style="margin-bottom:20px"></p>
 
   <div class="trophyBanner reveal">
-   <div class="trophyRow">
-    <div class="trophyItem"><div class="ico">🏆</div><div class="ttl">Champions</div><div class="name" id="s1Champion"></div><div class="sub">Football Reimagined — Game Up League</div></div>
-    <div class="trophyItem"><div class="ico">🥈</div><div class="ttl">Runners Up</div><div class="name" id="s1RunnerUp"></div><div class="sub">Football Reimagined — Game Up League</div></div>
-    <div class="trophyItem"><div class="ico">🏅</div><div class="ttl">Super Cup Champions</div><div class="name" id="s1SuperCupChampion"></div><div class="sub">Football Reimagined — Game Up League</div></div>
-    <div class="trophyItem"><div class="ico">🎖️</div><div class="ttl">Super Cup Runners Up</div><div class="name" id="s1SuperCupRunnerUp"></div><div class="sub">Football Reimagined — Game Up League</div></div>
-   </div>
+   <div class="trophyRow" id="s1TrophyRow"></div>
   </div>
 
   <div class="awardsGrid reveal-stagger" id="s1Awards"></div>
@@ -480,7 +478,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   </div>
 
   <div class="squadWrap reveal" style="margin-top:34px">
-   <div class="eyebrow" style="margin-bottom:4px">The Full Squad — 65 Players</div>
+   <div class="eyebrow" style="margin-bottom:4px">The Full Squad</div>
    <p class="sub" style="margin:0 0 14px;font-size:12.5px">Every player who took the pitch in Football Reimagined.</p>
    <div class="squadGrid reveal-stagger" id="s1Squad"></div>
   </div>
@@ -632,23 +630,32 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('offerBanner').style.display = 'block';
 
     set('season1Note', c.season1.archiveNote);
-    set('s1Champion', c.season1.champion);
-    set('s1RunnerUp', c.season1.runnerUp);
-    set('s1SuperCupChampion', c.season1.superCupChampion);
-    set('s1SuperCupRunnerUp', c.season1.superCupRunnerUp);
-    document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a =>
-      `<div class="awardCard r-item"><div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${a.team}</div>` : ''}</div>`
-    ).join('');
     const teamLogos = {
-      'atlanta': 'atlanta', 'palmeiros': 'palmeiros', 'fof': 'fof', 'truston': 'truston',
-      'globalnet': 'globalnet', 'globalnetcomputers': 'globalnet', 'helix': 'helix',
-      'yeshua': 'yeshua', 'basseinboys': 'bassein'
+      'atlanta': 'atlanta', 'atlantafc': 'atlanta',
+      'palmeiros': 'palmeiros', 'palmerios': 'palmeiros', 'palmeriosfc': 'palmeiros', 'palmerosfc': 'palmeiros',
+      'fof': 'fof', 'friendsoffootball': 'fof', 'truston': 'truston', 'trustonrealtech': 'truston',
+      'globalnet': 'globalnet', 'globalnetcomputers': 'globalnet', 'helix': 'helix', 'helixfc': 'helix',
+      'yeshua': 'yeshua', 'yeshuafc': 'yeshua', 'basseinboys': 'bassein', 'bassein': 'bassein'
     };
     const teamLogoSrc = (team) => {
       const key = (team || '').toLowerCase().replace(/[^a-z]/g, '');
       const file = teamLogos[key];
       return file ? `assets/teams/${file}.png` : null;
     };
+    const trophies = [
+      { ico: '🏆', ttl: 'Champions', team: c.season1.champion },
+      { ico: '🥈', ttl: 'Runners Up', team: c.season1.runnerUp },
+      { ico: '🏅', ttl: 'Super Cup Champions', team: c.season1.superCupChampion },
+      { ico: '🎖️', ttl: 'Super Cup Runners Up', team: c.season1.superCupRunnerUp }
+    ];
+    document.getElementById('s1TrophyRow').innerHTML = trophies.map(t => {
+      const logo = teamLogoSrc(t.team);
+      return `<div class="trophyItem">${logo ? `<img class="trophyLogo" src="${logo}" alt="${t.team}" loading="lazy">` : `<div class="ico">${t.ico}</div>`}<div class="ttl">${t.ttl}</div><div class="name">${t.team}</div><div class="sub">Football Reimagined — Game Up League</div></div>`;
+    }).join('');
+    document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a => {
+      const logo = teamLogoSrc(a.team);
+      return `<div class="awardCard r-item">${a.photo ? `<img class="awardPhoto" src="assets/squad/${a.photo}.jpg" alt="${a.winner}" loading="lazy">` : ''}<div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${logo ? `<img class="awardTeamLogo" src="${logo}" alt="${a.team}" loading="lazy">` : ''}${a.team}${a.stat ? ' · ' + a.stat : ''}</div>` : (a.stat ? `<div class="team">${a.stat}</div>` : '')}</div>`;
+    }).join('');
     document.getElementById('s1PointsTable').innerHTML = (c.season1.pointsTable || []).map(t => {
       const logo = teamLogoSrc(t.team);
       const gd = t.gf - t.ga;

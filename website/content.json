@@ -50,14 +50,14 @@
     "superCupChampion": "Yeshua FC",
     "superCupRunnerUp": "Globalnet Computers",
     "awards": [
-      { "title": "Best Player (MVP)", "winner": "Alex Jerry Fernandes", "team": "Atlanta FC" },
-      { "title": "Highest Goal Scorer", "winner": "Roshan Kishore", "team": "Truston · 28 goals" },
-      { "title": "Best Goalkeeper", "winner": "Pratik Gupta", "team": "Atlanta FC" },
-      { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "" },
-      { "title": "Emerging Player", "winner": "Rosswell", "team": "" },
+      { "title": "Best Player (MVP)", "winner": "Alex Jerry Fernandes", "team": "Atlanta FC", "photo": "alex-fernandes" },
+      { "title": "Highest Goal Scorer", "winner": "Roshan Kishore", "team": "Truston", "stat": "28 goals", "photo": "roshan" },
+      { "title": "Best Goalkeeper", "winner": "Pratik Gupta", "team": "Atlanta FC", "photo": "pratik" },
+      { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "", "photo": "rishi-malkhani" },
+      { "title": "Emerging Player", "winner": "Rosswell", "team": "Global Net", "photo": "roswell" },
       { "title": "Best Manager", "winner": "Dony", "team": "Palmerios" },
       { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" },
-      { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros · 3 POM" }
+      { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros", "stat": "3 POM", "photo": "mayur-chavan" }
     ],
     "pointsTable": [
       { "rank": 1, "team": "Palmeiros", "p": 8, "w": 5, "d": 3, "l": 0, "gf": 29, "ga": 11, "pts": 18 },
