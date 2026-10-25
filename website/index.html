@@ -341,9 +341,11 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <div class="pills reveal">
    <span class="pill" id="pillDates"></span>
    <span class="pill" id="pillMatchDays"></span>
+   <span class="pill" id="pillTrials"></span>
    <span class="pill" id="pillAuction"></span>
    <span class="pill" id="pillRegWindow"></span>
   </div>
+  <p class="sub reveal" id="season2ScheduleNote" style="margin-top:10px"></p>
   <div class="grid cards reveal-stagger" style="margin-top:10px">
    <article class="card r-item"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
    <article class="card r-item"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
@@ -606,7 +608,9 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     set('season2Intro', c.season2.intro);
     set('pillDates', c.season2.pillDates);
     set('pillMatchDays', c.season2.pillMatchDays);
+    set('pillTrials', c.season2.pillTrials);
     set('pillAuction', c.season2.pillAuction);
+    set('season2ScheduleNote', c.season2.scheduleNote);
     set('teamCountTitle', c.season2.teamCountTitle);
     set('teamCountDesc', c.season2.teamCountDesc);
     set('playersPerTeamTitle', c.season2.playersPerTeamTitle);
