@@ -57,8 +57,14 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .photoPickBtn{flex:1;padding:12px 13px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:#07172f;color:var(--muted);font-size:13px;text-align:center;cursor:pointer;transition:border-color .2s ease,color .2s ease}
 .photoPickBtn:hover{border-color:var(--gold);color:#fff}
 .photoHint{font-size:11.5px;color:var(--muted);margin-top:6px}
+.photoNotice{background:rgba(245,181,27,.08);border:1px solid rgba(245,181,27,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ffe6ab;margin-bottom:10px;line-height:1.5}
+.sizeGuide{margin-top:8px}
+.sizeGuide summary{cursor:pointer;font-size:11.5px;color:var(--gold);font-weight:700;list-style:none}
+.sizeGuide summary::-webkit-details-marker{display:none}
+.sizeGuide img{width:100%;border-radius:8px;margin-top:8px;display:block}
 .payBox{margin-top:18px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:20px;text-align:center}
 .payBox h3{margin:0 0 4px;font-size:16px}
+.payRequiredNotice{background:rgba(227,38,46,.12);border:1px solid rgba(227,38,46,.4);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ff9d9d;margin-bottom:16px;text-align:left;line-height:1.5}
 .payBox .amt{font-size:30px;font-weight:900;color:var(--gold);margin:8px 0}
 .payBox canvas{background:#fff;padding:10px;border-radius:12px;margin:12px 0}
 .payBox .upiBtn{display:inline-block;width:auto;padding:12px 22px;margin-top:4px}
@@ -102,7 +108,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
    <div class="offerUrgency" id="offerUrgency"></div>
   </div>
 
-  <div class="notice">⚠️ <b>Online payment is not connected yet.</b> Submitting this form reserves your spot at today's listed price and creates your record with GUL — it does not charge you anything here. GUL will contact you directly with payment instructions.</div>
+  <div class="notice">⚠️ <b>2 steps:</b> fill this form, then pay via UPI and upload your payment screenshot — shown right after you submit. Your registration is only complete once both are done.</div>
 
   <div class="card">
    <form id="regForm">
@@ -146,7 +152,8 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
      </select>
     </div>
     <div class="field">
-     <label>Player photograph</label>
+     <label>Player photograph <span class="required-star">*</span></label>
+     <div class="photoNotice">📸 Upload a clear photo of <b>yourself</b> — this exact photo goes on the website, so make it a good one!</div>
      <div class="photoPicker">
       <img class="photoPreview" id="photoPreview" alt="">
       <label class="photoPickBtn" id="photoPickLabel" for="photoInput">Tap to choose a photo</label>
@@ -154,13 +161,6 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
      </div>
      <div class="photoHint" id="photoHint">We automatically shrink the photo before uploading, to keep it small and fast.</div>
     </div>
-    <details class="terms">
-     <summary>View jersey &amp; shorts size chart (numeric, inches)</summary>
-     <div class="termsBody">
-      <img src="assets/gul-size-chart-vava.jpg" alt="VAVA jersey and shorts size chart - chest, length, waist and thighs in inches" loading="lazy" style="width:100%;border-radius:8px;display:block">
-      <p style="font-size:11px;color:var(--muted);margin:10px 0 0">Note: Size measurements may vary slightly (approx. 0.5"–1") depending on production. Actual size may differ a little from the chart.</p>
-     </div>
-    </details>
     <div class="row2">
      <div class="field"><label>Jersey size</label>
       <select id="jerseySize">
@@ -169,6 +169,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
        <option>30</option><option>32</option><option>34</option><option>36</option><option>38</option>
        <option>42</option><option>44</option><option>46</option>
       </select>
+      <details class="sizeGuide"><summary>📏 Jersey size guide</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
      </div>
      <div class="field"><label>Shorts size</label>
       <select id="shortsSize">
@@ -176,9 +177,10 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
        <option>32</option><option>34</option><option>36</option><option>38</option><option>40</option>
        <option>42</option><option>44</option><option>46</option><option>48</option>
       </select>
+      <details class="sizeGuide"><summary>📏 Shorts size guide</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
      </div>
     </div>
-    <div class="field"><label>Player Instagram ID</label><input id="instaId" placeholder="@username (optional)"></div>
+    <div class="field"><label>Player Instagram username <span class="required-star">*</span></label><input id="instaId" required placeholder="@username"></div>
     <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
 
     <div class="sectionTitle">5 · Consent &amp; Declaration</div>
@@ -212,15 +214,16 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
    </form>
    <div id="status" class="status"></div>
    <div id="payBox" class="payBox" style="display:none">
-    <h3>Pay via UPI (optional, to confirm faster)</h3>
+    <div class="payRequiredNotice">⚠️ Final step — your registration is <b>not complete</b> until you pay and upload your payment screenshot below.</div>
+    <h3>Pay via UPI</h3>
     <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
     <div class="amt" id="payAmt"></div>
     <div id="payQr" style="display:flex;justify-content:center"></div>
     <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
-    <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code. You can also skip this and pay later when GUL contacts you.</div>
+    <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
 
     <div class="screenshotBox">
-     <label>Already paid? Upload your payment screenshot</label>
+     <label>Upload your payment screenshot <span class="required-star">*</span></label>
      <div class="photoPicker">
       <img class="photoPreview" id="shotPreview" alt="" style="display:none">
       <label class="photoPickBtn" id="shotPickLabel" for="shotInput">Tap to choose a screenshot</label>
@@ -354,6 +357,14 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       showStatus('err', 'Please select at least one playing position (Section 2).');
       return;
     }
+    if (!document.getElementById('instaId').value.trim()) {
+      showStatus('err', 'Please enter your Instagram username in Section 4.');
+      return;
+    }
+    if (!selectedPhotoBlob) {
+      showStatus('err', 'Please upload your player photograph in Section 4 — it will be used on the website.');
+      return;
+    }
     if (!document.getElementById('declarationAccepted').checked || !document.getElementById('mediaConsentAccepted').checked) {
       showStatus('err', 'Please accept both consent checkboxes in Section 5 to continue.');
       return;
@@ -435,11 +446,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     lastRegCode = payload.registration_code;
     document.getElementById('regForm').style.display = 'none';
-    showStatus('ok', '✅ Registration received!\n\nYour reference code: ' + payload.registration_code +
+    showStatus('ok', '✅ Details received!\n\nYour reference code: ' + payload.registration_code +
       (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
-      '\n\nSave this code. GUL will contact you on ' + payload.mobile +
-      (payload.email ? ' or ' + payload.email : '') +
-      ' with payment instructions.\n\nThis does not confirm a spot or process any payment yet.');
+      '\n\nSave this code. Now pay below and upload your payment screenshot — your registration is only complete once that\'s done.');
 
     if (currentOffer && window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
       const amount = currentOffer.price;
@@ -480,7 +489,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       btn.textContent = 'Upload Screenshot';
       return;
     }
-    document.getElementById('shotHint').textContent = '✅ Screenshot uploaded. GUL will verify it against the bank statement.';
+    document.getElementById('shotHint').textContent = '✅ Registration complete! GUL will verify your payment against the bank statement.';
     btn.textContent = 'Uploaded ✓';
   });
 }
