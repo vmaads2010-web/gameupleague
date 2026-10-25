@@ -118,7 +118,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
           <th>Code</th><th>Name</th><th>Mobile</th><th>Email</th><th>Position</th>
           <th>Jersey/Shorts</th><th>Instagram</th><th>Emergency Contact</th>
           <th>Offer</th><th>Quoted Fee</th><th>Photo</th><th>Registered</th>
-          <th>Status</th><th>Payment</th><th>Actions</th>
+          <th>Status</th><th>Payment</th><th>Screenshot</th><th>Actions</th>
         </tr></thead>
         <tbody id="regRows"></tbody>
       </table>
@@ -134,7 +134,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <thead><tr>
           <th>Code</th><th>Team Name</th><th>Owner</th><th>Mobile</th><th>Email</th>
           <th>Type</th><th>Fee</th><th>Logo</th><th>Registered</th>
-          <th>Status</th><th>Payment</th><th>Actions</th>
+          <th>Status</th><th>Payment</th><th>Screenshot</th><th>Actions</th>
         </tr></thead>
         <tbody id="teamRows"></tbody>
       </table>
@@ -252,12 +252,24 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     if (payErr) { showMsg('dashMsg', 'err', 'Could not load payments: ' + payErr.message); return; }
     allPayments = payments || [];
 
+    // Loaded early (before rendering the reg/team tables) so each row can show
+    // whether a payment screenshot is actually on file, not just whether an
+    // admin manually marked it paid - those are two different signals.
+    const { data: shots, error: shotErr } = await client
+      .from('payment_screenshots').select('*').order('created_at', { ascending: false });
+    if (shotErr) { showMsg('dashMsg', 'err', 'Could not load payment screenshots: ' + shotErr.message); return; }
+    allShots = shots || [];
+
     renderStats(regs);
     renderTable(regs);
     await loadTeams();
     renderPayments();
     await loadScreenshots();
     await loadTeamReferences();
+  }
+
+  function shotFor(registrationCode) {
+    return allShots.find(s => s.registration_code === registrationCode);
   }
 
   function renderPayments() {
@@ -281,15 +293,27 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     }).join('');
   }
 
+  // Payments export is built specifically for bank-statement reconciliation:
+  // name + registration code + amount + date, in the order you'd scan a statement.
   document.getElementById('exportPaymentsBtn').addEventListener('click', () => {
-    downloadCsv('gul-payments.csv', allPayments, [
-      { label: 'Type', value: p => p.team_registration_id ? 'Team' : 'Player' },
-      { label: 'Linked ID', value: p => p.team_registration_id || p.player_registration_id || '' },
+    downloadCsv('gul-payments-reconciliation.csv', allPayments, [
+      { label: 'Date', value: p => new Date(p.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) },
       { label: 'Amount (INR)', value: p => p.amount_paise != null ? (p.amount_paise / 100) : '' },
+      { label: 'Registration Code', value: p => {
+          const isTeam = !!p.team_registration_id;
+          const reg = isTeam ? allTeams.find(t => t.id === p.team_registration_id) : allRegs.find(r => r.id === p.player_registration_id);
+          return reg ? reg.registration_code : '';
+        } },
+      { label: 'Name', value: p => {
+          const isTeam = !!p.team_registration_id;
+          const reg = isTeam ? allTeams.find(t => t.id === p.team_registration_id) : allRegs.find(r => r.id === p.player_registration_id);
+          return reg ? (isTeam ? reg.proposed_team_name : reg.full_name) : '';
+        } },
+      { label: 'Type', value: p => p.team_registration_id ? 'Team' : 'Player' },
       { label: 'Provider', value: p => p.provider || '' },
       { label: 'Status', value: p => p.status || '' },
       { label: 'Verified via webhook', value: p => p.verified_via_webhook ? 'Yes' : 'No' },
-      { label: 'Date', value: p => new Date(p.created_at).toLocaleString('en-IN') }
+      { label: 'Full Date/Time', value: p => new Date(p.created_at).toLocaleString('en-IN') }
     ]);
   });
 
@@ -368,6 +392,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     document.getElementById('teamEmptyNote').style.display = teams.length ? 'none' : 'block';
     tbody.innerHTML = teams.map(t => {
       const paid = !!paymentFor(t.id, 'team_registration_id');
+      const shot = shotFor(t.registration_code);
       const created = new Date(t.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
       return `<tr data-id="${t.id}" data-kind="team">
         <td>${esc(t.registration_code)}</td>
@@ -381,6 +406,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${created}</td>
         <td><span class="pill ${t.status}">${esc(t.status)}</span></td>
         <td><span class="pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
+        <td>${shot ? `<button class="photoLink" data-shot-quick="${esc(shot.image_path)}">${shot.reviewed ? '✅ Reviewed' : '📎 Attached'}</button>` : '<span class="pill unpaid">None</span>'}</td>
         <td class="actionsCell">
           ${t.status !== 'approved' ? `<button class="okBtn" data-action="approve-team">Approve</button>` : ''}
           ${t.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject-team">Reject</button>` : ''}
@@ -518,6 +544,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     document.getElementById('emptyNote').style.display = regs.length ? 'none' : 'block';
     tbody.innerHTML = regs.map(r => {
       const paid = !!paymentFor(r.id);
+      const shot = shotFor(r.registration_code);
       const created = new Date(r.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
       return `<tr data-id="${r.id}">
         <td>${esc(r.registration_code)}</td>
@@ -534,6 +561,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${created}</td>
         <td><span class="pill ${r.status}">${esc(r.status)}</span></td>
         <td><span class="pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
+        <td>${shot ? `<button class="photoLink" data-shot-quick="${esc(shot.image_path)}">${shot.reviewed ? '✅ Reviewed' : '📎 Attached'}</button>` : '<span class="pill unpaid">None</span>'}</td>
         <td class="actionsCell">
           ${r.status !== 'approved' ? `<button class="okBtn" data-action="approve">Approve</button>` : ''}
           ${r.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject">Reject</button>` : ''}
@@ -549,6 +577,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       const path = photoBtn.dataset.photo;
       const { data, error } = await client.storage.from('player-photos').createSignedUrl(path, 300);
       if (error) { alert('Could not load photo: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const shotBtn = e.target.closest('[data-shot-quick]');
+    if (shotBtn) {
+      const { data, error } = await client.storage.from('payment-screenshots').createSignedUrl(shotBtn.dataset.shotQuick, 300);
+      if (error) { alert('Could not load screenshot: ' + error.message); return; }
       window.open(data.signedUrl, '_blank');
       return;
     }
@@ -585,6 +620,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     if (logoBtn) {
       const { data, error } = await client.storage.from('team-logos').createSignedUrl(logoBtn.dataset.logo, 300);
       if (error) { alert('Could not load logo: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const shotBtn = e.target.closest('[data-shot-quick]');
+    if (shotBtn) {
+      const { data, error } = await client.storage.from('payment-screenshots').createSignedUrl(shotBtn.dataset.shotQuick, 300);
+      if (error) { alert('Could not load screenshot: ' + error.message); return; }
       window.open(data.signedUrl, '_blank');
       return;
     }

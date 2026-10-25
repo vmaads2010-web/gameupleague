@@ -228,6 +228,18 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
   document.getElementById('regForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
+    if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
+      showStatus('err', 'Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+    const emailValue = document.getElementById('email').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+      showStatus('err', 'Please enter a valid email address.');
+      return;
+    }
+
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     showStatus('ok', 'Submitting...');

@@ -367,8 +367,19 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       showStatus('err', 'Please select at least one playing position (Section 2).');
       return;
     }
-    if (!document.getElementById('instaId').value.trim()) {
-      showStatus('err', 'Please enter your Instagram username in Section 4.');
+    const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
+    if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
+      showStatus('err', 'Please enter a valid 10-digit Indian mobile number in Section 1.');
+      return;
+    }
+    const emailValue = document.getElementById('email').value.trim();
+    if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+      showStatus('err', 'That email address doesn\'t look valid - please check it in Section 1 (or leave it blank).');
+      return;
+    }
+    const instaValue = document.getElementById('instaId').value.trim();
+    if (!/^@?[a-zA-Z0-9._]{1,30}$/.test(instaValue)) {
+      showStatus('err', 'Please enter a valid Instagram username in Section 4 (letters, numbers, dots and underscores only).');
       return;
     }
     if (!selectedPhotoBlob) {
