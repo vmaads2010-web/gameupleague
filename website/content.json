@@ -58,7 +58,7 @@
       { "title": "Best Goalkeeper", "winner": "Pratik Gupta", "team": "Atlanta FC", "photo": "pratik" },
       { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "", "photo": "rishi-malkhani" },
       { "title": "Emerging Player", "winner": "Rosswell", "team": "Global Net", "photo": "roswell" },
-      { "title": "Best Manager", "winner": "Dony", "team": "Palmerios" },
+      { "title": "Best Manager", "winner": "Donald Pereira", "team": "Palmerios", "ownerPhoto": "palmeiros" },
       { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" },
       { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros", "stat": "3 POM", "photo": "mayur-chavan" }
     ],

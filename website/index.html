@@ -106,6 +106,18 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .posterBlock .sub{margin:0 0 16px;font-size:14px}
 .posterImgWrap{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .posterImgWrap img{width:100%;display:block}
+.ruleBook{margin:16px 0 22px;background:#07172f;border:1px solid var(--line);border-radius:12px;padding:4px 18px}
+.ruleBook summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:13.5px;color:var(--gold);list-style:none}
+.ruleBook summary::-webkit-details-marker{display:none}
+.ruleBook summary:before{content:'▸ ';display:inline-block}
+.ruleBook[open] summary:before{content:'▾ '}
+.ruleBookBody{padding:4px 0 20px;font-size:13.5px;line-height:1.7;color:#cfd9ec}
+.ruleBookBody h4{color:#fff;font-size:14.5px;margin:18px 0 6px}
+.ruleBookBody h4:first-child{margin-top:0}
+.ruleBookBody h5{color:var(--gold);font-size:12.5px;text-transform:uppercase;letter-spacing:.5px;margin:12px 0 4px}
+.ruleBookBody p{margin:0 0 8px}
+.ruleBookBody ul{margin:0 0 10px;padding-left:20px}
+.ruleBookBody li{margin-bottom:4px}
 
 /* Timeline: Register/Archive (comic) on the left, upcoming seasons (robotics) on the right,
    logo with a hover shine sweep in the center. */
@@ -359,6 +371,67 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
     <div class="posterHead"><span class="posterIco">📋</span><div><div class="posterEyebrow">Game Up League · RELOADED</div><h3>Rules &amp; Conduct</h3></div></div>
     <p class="sub">The code every player signs up to — on and off the pitch.</p>
     <a href="assets/gul-rules-poster.jpg" target="_blank" rel="noopener" class="posterImgWrap"><img loading="lazy" src="assets/gul-rules-poster.jpg" alt="Game Up League RELOADED - Rules and Conduct"></a>
+    <details class="ruleBook">
+     <summary>Read the full Rule Book</summary>
+     <div class="ruleBookBody">
+      <h4>1. Tournament Overview</h4>
+      <p>8 teams. All matches at Game Up Turf, Vasai (West). League runs ~8 weeks, matches every Sunday 5:00–9:00 PM. Each match is a 20-minute full game, all at a single venue.</p>
+
+      <h4>2. Match Reporting &amp; Walkover Rules</h4>
+      <p>Teams must report at least 30 minutes before kick-off, match-ready with full kit. Late reporting results in a walkover.</p>
+
+      <h4>3. League Format &amp; Points System</h4>
+      <p>Each team plays 14 matches. Win – 3 points, Draw – 1 point, Loss – 0 points.</p>
+      <h5>Tie-breaking criteria (in order)</h5>
+      <ul><li>Goal Difference</li><li>Goals Scored</li><li>Head-to-Head Aggregate Score</li><li>Fewest Yellow Cards</li><li>Playoff Tiebreaker (format set by organizers)</li></ul>
+
+      <h4>4. Squad &amp; Player Eligibility</h4>
+      <p>Players must be 18+. Each team registers a squad of 8. Match format is 5+4: 5 on the field, 4 rolling substitutes.</p>
+
+      <h4>5. Kit, Footwear &amp; Equipment</h4>
+      <p>Official team jersey and shin guards required at all times. Only turf shoes allowed — studs (metal or rubber) strictly prohibited. Non-compliant players won't be allowed to play. GUL manufactures team jerseys; replacement cost for a damaged/lost jersey is ₹500.</p>
+
+      <h4>6. Card &amp; Disciplinary Rules</h4>
+      <p>Two yellow cards across two different matches = one-match ban. A straight red, or two yellows in the same match, means dismissal for the rest of the match, a one-match ban, and the team plays one short for the remainder. Indiscipline by any player, owner or representative may bring warnings, bans, suspension or expulsion.</p>
+
+      <h4>7. Referees &amp; Match Officials</h4>
+      <p>The referee's decision is final. Disrespect or abuse toward officials may lead to legal action, contract cancellation, or a league ban without refunds.</p>
+
+      <h4>8. Organiser Authority</h4>
+      <p>The organisers' decision is final for all disputes — no appeal will be entertained.</p>
+
+      <h4>9. Trials, Registration &amp; Refund Policy</h4>
+      <p>No refunds to players or team owners after trials are completed, under any circumstances.</p>
+
+      <h4>10. Match Rules</h4>
+      <p><b>Eligibility:</b> A minimum of 4 players per team must be present and ready; otherwise the match is a walkover to the opponent.</p>
+      <p><b>10.1 Team composition:</b> 5 players including 1 goalkeeper; minimum 4 to start.</p>
+      <p><b>10.2 Substitutions:</b> Unlimited, rolling during stoppages; a substituted player may re-enter.</p>
+      <p><b>10.3 Game Up specific:</b> First 1 minute is 3v3 (gong signals the switch to standard format). Final 1 minute of the second half — every goal counts double (gong signals the start). Each team picks one Power Card before kick-off; it can't be changed mid-match.</p>
+      <p><b>10.4 Kick-off &amp; restarts:</b> Taken at the start of each half and after every goal; opponents must be 3m from the ball; goals may be scored directly from kick-off.</p>
+      <p><b>10.5 Ball in/out of play:</b> Out when it fully crosses the boundary line; restarts are a carpet roll.</p>
+      <p><b>10.6 Goalkeeper:</b> Hands only inside the penalty area; must release the ball within 6 seconds; can throw but not volley; can't score directly from a throw.</p>
+      <p><b>10.7 Fouls &amp; misconduct:</b> Standard football fouls apply. Slide tackles are banned except for a goalkeeper's hand save inside their own penalty area.</p>
+      <p><b>10.8 Disciplinary actions:</b> Yellow card = 2 minutes out. Red card = dismissal, and the team plays one man short for the rest of the match.</p>
+      <p><b>10.9 Free kicks &amp; penalties:</b> All free kicks are indirect unless stated otherwise. Penalties are awarded for fouls inside the penalty area.</p>
+      <p><b>10.10 Shooting:</b> Goals may be scored from anywhere on the field, subject to the other match rules.</p>
+      <p><b>10.11 Offside:</b> No offside rule applies.</p>
+      <p><b>10.12 Fair play:</b> Unsporting behaviour, time-wasting or abuse of officials isn't tolerated; repeated misconduct can mean match forfeiture or tournament expulsion.</p>
+
+      <h4>11. 3v3 Match-Specific Rules</h4>
+      <p>Kick-off at the centre of the field. Goals only count from the opponent's half — any goal from a team's own half is disallowed. No hand saves; all play is feet-only, deliberate hand contact is a foul. The 3v3 phase lasts the first minute; a buzzer then signals the remaining two players per side to enter, and play continues under regular match rules.</p>
+
+      <h4>12. Power Card Rules</h4>
+      <p>Each team picks one Power Card before kick-off. It can only be used after the 3v3 phase and before the 2× goal period begins, only when the ball is out of play, and the team must clearly tell the referee before play restarts. Once used, it can't be reused in that match.</p>
+      <h5>The four Power Cards</h5>
+      <ul>
+       <li><b>MLS Penalty:</b> 1v1 vs the goalkeeper, taken from the centre of the pitch, no touch restriction, 10 seconds to score — saved the instant the keeper makes contact.</li>
+       <li><b>Power Surge:</b> Activating team adds one extra player (play continues 6v5 in their favour) for 1 minute.</li>
+       <li><b>Bench Threat:</b> Temporarily removes one opposing player, forcing them to play 4v5; the benched player returns after 1 minute.</li>
+       <li><b>Joker:</b> Lets the team use any one of the other three cards — MLS Penalty, Power Surge, or Bench Threat.</li>
+      </ul>
+     </div>
+    </details>
    </div>
 
    <div class="posterBlock r-item">
@@ -663,6 +736,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const heroLogo = teamLogoSrc(a.team || a.winner);
       let hero = '';
       if (a.photo) hero = `<img class="awardPhoto" src="assets/squad/${a.photo}.jpg" alt="${a.winner}" loading="lazy">`;
+      else if (a.ownerPhoto) hero = `<img class="awardPhoto" src="assets/owners/${a.ownerPhoto}.jpg" alt="${a.winner}" loading="lazy">`;
       else if (heroLogo) hero = `<div class="awardPhoto awardLogoHero"><img src="${heroLogo}" alt="${a.winner}" loading="lazy"></div>`;
       return `<div class="awardCard r-item">${hero}<div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${logo ? `<img class="awardTeamLogo" src="${logo}" alt="${a.team}" loading="lazy">` : ''}${a.team}${a.stat ? ' · ' + a.stat : ''}</div>` : (a.stat ? `<div class="team">${a.stat}</div>` : '')}</div>`;
     }).join('');
