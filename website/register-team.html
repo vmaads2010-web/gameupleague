@@ -68,8 +68,18 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
   <div class="feeBox">
    <div><div class="label">Team Entry Fee</div></div>
-   <div class="price" id="feeAmount"></div>
+   <div class="price" id="feeAmount">Loading…</div>
   </div>
+
+  <script>
+   // Fires immediately, before the supabase/QR-code libraries below load, so the
+   // fee amount fills in right away instead of waiting on those downloads.
+   window.__gulContentPromise = fetch('content.json?v=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
+   window.__gulContentPromise.then(c => {
+     const teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
+     document.getElementById('feeAmount').innerHTML = '₹' + teamFee.toLocaleString('en-IN') + '<small> / team</small>';
+   }).catch(() => { document.getElementById('feeAmount').textContent = '₹11,000'; });
+  </script>
 
   <div class="notice">⚠️ <b>Online payment is not connected yet.</b> Submitting this form reserves your team entry and creates your record with GUL — it does not charge you anything here. GUL will contact you directly to confirm.</div>
 
@@ -126,10 +136,11 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="admin/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<script src="admin/supabase-config.js" defer></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
 const statusEl = document.getElementById('status');
 function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
 
@@ -202,13 +213,12 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
 let teamFee = 11000;
 let lastRegCode = null;
 
-fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
-  .then(r => r.json())
-  .then(c => {
-    teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
-    document.getElementById('feeAmount').innerHTML = '₹' + teamFee.toLocaleString('en-IN') + '<small> / team</small>';
-  })
-  .catch(() => { document.getElementById('feeAmount').textContent = '₹11,000'; });
+// Reuses the fetch kicked off immediately near the top of the page (see the
+// early inline script right after the fee box markup), instead of firing a
+// second network request for the same file.
+window.__gulContentPromise.then(c => {
+  teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
+}).catch(() => {});
 
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
@@ -312,6 +322,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     btn.textContent = 'Uploaded ✓';
   });
 }
+});
 </script>
 <script src="assets/wolf-chat.js" defer></script>
 </body>

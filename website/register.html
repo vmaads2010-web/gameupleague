@@ -108,6 +108,29 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
    <div class="offerUrgency" id="offerUrgency"></div>
   </div>
 
+  <script>
+   // Fires immediately, before the supabase/QR-code libraries below load, so the
+   // offer banner fills in right away instead of waiting on those downloads.
+   window.__gulContentPromise = fetch('content.json?v=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
+   window.__gulContentPromise.then(c => {
+     const currentOffer = c.registration[c.registration.activeOffer];
+     document.getElementById('offerLabel').textContent = currentOffer.label + ' Registration — Open Now';
+     document.getElementById('offerWindow').textContent = currentOffer.window || '';
+     document.getElementById('offerPrice').innerHTML = '₹' + currentOffer.price.toLocaleString('en-IN') + '<small> / player</small>';
+     document.getElementById('offerExtraNote').textContent = currentOffer.note || '';
+
+     const regular = c.registration.regular;
+     const urgencyEl = document.getElementById('offerUrgency');
+     if (c.registration.activeOffer !== 'regular' && regular.price > currentOffer.price) {
+       urgencyEl.innerHTML = '⏳ This rate won\'t last — once this offer closes, the price goes up to <b>₹' + regular.price.toLocaleString('en-IN') + '/player</b>. Register now to lock in ₹' + currentOffer.price.toLocaleString('en-IN') + '.';
+     } else {
+       urgencyEl.style.display = 'none';
+     }
+   }).catch(() => {
+     document.getElementById('offerLabel').textContent = 'Could not load current pricing';
+   });
+  </script>
+
   <div class="notice">⚠️ <b>2 steps:</b> fill this form, then pay via UPI and upload your payment screenshot — shown right after you submit. Your registration is only complete once both are done.</div>
 
   <div class="card">
@@ -240,10 +263,11 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="admin/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<script src="admin/supabase-config.js" defer></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
 const statusEl = document.getElementById('status');
 function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
 
@@ -321,26 +345,12 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
 
 let currentOffer = null;
 
-fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
-  .then(r => r.json())
-  .then(c => {
-    currentOffer = c.registration[c.registration.activeOffer];
-    document.getElementById('offerLabel').textContent = currentOffer.label + ' Registration — Open Now';
-    document.getElementById('offerWindow').textContent = currentOffer.window || '';
-    document.getElementById('offerPrice').innerHTML = '₹' + currentOffer.price.toLocaleString('en-IN') + '<small> / player</small>';
-    document.getElementById('offerExtraNote').textContent = currentOffer.note || '';
-
-    const regular = c.registration.regular;
-    const urgencyEl = document.getElementById('offerUrgency');
-    if (c.registration.activeOffer !== 'regular' && regular.price > currentOffer.price) {
-      urgencyEl.innerHTML = '⏳ This rate won\'t last — once this offer closes, the price goes up to <b>₹' + regular.price.toLocaleString('en-IN') + '/player</b>. Register now to lock in ₹' + currentOffer.price.toLocaleString('en-IN') + '.';
-    } else {
-      urgencyEl.style.display = 'none';
-    }
-  })
-  .catch(() => {
-    document.getElementById('offerLabel').textContent = 'Could not load current pricing';
-  });
+// Reuses the fetch kicked off immediately near the top of the page (see the
+// early inline script right after the offer banner markup), instead of firing
+// a second network request for the same file.
+window.__gulContentPromise.then(c => {
+  currentOffer = c.registration[c.registration.activeOffer];
+}).catch(() => {});
 
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
@@ -493,6 +503,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     btn.textContent = 'Uploaded ✓';
   });
 }
+});
 </script>
 <script src="assets/wolf-chat.js" defer></script>
 </body>
