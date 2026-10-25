@@ -155,6 +155,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
 
     <div class="refreshRow" style="margin-top:34px">
       <h2 style="margin:0;font-size:18px">Payment Screenshots</h2>
+      <button class="exportBtn" id="exportShotsBtn">⬇ Export CSV (with photo links)</button>
     </div>
     <div class="tableWrap">
       <table>
@@ -204,6 +205,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   let allPayments = [];
   let allRegs = [];
   let allTeams = [];
+  let allShots = [];
 
   const money = (paise) => paise == null ? '—' : '₹' + (paise / 100).toLocaleString('en-IN');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -224,6 +226,19 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  // Resolves a batch of private-storage paths to temporary signed URLs (30 days),
+  // so the exported spreadsheet's photo links keep working long enough to be
+  // useful, not just for the few minutes the "View" buttons use elsewhere.
+  async function signedUrlMap(bucket, paths) {
+    const valid = [...new Set(paths.filter(Boolean))];
+    if (!valid.length) return {};
+    const { data, error } = await client.storage.from(bucket).createSignedUrls(valid, 60 * 60 * 24 * 30);
+    if (error || !data) return {};
+    const map = {};
+    data.forEach(d => { if (d.signedUrl && d.path) map[d.path] = d.signedUrl; });
+    return map;
   }
 
   async function loadDashboard() {
@@ -379,6 +394,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const { data: shots, error } = await client
       .from('payment_screenshots').select('*').order('created_at', { ascending: false });
     if (error) { showMsg('dashMsg', 'err', 'Could not load payment screenshots: ' + error.message); return; }
+    allShots = shots || [];
     const tbody = document.getElementById('shotRows');
     document.getElementById('shotEmptyNote').style.display = shots.length ? 'none' : 'block';
     tbody.innerHTML = shots.map(s => {
@@ -430,8 +446,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     document.getElementById(id).addEventListener('input', () => renderTable(filteredRegs()));
   });
 
-  document.getElementById('exportRegsBtn').addEventListener('click', () => {
-    downloadCsv('gul-player-registrations.csv', filteredRegs(), [
+  document.getElementById('exportRegsBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('exportRegsBtn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing photos...';
+    const rows = filteredRegs();
+    const photoMap = await signedUrlMap('player-photos', rows.map(r => r.photo_url));
+    downloadCsv('gul-player-registrations.csv', rows, [
       { label: 'Code', value: r => r.registration_code },
       { label: 'Name', value: r => r.full_name },
       { label: 'Mobile', value: r => r.mobile },
@@ -451,11 +472,17 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Heard From', value: r => r.heard_from || '' },
       { label: 'Status', value: r => r.status },
       { label: 'Paid', value: r => paymentFor(r.id) ? 'Yes' : 'No' },
+      { label: 'Photo URL (valid 30 days)', value: r => r.photo_url ? (photoMap[r.photo_url] || '') : '' },
       { label: 'Registered', value: r => new Date(r.created_at).toLocaleString('en-IN') }
     ]);
+    btn.disabled = false; btn.textContent = originalLabel;
   });
 
-  document.getElementById('exportTeamsBtn').addEventListener('click', () => {
+  document.getElementById('exportTeamsBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('exportTeamsBtn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing logos...';
+    const logoMap = await signedUrlMap('team-logos', allTeams.map(t => t.team_logo_url));
     downloadCsv('gul-team-registrations.csv', allTeams, [
       { label: 'Code', value: t => t.registration_code },
       { label: 'Team Name', value: t => t.proposed_team_name },
@@ -466,8 +493,24 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Fee (INR)', value: () => 11000 },
       { label: 'Status', value: t => t.status },
       { label: 'Paid', value: t => paymentFor(t.id, 'team_registration_id') ? 'Yes' : 'No' },
+      { label: 'Logo URL (valid 30 days)', value: t => t.team_logo_url ? (logoMap[t.team_logo_url] || '') : '' },
       { label: 'Registered', value: t => new Date(t.created_at).toLocaleString('en-IN') }
     ]);
+    btn.disabled = false; btn.textContent = originalLabel;
+  });
+
+  document.getElementById('exportShotsBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('exportShotsBtn');
+    const originalLabel = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing photos...';
+    const shotMap = await signedUrlMap('payment-screenshots', allShots.map(s => s.image_path));
+    downloadCsv('gul-payment-screenshots.csv', allShots, [
+      { label: 'Registration Code', value: s => s.registration_code },
+      { label: 'Reviewed', value: s => s.reviewed ? 'Yes' : 'No' },
+      { label: 'Screenshot URL (valid 30 days)', value: s => shotMap[s.image_path] || '' },
+      { label: 'Uploaded', value: s => new Date(s.created_at).toLocaleString('en-IN') }
+    ]);
+    btn.disabled = false; btn.textContent = originalLabel;
   });
 
   function renderTable(regs) {
