@@ -118,6 +118,16 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .ruleBookBody p{margin:0 0 8px}
 .ruleBookBody ul{margin:0 0 10px;padding-left:20px}
 .ruleBookBody li{margin-bottom:4px}
+.scheduleGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px;margin:16px 0 20px}
+.matchDayCard{background:linear-gradient(180deg,rgba(245,181,27,.08),rgba(8,24,49,.6));border:1px solid rgba(245,181,27,.3);border-radius:14px;padding:14px 10px;text-align:center;position:relative;overflow:hidden}
+.matchDayCard .round{font-size:9.5px;font-weight:900;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
+.matchDayCard .date{font-size:21px;font-weight:900;color:#fff;margin-top:4px;line-height:1.1}
+.matchDayCard .month{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.matchDayCard .day{font-size:11px;color:var(--muted);margin-top:4px}
+.matchDayCard.isFinal{background:linear-gradient(180deg,rgba(245,181,27,.22),rgba(8,24,49,.6));border-color:var(--gold);box-shadow:0 0 18px rgba(245,181,27,.25)}
+.matchDayCard.isFinal .round{color:#fff}
+.matchDayCard .trophyMark{font-size:16px;margin-top:2px}
+.scheduleFootnote{font-size:12px;color:var(--muted);line-height:1.6;background:#07172f;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:4px}
 
 /* Timeline: Register/Archive (comic) on the left, upcoming seasons (robotics) on the right,
    logo with a hover shine sweep in the center. */
@@ -444,6 +454,23 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
     <div class="posterHead"><span class="posterIco">🔨</span><div><div class="posterEyebrow">RELOADED</div><h3>The Player Auction</h3></div></div>
     <p class="sub">Owners bid live to build their squad. 13 Dec 2026, venue TBC.</p>
     <a href="assets/gul-auction-poster.jpg" target="_blank" rel="noopener" class="posterImgWrap"><img loading="lazy" src="assets/gul-auction-poster.jpg" alt="The Player Auction - Game Up League RELOADED"></a>
+   </div>
+
+   <div class="posterBlock r-item">
+    <div class="posterHead"><span class="posterIco">🗓️</span><div><div class="posterEyebrow">RELOADED</div><h3>Match Schedule</h3></div></div>
+    <p class="sub">9 match days, 16 Jan – 13 Mar 2027. Official dates, straight from GUL.</p>
+    <div class="scheduleGrid">
+     <div class="matchDayCard"><div class="round">Round 1</div><div class="date">16</div><div class="month">Jan</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 2</div><div class="date">24</div><div class="month">Jan</div><div class="day">Sunday</div></div>
+     <div class="matchDayCard"><div class="round">Round 3</div><div class="date">30</div><div class="month">Jan</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 4</div><div class="date">6</div><div class="month">Feb</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 5</div><div class="date">13</div><div class="month">Feb</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 6</div><div class="date">20</div><div class="month">Feb</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 7</div><div class="date">27</div><div class="month">Feb</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard"><div class="round">Round 8</div><div class="date">6</div><div class="month">Mar</div><div class="day">Saturday</div></div>
+     <div class="matchDayCard isFinal"><div class="round">Finals</div><div class="date">13</div><div class="month">Mar</div><div class="day">Saturday</div><div class="trophyMark">🏆</div></div>
+    </div>
+    <div class="scheduleFootnote">⚠️ Games originally scheduled for Sat, 23 Jan 2027 will instead be played on Sun, 24 Jan 2027 — already reflected above. Team-vs-team fixtures are published once squads are drafted at the 13 Dec auction.</div>
    </div>
 
    <div class="posterBlock r-item">
