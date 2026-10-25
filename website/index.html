@@ -29,6 +29,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
  .hero-copy h1{opacity:0;animation:fadeUp .7s ease .18s forwards}
  .hero-copy p{opacity:0;animation:fadeUp .7s ease .32s forwards}
  .hero-copy .actions{opacity:0;animation:fadeUp .7s ease .46s forwards}
+ .hero-copy .heroStats{opacity:0;animation:fadeUp .7s ease .6s forwards}
  .hero-art:after{animation:glowPulse 4s ease-in-out infinite}
  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
  .reveal.in{opacity:1;transform:translateY(0)}
@@ -70,6 +71,11 @@ linear-gradient(120deg,rgba(6,19,43,.98),rgba(6,19,43,.78),rgba(7,21,47,.35));po
 h1{font-family:'Anton',Inter,sans-serif;font-weight:400;font-size:clamp(44px,7vw,80px);line-height:.97;margin:16px 0 22px;letter-spacing:-1px;text-transform:uppercase}
 h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.heroStats{display:flex;gap:32px;margin-top:40px;flex-wrap:wrap}
+.heroStat{position:relative;padding-left:16px}
+.heroStat:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:2px;background:linear-gradient(180deg,var(--gold),transparent)}
+.heroStat .n{font-family:'Anton',Inter,sans-serif;font-size:32px;color:#fff;line-height:1}
+.heroStat .l{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-top:4px}
 .hero-art{position:relative;height:600px;display:flex;align-items:flex-end;justify-content:center;z-index:1}
 .hero-art:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(20,89,199,.35),transparent 68%);bottom:50px}
 .mascot{position:relative;z-index:2;width:min(480px,90%);height:560px;object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 25px 35px rgba(0,0,0,.4))}
@@ -357,6 +363,11 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <h1><span id="heroLine1" style="color:var(--white)"></span><br><span id="heroLine2" style="color:var(--gold)"></span><br><span id="heroLine3" style="color:var(--white)"></span></h1>
   <p id="heroDesc"></p>
   <div class="actions"><a class="btn gold" href="#season2">RELOADED →</a><a class="btn outline" href="#contact">Get in touch</a></div>
+  <div class="heroStats">
+   <div class="heroStat"><div class="n">9</div><div class="l">RELOADED Teams</div></div>
+   <div class="heroStat"><div class="n">8</div><div class="l">Players / Team</div></div>
+   <div class="heroStat"><div class="n">2</div><div class="l">Seasons &amp; Counting</div></div>
+  </div>
  </div>
  <div class="hero-art">
   <div class="hudFrame">
@@ -704,6 +715,15 @@ function updateScrollProgress() {
 }
 window.addEventListener('scroll', updateScrollProgress, { passive: true });
 updateScrollProgress();
+
+// Subtle cinematic parallax on the hero mascot/art as the visitor scrolls past it.
+const heroArt = document.querySelector('.hero-art');
+if (heroArt && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 700) heroArt.style.transform = 'translateY(' + (y * 0.12) + 'px)';
+  }, { passive: true });
+}
 
 if ('IntersectionObserver' in window) {
   const io = new IntersectionObserver((entries) => {
