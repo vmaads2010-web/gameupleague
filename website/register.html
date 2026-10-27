@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player Registration — Game Up League</title>
-<meta name="description" content="Register your interest to play in Game Up League RELOADED.">
+<title>Player Registration — The Gameup League</title>
+<meta name="description" content="Register your interest to play in The Gameup League RELOADED.">
 <link rel="icon" href="assets/gul-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,13 +93,13 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
 </style>
 </head>
 <body>
-<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo.png" alt="Game Up League logo"><span>GAME UP LEAGUE</span></a></div></header>
+<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a></div></header>
 
 <div class="wrap">
  <div class="container">
   <div class="eyebrow">RELOADED</div>
   <h1>Player Registration</h1>
-  <p class="sub">Reserve your spot for Game Up League RELOADED.</p>
+  <p class="sub">Reserve your spot for The Gameup League RELOADED.</p>
 
   <div class="offerBox">
    <div class="offerBadge"><span class="dot"></span><span id="offerLabel">Loading offer…</span></div>
@@ -168,7 +168,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
 
     <div class="sectionTitle">4 · Additional Information</div>
     <div class="field">
-     <label>How did you hear about Game Up League?</label>
+     <label>How did you hear about The Gameup League?</label>
      <select id="heardFrom">
       <option value="">Select (optional)</option>
       <option>Instagram</option>
@@ -231,8 +231,8 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
      </div>
     </details>
     <div class="consentBox">
-     <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow GameUp League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
-     <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to GameUp League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow The Gameup League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to The Gameup League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
     </div>
 
     <button type="submit" id="submitBtn">Submit Registration</button>
@@ -477,7 +477,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       const amount = currentOffer.price;
       const note = 'GUL ' + payload.registration_code;
       const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
-        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'Game Up League') +
+        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Gameup League') +
         '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
 
       document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');

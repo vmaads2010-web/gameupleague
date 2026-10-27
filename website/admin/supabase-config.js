@@ -12,4 +12,4 @@ window.GUL_SUPABASE_ANON_KEY = "sb_publishable_-jUbMs4J7BaHzURFMofyDQ_sYRcrN0t";
 // There is no automatic payment verification yet - admin checks the UPI app/bank and marks
 // the registration as paid manually later, once the admin dashboard exists.
 window.GUL_UPI_ID = "MVISHAL245@YBL";
-window.GUL_UPI_PAYEE_NAME = "Game Up League";
+window.GUL_UPI_PAYEE_NAME = "The Gameup League";
