@@ -45,6 +45,11 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 }
 @media (prefers-reduced-motion: reduce){ .reveal{opacity:1!important;transform:none!important} }
 .scrollProgress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),#ffd873);z-index:999;transition:width .1s linear}
+/* RELOADED and Football Reimagined stay collapsed until their Journey tile (or
+   any link to #season1/#season2) is clicked - the homepage itself only shows
+   the compact Journey hub, not every season's full archive at once. */
+.seasonSection{display:none}
+.seasonSection.open{display:block}
 .notice-bar{background:#13285a;color:#dce6ff;font-size:12.5px;text-align:center;padding:9px 14px;border-bottom:1px solid var(--line)}
 .notice-bar b{color:var(--gold)}
 .nav{position:sticky;top:0;z-index:50;background:rgba(5,16,36,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
@@ -353,9 +358,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container navin">
   <a class="btn gold navRegister" href="register.html">Register</a>
   <div class="navCenter">
-   <a class="navSeasonLink" href="#season1">Reimagined</a>
-   <a class="brand" href="#home"><img src="assets/season2-logo.png" alt="The Gameup League RELOADED logo"></a>
-   <a class="navSeasonLink" href="#season2">Reloaded</a>
+   <a class="brand" href="#home"><img src="assets/season2-logo.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a>
   </div>
   <button class="hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
@@ -428,7 +431,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
-<section class="section" id="season2">
+<section class="section seasonSection" id="season2">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Coming up</div><h2>RELOADED</h2></div></div>
   <p class="sub reveal" id="season2Intro"></p>
@@ -585,7 +588,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
-<section class="section" id="season1">
+<section class="section seasonSection" id="season1">
  <div class="container">
   <div class="section-head reveal"><div style="display:flex;align-items:center;gap:16px"><img src="assets/s1-logo.png" alt="Football Reimagined logo" loading="lazy" style="width:64px;height:64px;border-radius:14px;flex-shrink:0"><div><div class="eyebrow">25–26 · Completed</div><h2>Football Reimagined</h2></div></div></div>
   <p class="sub reveal" id="season1Note" style="margin-bottom:20px"></p>
@@ -754,6 +757,18 @@ if ('IntersectionObserver' in window) {
 setTimeout(() => {
   document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => el.classList.add('in'));
 }, 1200);
+
+// RELOADED and Football Reimagined are collapsed by default (see .seasonSection
+// CSS) - any link anywhere on the page pointing at #season1 or #season2 opens
+// that section first, then lets the normal anchor-scroll carry on.
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a[href="#season1"], a[href="#season2"]');
+  if (!a) return;
+  const target = document.querySelector(a.getAttribute('href'));
+  if (target && target.classList.contains('seasonSection') && !target.classList.contains('open')) {
+    target.classList.add('open');
+  }
+});
 
 // Highlights the current section's nav link while scrolling, like a premium
 // single-page site - not just on click.
