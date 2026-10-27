@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Gameup League — RELOADED</title>
 <meta name="description" content="The Gameup League (GUL) — football leagues, teams, players, Game Up Turf and RELOADED.">
-<link rel="icon" href="assets/season2-logo.png">
+<link rel="icon" href="assets/gul-logo-neutral.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -90,6 +90,7 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .hero-art{position:relative;height:600px;display:flex;align-items:flex-end;justify-content:center;z-index:1}
 .hero-art:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(20,89,199,.35),transparent 68%);bottom:50px}
 .mascot{position:relative;z-index:2;width:min(480px,90%);height:560px;object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 25px 35px rgba(0,0,0,.4))}
+.heroLogoArt{position:relative;z-index:2;width:min(380px,80%);object-fit:contain;filter:drop-shadow(0 25px 45px rgba(0,0,0,.5))}
 
 /* HUD-style frame for the RELOADED mascot - matches the rules/auction/
    points-table poster theme (metal bevel, glow border, rivets, corner brackets),
@@ -358,7 +359,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container navin">
   <a class="btn gold navRegister" href="register.html">Register</a>
   <div class="navCenter">
-   <a class="brand" href="#home"><img src="assets/season2-logo.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a>
+   <a class="brand" href="#home"><img src="assets/gul-logo-neutral.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a>
   </div>
   <button class="hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
@@ -388,18 +389,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   </div>
  </div>
  <div class="hero-art">
-  <div class="hudFrame">
-   <div class="hudTag">RELOADED</div>
-   <div class="hudHex"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><pattern id="heroHex" width="14" height="12.1" patternUnits="userSpaceOnUse"><polygon points="7,0 14,3.6 14,8.5 7,12.1 0,8.5 0,3.6" fill="none" stroke="#f5b51b" stroke-width="0.4"/></pattern></defs><rect width="100" height="100" fill="url(#heroHex)"/></svg></div>
-   <img class="mascot-photo" src="assets/season2-mascot.jpg" alt="The Gameup League grey wolf mascot - RELOADED">
-   <div class="hudBorderOuter"></div>
-   <div class="hudBorderGlow"></div>
-   <div class="hudCorner c-tl"></div><div class="hudCorner c-tr"></div><div class="hudCorner c-bl"></div><div class="hudCorner c-br"></div>
-   <div class="hudRivet" style="top:14px;left:14px"></div>
-   <div class="hudRivet" style="top:14px;right:14px"></div>
-   <div class="hudRivet" style="bottom:14px;left:14px"></div>
-   <div class="hudRivet" style="bottom:14px;right:14px"></div>
-  </div>
+  <img class="heroLogoArt" src="assets/gul-logo-neutral.png" alt="The Gameup League logo" loading="lazy">
  </div>
 </section>
 
@@ -416,7 +406,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
    <div class="tlCenter">
     <div class="earlyBirdChip">⏳ Early Bird Open</div>
-    <a class="shineLogo" href="#season2"><img src="assets/season2-logo.png" alt="The Gameup League logo" loading="lazy"></a>
+    <a class="shineLogo" href="#season2"><img src="assets/gul-logo-neutral.png" alt="The Gameup League logo" loading="lazy"></a>
     <div class="tlFooterLinks"><a href="#contact">Feedback</a><a href="#season1">Reimagined</a><a href="#contact">Contact Us</a></div>
    </div>
 
@@ -705,7 +695,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <footer class="footer">
  <div class="container footgrid">
-  <div><img class="footlogo" src="assets/season2-logo.png" alt="The Gameup League"><p>Play. Compete. Game Up.</p><p>© 2026 The Gameup League. All rights reserved.</p></div>
+  <div><img class="footlogo" src="assets/gul-logo-neutral.png" alt="The Gameup League"><p>Play. Compete. Game Up.</p><p>© 2026 The Gameup League. All rights reserved.</p></div>
   <div><h3>Explore</h3><p><a href="#season2">RELOADED</a></p><p><a href="#season1">Football Reimagined</a></p><p><a href="#leadership">Leadership</a></p><p><a href="#gallery">Gallery</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
   <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p>YouTube: <a id="footerYoutube" href="#" target="_blank" rel="noopener"></a></p></div>
  </div>
