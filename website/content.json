@@ -49,7 +49,7 @@
     "_source": "Champion/runner-up/MVP-style awards transcribed from GUL's own public Instagram posts (thegameupleague), 10 Oct 2026. Golden Boot and Player-of-the-Match stats are from GUL's official 'Gameup Stats' scorebook, pulled 20 Oct 2026. Points table below is computed by Claude directly from GUL's own match scoresheets (Matchday 1-4, 32 real matches with referees/venues/dates, pulled from Drive 20 Oct 2026) - it is NOT a full-season table since scoresheets only exist for Matchdays 1-4 in the shared Drive (Matchday 5/6/7/8 either have no scoresheet or blank scores) - labeled accordingly, not presented as final.",
     "archiveNote": "Final Golden Boot and Player-of-the-Match stats are from GUL's official scorebook. The points table reflects Matchdays 1-4 (32 real matches) - the only matchdays with complete scoresheets found; later rounds are still being compiled.",
     "champion": "Atlanta FC",
-    "runnerUp": "Palmerios",
+    "runnerUp": "Palmeiros",
     "superCupChampion": "Yeshua FC",
     "superCupRunnerUp": "Globalnet Computers",
     "awards": [
@@ -58,7 +58,7 @@
       { "title": "Best Goalkeeper", "winner": "Pratik Gupta", "team": "Atlanta FC", "photo": "pratik" },
       { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "", "photo": "rishi-malkhani" },
       { "title": "Emerging Player", "winner": "Rosswell", "team": "Global Net", "photo": "roswell" },
-      { "title": "Best Manager", "winner": "Donald Pereira", "team": "Palmerios", "ownerPhoto": "palmeiros" },
+      { "title": "Best Manager", "winner": "Donald Pereira", "team": "Palmeiros", "ownerPhoto": "palmeiros" },
       { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" },
       { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros", "stat": "3 POM", "photo": "mayur-chavan" }
     ],
