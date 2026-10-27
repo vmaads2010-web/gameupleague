@@ -1,7 +1,7 @@
 {
   "_instructions": "Edit the text values below (the parts in quotes after each colon). Do not change anything before a colon (the field names). After saving, the live website updates automatically within about a minute.",
 
-  "noticeBar": "🚧 Early preview of The Gameup League website. Some details are still being confirmed by GUL leadership.",
+  "noticeBar": "🚧 Early preview of The Game Up League website. Some details are still being confirmed by GUL leadership.",
 
   "hero": {
     "kicker": "⚽ Football • Community • Competition",
@@ -35,8 +35,8 @@
   },
 
   "teamRegistration": {
-    "_note": "Flat fee, no Early Bird tier for teams - confirmed by Vishal in chat 10 Oct 2026. This conflicts with an earlier note that mentioned a discount; flagged in docs/QUESTIONS_FOR_GUL_LEADERSHIP.md pending final confirmation.",
-    "fee": 11000
+    "_note": "Flat fee, no Early Bird tier for teams. Fee updated to Rs 12,000 per GUL's typed instruction list, 28 Oct 2026.",
+    "fee": 12000
   },
 
   "turf": {
@@ -110,18 +110,18 @@
 
   "leadership": {
     "_instructions": "photo is a filename inside website/assets/leadership/ (e.g. 'ansel.jpg'). Leave as null until Vishal provides photos - a placeholder with initials will show instead.",
-    "_source": "Names from GUL_MASTER_KNOWLEDGE.md. Social Media and Marketing/PR entries are flagged unconfirmed in docs/QUESTIONS_FOR_GUL_LEADERSHIP.md - not yet locked in.",
+    "_source": "Full names and confirmed roles from GUL's own typed WhatsApp message, 28 Oct 2026 - supersedes earlier first-names-only/unconfirmed list.",
     "members": [
-      { "role": "President", "name": "Ansel", "photo": null },
-      { "role": "Vice President", "name": "Abhay", "photo": null },
-      { "role": "Chairperson", "name": "Vishal", "photo": null },
-      { "role": "Treasurer", "name": "Anmol", "photo": null },
-      { "role": "Technical Director", "name": "Neil", "photo": null },
-      { "role": "League Commissioner", "name": "Snedden", "photo": null },
-      { "role": "Social Media (unconfirmed)", "name": "Mandar", "photo": null },
-      { "role": "Marketing / PR (spelling unconfirmed)", "name": "Sheryans", "photo": null },
-      { "role": "League Marshal", "name": "Anslem & Clyde", "photo": null },
-      { "role": "League Coordinator", "name": "Ronnie", "photo": null }
+      { "role": "President", "name": "Ansel Arakal", "photo": null },
+      { "role": "Vice President", "name": "Abhay Arakal", "photo": null },
+      { "role": "Chairperson", "name": "Vishal Mishra", "photo": null },
+      { "role": "Treasurer", "name": "Anmol Arakal", "photo": null },
+      { "role": "Technical Director", "name": "Neil Lobo", "photo": null },
+      { "role": "League Commissioner", "name": "Snedden Dmello", "photo": null },
+      { "role": "Social Media", "name": "Harshal Kelaskar", "photo": null },
+      { "role": "Marketing / Public Relations", "name": "Sheryaans Gwade", "photo": null },
+      { "role": "League Marshal", "name": "Anslem Crasto & Clyde Devinaden", "photo": null },
+      { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": null }
     ]
   },
 

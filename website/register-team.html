@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Owner Registration — The Gameup League</title>
-<meta name="description" content="Register your team for The Gameup League RELOADED.">
-<link rel="icon" href="assets/gul-logo.png">
+<title>Team Owner Registration — The Game Up League</title>
+<meta name="description" content="Register your team for The Game Up League RELOADED.">
+<link rel="icon" href="assets/gul-logo-neutral.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -61,13 +61,12 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 </style>
 </head>
 <body>
-<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a></div></header>
+<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo-neutral.png" alt="The Game Up League logo"><span>THE GAME UP LEAGUE</span></a></div></header>
 
 <div class="wrap">
  <div class="container">
-  <div class="eyebrow">RELOADED</div>
-  <h1>Team Owner Registration</h1>
-  <p class="sub">Register your team for The Gameup League RELOADED. Final squad, auction/draft allocation and league rules are handled separately by GUL after registration.</p>
+  <h1>Game Up League:</h1>
+  <p class="sub">Team Registration Form</p>
 
   <div class="feeBox">
    <div><div class="label">Team Entry Fee</div></div>
@@ -79,7 +78,7 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
    // fee amount fills in right away instead of waiting on those downloads.
    window.__gulContentPromise = fetch('content.json?v=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
    window.__gulContentPromise.then(c => {
-     const teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
+     const teamFee = (c.teamRegistration && c.teamRegistration.fee) || 12000;
      document.getElementById('feeAmount').innerHTML = '₹' + teamFee.toLocaleString('en-IN') + '<small> / team</small>';
    }).catch(() => { document.getElementById('feeAmount').textContent = '₹11,000'; });
   </script>
@@ -213,14 +212,14 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
   }
 });
 
-let teamFee = 11000;
+let teamFee = 12000;
 let lastRegCode = null;
 
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the fee box markup), instead of firing a
 // second network request for the same file.
 window.__gulContentPromise.then(c => {
-  teamFee = (c.teamRegistration && c.teamRegistration.fee) || 11000;
+  teamFee = (c.teamRegistration && c.teamRegistration.fee) || 12000;
 }).catch(() => {});
 
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
@@ -299,7 +298,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     if (window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
       const note = 'GUL ' + code;
       const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
-        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Gameup League') +
+        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
         '&am=' + teamFee + '&cu=INR&tn=' + encodeURIComponent(note);
       document.getElementById('payAmt').textContent = '₹' + teamFee.toLocaleString('en-IN');
       document.getElementById('payUpiBtn').href = upiLink;

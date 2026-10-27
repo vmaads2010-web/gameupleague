@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUL Social Studio</title>
-<meta name="description" content="Generate anime-style avatars, festival posts and videos for The Gameup League, free, no login.">
-<link rel="icon" href="../assets/gul-logo.png">
+<meta name="description" content="Generate anime-style avatars, festival posts and videos for The Game Up League, free, no login.">
+<link rel="icon" href="../assets/gul-logo-neutral.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
@@ -125,16 +125,16 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
 
 <div class="topbar">
   <div class="topbar-inner">
-    <img src="../assets/gul-logo.png" alt="The Gameup League">
+    <img src="../assets/gul-logo-neutral.png" alt="The Game Up League">
     <div class="brandtext"><b>GUL Social Studio</b><span>Free · No login required</span></div>
     <div class="statusChip" id="statusChip"><span class="dot"></span><span id="statusChipText">Checking…</span></div>
   </div>
 </div>
 
 <div class="hero">
-  <img src="../assets/gul-mascot.png" alt="The Gameup League mascot">
+  <img src="../assets/gul-mascot.png" alt="The Game Up League mascot">
   <h1>Create anime-style <span>player art</span>,<br>in seconds.</h1>
-  <p>Built for The Gameup League — generate player avatars, festival posts, images and short videos, on-brand every time. No account, no app install.</p>
+  <p>Built for The Game Up League — generate player avatars, festival posts, images and short videos, on-brand every time. No account, no app install.</p>
   <div class="badgeRow">
     <span class="pill">⚡ Auto-generate (capped &amp; budgeted)</span>
     <span class="pill">🆓 Manual prompt (free, unlimited)</span>
@@ -270,7 +270,7 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
     <div id="usageLine" class="note" style="margin:0">Checking status…</div>
   </div>
 
-  <div class="footer">The Gameup League — Social Studio · Free tool, no login required</div>
+  <div class="footer">The Game Up League — Social Studio · Free tool, no login required</div>
 </div>
 
 <div id="toastWrap"></div>
@@ -296,7 +296,7 @@ document.querySelectorAll('.tabBtn').forEach(btn => {
   });
 });
 
-const basePrompt = (team, colors) => `Vertical Instagram poster, 4:5 portrait aspect ratio. Anime art style, consistent with The Gameup League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background (sky, stadium blur, etc.) - no text, no logos, no badges there - those areas are added separately afterwards.`;
+const basePrompt = (team, colors) => `Vertical Instagram poster, 4:5 portrait aspect ratio. Anime art style, consistent with The Game Up League grey wolf mascot's art direction (energetic, premium sports anime look, navy/royal blue/gold/red color palette). Keep the person's real facial likeness from the attached photo, but illustrate them as an anime character wearing a ${team} football kit${colors ? ' in ' + colors : ''}. Dynamic sports pose, stadium or turf background, high quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background (sky, stadium blur, etc.) - no text, no logos, no badges there - those areas are added separately afterwards.`;
 
 document.getElementById('occasion').addEventListener('change', (e) => {
   document.getElementById('awardFieldWrap').style.display = e.target.value === 'award' ? 'block' : 'none';
@@ -316,7 +316,7 @@ function buildPlayerPrompt() {
   else if (occasion === 'award') occasionLine = `This celebrates ${player} winning "${award || 'an award'}" for ${team}. Include a subtle trophy or medal element.`;
   else occasionLine = `This is a matchday hype image for ${player} ahead of a Gameup League match.`;
 
-  const prompt = `[Reference images attached: The Gameup League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nDo not write any text on the image - a name banner is added separately afterwards.`;
+  const prompt = `[Reference images attached: The Game Up League official mascot and logo - match their exact design, colors and style]\n\n${occasionLine}\n\n${basePrompt(team, colors)}\n\nDo not write any text on the image - a name banner is added separately afterwards.`;
   return { prompt, headline: player, subline: team };
 }
 
@@ -333,7 +333,7 @@ function buildFestivalPrompt() {
   const occasionDesc = custom || preset;
   if (!occasionDesc) { toast('Pick a festival or describe the occasion first.', 'err'); return null; }
 
-  const prompt = `[Reference images attached: The Gameup League official mascot and logo - match their exact design, colors and style]\n\nVertical Instagram poster, 4:5 portrait aspect ratio. Anime/premium 3D-toon art style, The Gameup League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports look, The Gameup League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football, surrounded by elements of the occasion. High quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background - no text, no logos, no badges there - those areas are added separately afterwards.`;
+  const prompt = `[Reference images attached: The Game Up League official mascot and logo - match their exact design, colors and style]\n\nVertical Instagram poster, 4:5 portrait aspect ratio. Anime/premium 3D-toon art style, The Game Up League grey wolf mascot (keep the exact existing mascot design - do not redraw its face, body or proportions) in a festive post for: ${occasionDesc}.\n\nStyle: energetic, premium sports look, The Game Up League's navy/royal blue/gold/red color palette blended naturally with the occasion's own colors. Holding or standing near a football, surrounded by elements of the occasion. High quality, vibrant lighting. Leave the top-left corner, the very top strip and the very bottom strip of the image as plain, uncluttered background - no text, no logos, no badges there - those areas are added separately afterwards.`;
   const headline = 'HAPPY ' + cleanFestivalName(custom ? custom : presetLabel).toUpperCase();
   return { prompt, headline, subline: '' };
 }

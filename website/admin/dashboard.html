@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUL Admin Dashboard</title>
-<link rel="icon" href="../assets/gul-logo.png">
+<link rel="icon" href="../assets/gul-logo-neutral.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
 
 <div id="dashView" style="display:none">
   <header class="topbar">
-    <div class="brand"><img src="../assets/gul-logo.png" alt="The Gameup League"><span>GUL ADMIN</span></div>
+    <div class="brand"><img src="../assets/gul-logo-neutral.png" alt="The Game Up League"><span>GUL ADMIN</span></div>
     <div style="display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)">
       <span id="whoami"></span>
       <button class="secondaryBtn" id="signOutBtn">Sign Out</button>
@@ -404,7 +404,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${esc(t.mobile)}</td>
         <td class="wrap-cell">${esc(t.email)}</td>
         <td>${t.team_type === 'new' ? 'New' : 'Existing'}</td>
-        <td>₹11,000</td>
+        <td>₹12,000</td>
         <td>${t.team_logo_url ? `<button class="photoLink" data-logo="${esc(t.team_logo_url)}">View</button>` : '—'}</td>
         <td>${created}</td>
         <td><span class="pill ${t.status}">${esc(t.status)}</span></td>
@@ -519,7 +519,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Mobile', value: t => t.mobile },
       { label: 'Email', value: t => t.email },
       { label: 'Type', value: t => t.team_type === 'new' ? 'New' : 'Existing' },
-      { label: 'Fee (INR)', value: () => 11000 },
+      { label: 'Fee (INR)', value: () => 12000 },
       { label: 'Status', value: t => t.status },
       { label: 'Paid', value: t => paymentFor(t.id, 'team_registration_id') ? 'Yes' : 'No' },
       { label: 'Logo URL (valid 30 days)', value: t => t.team_logo_url ? (logoMap[t.team_logo_url] || '') : '' },
@@ -648,7 +648,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     } else if (btn.dataset.action === 'markpaid-team') {
       const { error } = await client.from('payments').insert({
         team_registration_id: id,
-        amount_paise: 1100000,
+        amount_paise: 1200000,
         currency: 'INR',
         provider: 'manual_upi',
         status: 'paid',

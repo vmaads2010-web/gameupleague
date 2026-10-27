@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Player Registration — The Gameup League</title>
-<meta name="description" content="Register your interest to play in The Gameup League RELOADED.">
-<link rel="icon" href="assets/gul-logo.png">
+<title>Player Registration — The Game Up League</title>
+<meta name="description" content="Register your interest to play in The Game Up League RELOADED.">
+<link rel="icon" href="assets/gul-logo-neutral.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -93,13 +93,12 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
 </style>
 </head>
 <body>
-<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo.png" alt="The Gameup League logo"><span>THE GAMEUP LEAGUE</span></a></div></header>
+<header class="nav"><div class="navin"><a class="brand" href="index.html"><img src="assets/gul-logo-neutral.png" alt="The Game Up League logo"><span>THE GAME UP LEAGUE</span></a></div></header>
 
 <div class="wrap">
  <div class="container">
-  <div class="eyebrow">RELOADED</div>
-  <h1>Player Registration</h1>
-  <p class="sub">Reserve your spot for The Gameup League RELOADED.</p>
+  <h1>Game Up League:</h1>
+  <p class="sub">Player Registration Form</p>
 
   <div class="offerBox">
    <div class="offerBadge"><span class="dot"></span><span id="offerLabel">Loading offer…</span></div>
@@ -142,12 +141,12 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
     <div class="sectionTitle">1 · Personal Information</div>
     <div class="field"><label>Full name <span class="required-star">*</span></label><input id="fullName" required></div>
     <div class="row2">
-     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="date" required></div>
+     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required></div>
      <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
     </div>
     <div class="row2">
-     <div class="field"><label>Email address</label><input id="email" type="email"></div>
-     <div class="field"><label>Full address</label><input id="city" placeholder="e.g. 12 Station Road, Vasai West, 401202"></div>
+     <div class="field"><label>Email address <span class="required-star">*</span></label><input id="email" type="email" required></div>
+     <div class="field"><label>Full address <span class="required-star">*</span></label><input id="city" required placeholder="e.g. 12 Station Road, Vasai West, 401202"></div>
     </div>
 
     <div class="sectionTitle">2 · Playing Position</div>
@@ -168,7 +167,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
 
     <div class="sectionTitle">4 · Additional Information</div>
     <div class="field">
-     <label>How did you hear about The Gameup League?</label>
+     <label>How did you hear about The Game Up League?</label>
      <select id="heardFrom">
       <option value="">Select (optional)</option>
       <option>Instagram</option>
@@ -206,7 +205,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
       <details class="sizeGuide"><summary>📏 Shorts size guide</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
      </div>
     </div>
-    <div class="field"><label>Player Instagram username <span class="required-star">*</span></label><input id="instaId" required placeholder="@username"></div>
+    <div class="field"><label>Player Instagram link <span class="required-star">*</span></label><input id="instaId" required placeholder="@username or instagram.com/username"></div>
 
     <div class="sectionTitle">5 · Consent &amp; Declaration</div>
     <details class="terms">
@@ -225,14 +224,14 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
       <h4>6. Management Decisions</h4>
       I acknowledge that any rules, scheduling, or organizational changes made by the league management are final. Such decisions cannot be challenged and I agree to abide by them fully.
       <h4>7. Zero Tolerance for Intoxicants</h4>
-      Players are not allowed to be intoxicated or to consume alcohol, drugs, or cigarettes within the tournament premises. Violation of this policy may result in immediate disqualification from the match, the tournament, or the league.
+      Players are not allowed to be intoxicated or to consume alcohol, drugs, or cigarettes within the tournament premises. Violation of this policy may result in immediate disqualification from the match or the league.
       <h4>Declaration</h4>
       I have read and understood the above terms and conditions. By signing this form, I agree to participate in the Football League under the stated rules and policies.
      </div>
     </details>
     <div class="consentBox">
-     <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow The Gameup League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
-     <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to The Gameup League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow The Game Up League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to The Game Up League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
     </div>
 
     <button type="submit" id="submitBtn">Submit Registration</button>
@@ -369,6 +368,25 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       showStatus('err', 'Please select at least one playing position (Section 2).');
       return;
     }
+    const dobMatch = document.getElementById('dob').value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    let dobIso = null;
+    if (!dobMatch) {
+      showStatus('err', 'Please enter date of birth as DD/MM/YYYY in Section 1.');
+      return;
+    } else {
+      const [, dd, mm, yyyy] = dobMatch;
+      const dobDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
+      const cutoff = new Date(2009, 9, 16); // Players must be born on or before 16 Oct 2009
+      if (dobDate.getDate() !== Number(dd) || dobDate.getMonth() !== Number(mm) - 1 || dobDate.getFullYear() !== Number(yyyy)) {
+        showStatus('err', 'That date of birth isn\'t valid - please check it in Section 1.');
+        return;
+      }
+      if (dobDate > cutoff) {
+        showStatus('err', 'Players must be born on or before 16/10/2009 to register.');
+        return;
+      }
+      dobIso = yyyy + '-' + mm + '-' + dd;
+    }
     const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
     if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
       showStatus('err', 'Please enter a valid 10-digit Indian mobile number in Section 1.');
@@ -437,7 +455,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       full_name: document.getElementById('fullName').value.trim(),
       mobile: document.getElementById('mobile').value.trim(),
       email: document.getElementById('email').value.trim() || null,
-      dob: document.getElementById('dob').value || null,
+      dob: dobIso,
       city: document.getElementById('city').value.trim() || null,
       position: selectedPositions.length ? selectedPositions.join(', ') : null,
       referral_code: null,
@@ -477,7 +495,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       const amount = currentOffer.price;
       const note = 'GUL ' + payload.registration_code;
       const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
-        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Gameup League') +
+        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
         '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
 
       document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
