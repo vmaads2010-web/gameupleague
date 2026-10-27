@@ -147,7 +147,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
     </div>
     <div class="row2">
      <div class="field"><label>Email address</label><input id="email" type="email"></div>
-     <div class="field"><label>Area of residence</label><input id="city" placeholder="e.g. Vasai West"></div>
+     <div class="field"><label>Full address</label><input id="city" placeholder="e.g. 12 Station Road, Vasai West, 401202"></div>
     </div>
 
     <div class="sectionTitle">2 · Playing Position</div>
@@ -207,7 +207,6 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
      </div>
     </div>
     <div class="field"><label>Player Instagram username <span class="required-star">*</span></label><input id="instaId" required placeholder="@username"></div>
-    <div class="field"><label>Referral code (if any)</label><input id="referral" placeholder="Optional"></div>
 
     <div class="sectionTitle">5 · Consent &amp; Declaration</div>
     <details class="terms">
@@ -221,12 +220,12 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
       I am responsible for wearing proper football gear (shin guards, boots, etc.). I will not use unsafe or unauthorized equipment. I accept responsibility for maintaining my own gear.
       <h4>4. Damage &amp; Liability</h4>
       I will be held responsible for any damage I cause to venues, facilities, or league equipment. The league is not responsible for loss, theft, or damage of personal belongings.
-      <h4>5. Insurance Disclaimer</h4>
-      I understand that personal sports/medical insurance is my responsibility unless explicitly provided by the league. I release the organizers from liability for costs related to injuries or accidents.
-      <h4>6. Photo/Video Consent</h4>
+      <h4>5. Photo/Video Consent</h4>
       I grant permission for the league to capture and use photos/videos of me during matches and events for promotional, social media, or documentation purposes.
-      <h4>7. Management Decisions</h4>
+      <h4>6. Management Decisions</h4>
       I acknowledge that any rules, scheduling, or organizational changes made by the league management are final. Such decisions cannot be challenged and I agree to abide by them fully.
+      <h4>7. Zero Tolerance for Intoxicants</h4>
+      Players are not allowed to be intoxicated or to consume alcohol, drugs, or cigarettes within the tournament premises. Violation of this policy may result in immediate disqualification from the match, the tournament, or the league.
       <h4>Declaration</h4>
       I have read and understood the above terms and conditions. By signing this form, I agree to participate in the Football League under the stated rules and policies.
      </div>
@@ -441,7 +440,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       dob: document.getElementById('dob').value || null,
       city: document.getElementById('city').value.trim() || null,
       position: selectedPositions.length ? selectedPositions.join(', ') : null,
-      referral_code: document.getElementById('referral').value.trim() || null,
+      referral_code: null,
       player_insta_id: document.getElementById('instaId').value.trim() || null,
       photo_url: photoPath,
       offer_applied: currentOffer ? currentOffer.label : null,
