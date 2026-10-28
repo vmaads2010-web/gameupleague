@@ -707,9 +707,6 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="champions">
  <div class="container">
-  <div class="champMascotWrap reveal">
-   <img class="champMascot" src="assets/dash-mascot-poster.png" alt="The Game Up League mascot">
-  </div>
   <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="championsMarquee"></div>
@@ -1045,7 +1042,8 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const photoSrc = a.photo ? `assets/squad-thumb/${a.photo}.jpg` : (a.ownerPhoto ? `assets/owners/${a.ownerPhoto}.jpg` : null);
       const logo = teamLogoSrc(a.team || a.winner);
       const hero = photoSrc ? `<img src="${photoSrc}" alt="${a.winner}" loading="lazy">` : (logo ? `<img src="${logo}" alt="${a.winner}" loading="lazy" style="object-fit:contain;background:#f4f6fa;padding:10px">` : '');
-      return `<div class="championChip">${hero}<div class="ttl">${a.title}</div><div class="nm">${a.winner}</div></div>`;
+      const cls = photoSrc ? 'championChip hasPhoto' : 'championChip';
+      return `<div class="${cls}">${hero}<div class="ttl">${a.title}</div><div class="nm">${a.winner}</div></div>`;
     }).join('');
     document.getElementById('awardsMarquee').innerHTML = awardChips + awardChips;
 
