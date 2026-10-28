@@ -1051,7 +1051,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     squadList.forEach((p, i) => squadRows[i % ROWS].push(p));
     const squadRowHtml = squadRows.map((row, i) => {
       const chips = row.map(p =>
-        `<div class="squadCard"><img src="assets/squad/${p.file}.jpg" alt="${p.name}" loading="lazy"><div class="squadCardName">${p.name}</div></div>`
+        `<div class="squadCard"><img src="assets/squad-thumb/${p.file}.jpg" alt="${p.name}" loading="lazy"><div class="squadCardName">${p.name}</div></div>`
       ).join('');
       const dir = i % 2 === 0 ? '' : 'reverseRow';
       return `<div class="marqueeWrap"><div class="marqueeTrack ${dir}">${chips}${chips}</div></div>`;
