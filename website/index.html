@@ -99,6 +99,8 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .sponsorChip span{color:#9aa5b8;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .championChip{flex-shrink:0;width:190px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:18px;text-align:center}
 .championChip img{width:64px;height:64px;object-fit:contain;margin:0 auto 10px}
+.championChip.hasPhoto{padding:0 0 16px;overflow:hidden}
+.championChip.hasPhoto img{width:100%;height:160px;object-fit:cover;object-position:top;margin:0 0 12px;border-radius:0}
 .championChip .ttl{font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
 .championChip .nm{font-size:14.5px;font-weight:800;margin-top:4px}
 
@@ -948,21 +950,22 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       return file ? `assets/teams/${file}.png` : null;
     };
     const trophies = [
-      { ico: '🏆', ttl: 'Champions', team: c.season1.champion },
-      { ico: '🥈', ttl: 'Runners Up', team: c.season1.runnerUp },
-      { ico: '🏅', ttl: 'Super Cup Champions', team: c.season1.superCupChampion },
-      { ico: '🎖️', ttl: 'Super Cup Runners Up', team: c.season1.superCupRunnerUp }
+      { ico: '🏆', ttl: 'Champions', team: c.season1.champion, photo: 'assets/champions/champion-atlanta.jpg' },
+      { ico: '🥈', ttl: 'Runners Up', team: c.season1.runnerUp, photo: 'assets/champions/runnerup-palmeiros.jpg' },
+      { ico: '🏅', ttl: 'Super Cup Champions', team: c.season1.superCupChampion, photo: 'assets/champions/supercup-champion.jpg' },
+      { ico: '🎖️', ttl: 'Super Cup Runners Up', team: c.season1.superCupRunnerUp, photo: 'assets/champions/supercup-runnerup-globalnet.jpg' }
     ];
     document.getElementById('s1TrophyRow').innerHTML = trophies.map(t => {
-      const logo = teamLogoSrc(t.team);
-      return `<div class="trophyItem">${logo ? `<img class="trophyLogo" src="${logo}" alt="${t.team}" loading="lazy">` : `<div class="ico">${t.ico}</div>`}<div class="ttl">${t.ttl}</div><div class="name">${t.team}</div><div class="sub">Football Reimagined — The Game Up League</div></div>`;
+      const img = t.photo || teamLogoSrc(t.team);
+      return `<div class="trophyItem">${img ? `<img class="trophyLogo" src="${img}" alt="${t.team}" loading="lazy">` : `<div class="ico">${t.ico}</div>`}<div class="ttl">${t.ttl}</div><div class="name">${t.team}</div><div class="sub">Football Reimagined — The Game Up League</div></div>`;
     }).join('');
 
     // Homepage champions marquee - same trophy data, duplicated once so the
     // CSS marquee animation (translateX -50%) loops seamlessly with no gap.
     const championChips = trophies.map(t => {
-      const logo = teamLogoSrc(t.team);
-      return `<div class="championChip">${logo ? `<img src="${logo}" alt="${t.team}" loading="lazy">` : ''}<div class="ttl">${t.ttl}</div><div class="nm">${t.team}</div></div>`;
+      const img = t.photo || teamLogoSrc(t.team);
+      const cls = t.photo ? 'championChip hasPhoto' : 'championChip';
+      return `<div class="${cls}">${img ? `<img src="${img}" alt="${t.team}" loading="lazy">` : ''}<div class="ttl">${t.ttl}</div><div class="nm">${t.team}</div></div>`;
     }).join('');
     document.getElementById('championsMarquee').innerHTML = championChips + championChips;
 
