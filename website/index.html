@@ -192,7 +192,7 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 /* Center logo with hover shine sweep */
 .tlCenter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
 .shineLogo{position:relative;width:min(220px,70%);overflow:hidden;border-radius:16px;cursor:pointer}
-.shineLogo img{width:100%;display:block;border-radius:16px;animation:logoFloat 4.5s ease-in-out infinite,logoGlow 3s ease-in-out infinite}
+.shineLogo img,.shineLogo video{width:100%;display:block;border-radius:16px;animation:logoFloat 4.5s ease-in-out infinite,logoGlow 3s ease-in-out infinite}
 @keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.015)}}
 @keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(245,181,27,0))}50%{filter:drop-shadow(0 0 18px rgba(245,181,27,.55))}}
 .shineLogo:after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .7s ease}
@@ -400,7 +400,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
    <div class="tlCenter">
     <div class="earlyBirdChip">⏳ Early Bird Open</div>
-    <a class="shineLogo" href="#season2"><img src="assets/gul-logo-neutral.png" alt="The Game Up League logo" loading="lazy"></a>
+    <a class="shineLogo" href="#season2"><video autoplay loop muted playsinline poster="assets/gul-logo-hq.png" aria-label="The Game Up League logo"><source src="assets/gul-logo-anim.webm" type="video/webm"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"></video></a>
     <div class="tlFooterLinks"><a href="#contact">Feedback</a><a href="#season1">Reimagined</a><a href="#contact">Contact Us</a></div>
    </div>
 
