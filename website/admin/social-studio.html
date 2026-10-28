@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GUL Social Studio</title>
 <meta name="description" content="Generate anime-style avatars, festival posts and videos for The Game Up League, free, no login.">
-<link rel="icon" href="../assets/gul-logo-neutral.png">
+<link rel="icon" href="../assets/gul-logo-hq.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
@@ -125,7 +125,7 @@ button:disabled{cursor:not-allowed;opacity:.55;transform:none}
 
 <div class="topbar">
   <div class="topbar-inner">
-    <img src="../assets/gul-logo-neutral.png" alt="The Game Up League">
+    <img src="../assets/gul-logo-hq.png" alt="The Game Up League">
     <div class="brandtext"><b>GUL Social Studio</b><span>Free · No login required</span></div>
     <div class="statusChip" id="statusChip"><span class="dot"></span><span id="statusChipText">Checking…</span></div>
   </div>
@@ -435,7 +435,7 @@ function drawHeadline(ctx, canvas, logoBottomY, headline, subline) {
 async function applyBrandOverlay(aiImageUrl, headline, subline) {
   const [aiImg, logoImg] = await Promise.all([
     loadImage(aiImageUrl, true),
-    loadImage('../assets/gul-logo.png'),
+    loadImage('../assets/gul-logo-hq.png'),
   ]);
 
   const canvas = document.createElement('canvas');
@@ -577,7 +577,7 @@ async function runGenerate(type, btn, resultBoxId, buildFn) {
     if (type === 'image') {
       referenceImages = await Promise.all([
         toDataURL('../assets/gul-mascot.png'),
-        toDataURL('../assets/gul-logo.png'),
+        toDataURL('../assets/gul-logo-hq.png'),
       ]);
     }
 
