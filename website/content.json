@@ -120,7 +120,8 @@
       { "role": "League Commissioner", "name": "Snedden Dmello", "photo": null },
       { "role": "Social Media", "name": "Harshal Kelaskar", "photo": null },
       { "role": "Marketing / Public Relations", "name": "Sheryaans Gwade", "photo": null },
-      { "role": "League Marshal", "name": "Anslem Crasto & Clyde Devinaden", "photo": null },
+      { "role": "League Marshal", "name": "Anslem Crasto", "photo": null },
+      { "role": "League Marshal", "name": "Clyde Devinaden", "photo": null },
       { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": null }
     ]
   },

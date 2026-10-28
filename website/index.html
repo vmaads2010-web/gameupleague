@@ -218,6 +218,12 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .flipCardBack .tapHint{margin-top:6px;font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;opacity:.85}
 .flipHintChip{display:inline-flex;align-items:center;gap:6px;background:rgba(245,181,27,.12);border:1px solid rgba(245,181,27,.4);color:var(--gold);font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:999px}
 
+/* Player Moments - professional portrait cards (GUL squad shoot + matchday photos) */
+.momentChip{flex-shrink:0;width:170px;aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(245,181,27,.35);box-shadow:0 10px 26px rgba(0,0,0,.35);background:#0d1f40}
+.momentChip img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+.momentChip:hover img{transform:scale(1.06)}
+.momentChip:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(7,21,47,.65) 100%);pointer-events:none}
+
 /* Dash mascot - bouncing in front of Last Season's Champions */
 .champMascotWrap{display:flex;justify-content:center;margin-bottom:-6px}
 .champMascot{width:150px;height:150px;object-fit:cover;object-position:center 18%;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.22),rgba(13,31,64,.4) 70%);border:3px solid rgba(245,181,27,.55);box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 24px rgba(245,181,27,.25);animation:floatY 3.6s ease-in-out infinite}
@@ -772,7 +778,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 <section class="section" id="playerMoments">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>Player</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:16px">Match-day moments coming soon.</p>
+  <p class="sub reveal" style="margin-bottom:16px">The squad, up close.</p>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="playerMomentsMarquee"></div>
   </div>
@@ -1115,13 +1121,16 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       </div>`).join('');
     document.getElementById('leaderGrid').innerHTML = leaderChips + leaderChips;
 
-    // Real season highlight photos (if any) replace the Player Moments
-    // placeholder chips - this used to be its own static Gallery grid, now
-    // folded into the scrolling Player Moments marquee.
-    const galleryImages = c.gallery ? c.gallery.images : [];
-    if (galleryImages.length) {
-      const realMomentChips = galleryImages.map(g =>
-        `<div class="sponsorChip" style="width:140px;height:110px;padding:0;overflow:hidden"><img src="${g.src}" alt="${g.caption || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>`
+    // Real season highlight photos replace the Player Moments placeholder
+    // chips - matchday gallery photos plus the GUL squad portrait shoot.
+    const galleryImages = (c.gallery ? c.gallery.images : []).map(g => ({ src: g.src, alt: g.caption || '' }));
+    const squadPortraits = Array.from({ length: 23 }, (_, i) =>
+      ({ src: `assets/squad-portraits/p${String(i + 1).padStart(2, '0')}.jpg`, alt: 'GUL squad portrait' })
+    );
+    const momentImages = [...galleryImages, ...squadPortraits];
+    if (momentImages.length) {
+      const realMomentChips = momentImages.map(g =>
+        `<div class="momentChip"><img src="${g.src}" alt="${g.alt}" loading="lazy"></div>`
       ).join('');
       document.getElementById('playerMomentsMarquee').innerHTML = realMomentChips + realMomentChips;
     }
