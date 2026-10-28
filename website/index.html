@@ -1056,7 +1056,14 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const dir = i % 2 === 0 ? '' : 'reverseRow';
       return `<div class="marqueeWrap"><div class="marqueeTrack ${dir}">${chips}${chips}</div></div>`;
     }).join('');
-    document.getElementById('squadWall').innerHTML = squadRowHtml;
+    // Bonus row: the professional squad portrait shoot (deduped from 23 camera
+    // files down to one photo per person plus one group shot).
+    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
+    const portraitChips = squadPortraitNums.map(n =>
+      `<div class="momentChip" style="width:140px"><img src="assets/squad-portraits/p${n}.jpg" alt="GUL squad portrait" loading="lazy"></div>`
+    ).join('');
+    const portraitRowHtml = `<div class="marqueeWrap"><div class="marqueeTrack">${portraitChips}${portraitChips}</div></div>`;
+    document.getElementById('squadWall').innerHTML = squadRowHtml + portraitRowHtml;
 
     // Chief Guests is still a placeholder until GUL shares photos.
     const chiefGuestChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Photo Coming Soon</span></div>`).join('');
@@ -1118,16 +1125,10 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     document.getElementById('leaderGrid').innerHTML = leaderChips + leaderChips;
 
     // Real season highlight photos replace the Player Moments placeholder
-    // chips - matchday gallery photos plus the GUL squad portrait shoot.
+    // chips - matchday gallery photos only (squad portraits live in the GUL
+    // Squad section instead, not duplicated here).
     const galleryImages = (c.gallery ? c.gallery.images : []).map(g => ({ src: g.src, alt: g.caption || '', label: g.caption || '' }));
-    // Deduped from the original 23 camera files down to one photo per person
-    // (several were 2-4 near-identical repeats of the same player) plus one
-    // group shot, so the scroll doesn't repeat the same face back-to-back.
-    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
-    const squadPortraits = squadPortraitNums.map(n =>
-      ({ src: `assets/squad-portraits/p${n}.jpg`, alt: 'GUL squad portrait', label: 'GUL Squad' })
-    );
-    const momentImages = [...galleryImages, ...squadPortraits];
+    const momentImages = [...galleryImages];
     if (momentImages.length) {
       const realMomentChips = momentImages.map(g =>
         `<div class="momentChip"><img src="${g.src}" alt="${g.alt}" loading="lazy">${g.label ? `<div class="momentLabel">${g.label}</div>` : ''}</div>`
