@@ -91,6 +91,16 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .hero-art:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(20,89,199,.35),transparent 68%);bottom:50px}
 .mascot{position:relative;z-index:2;width:min(480px,90%);height:560px;object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 25px 35px rgba(0,0,0,.4))}
 .heroLogoArt{position:relative;z-index:2;width:min(380px,80%);object-fit:contain;filter:drop-shadow(0 25px 45px rgba(0,0,0,.5))}
+.marqueeWrap{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marqueeTrack{display:flex;gap:22px;width:max-content;animation:marqueeScroll 28s linear infinite}
+.marqueeWrap:hover .marqueeTrack{animation-play-state:paused}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.sponsorChip{flex-shrink:0;width:160px;height:90px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.sponsorChip span{color:#9aa5b8;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.championChip{flex-shrink:0;width:190px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:18px;text-align:center}
+.championChip img{width:64px;height:64px;object-fit:contain;margin:0 auto 10px}
+.championChip .ttl{font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.championChip .nm{font-size:14.5px;font-weight:800;margin-top:4px}
 
 /* HUD-style frame for the RELOADED mascot - matches the rules/auction/
    points-table poster theme (metal bevel, glow border, rivets, corner brackets),
@@ -182,7 +192,9 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 /* Center logo with hover shine sweep */
 .tlCenter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
 .shineLogo{position:relative;width:min(220px,70%);overflow:hidden;border-radius:16px;cursor:pointer}
-.shineLogo img{width:100%;display:block;border-radius:16px}
+.shineLogo img{width:100%;display:block;border-radius:16px;animation:logoFloat 4.5s ease-in-out infinite,logoGlow 3s ease-in-out infinite}
+@keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.015)}}
+@keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(245,181,27,0))}50%{filter:drop-shadow(0 0 18px rgba(245,181,27,.55))}}
 .shineLogo:after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .7s ease}
 .shineLogo:hover:after{left:150%}
 .earlyBirdChip{background:var(--gold);color:#101c31;font-weight:900;font-size:10.5px;letter-spacing:1px;padding:5px 12px;border-radius:999px;text-transform:uppercase}
@@ -331,8 +343,8 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
    functional at every screen width, not just on mobile. */
 
 /* Prominent live-offer banner */
-.offerBanner{position:relative;overflow:hidden;background:linear-gradient(90deg,#d53c35,#e3262e 35%,#123b83 100%);background-size:200% 100%;padding:12px 0;z-index:40}
-@media (prefers-reduced-motion: no-preference){.offerBanner{animation:bannerShift 6s ease-in-out infinite}}
+.offerBanner{position:relative;overflow:hidden;background:linear-gradient(90deg,#8a0f14,#e3262e 30%,#f5b51b 55%,#e3262e 80%,#8a0f14);background-size:300% 100%;padding:13px 0;z-index:40;box-shadow:0 4px 20px rgba(0,0,0,.35);border-bottom:1px solid rgba(245,181,27,.4)}
+@media (prefers-reduced-motion: no-preference){.offerBanner{animation:bannerShift 8s ease-in-out infinite}}
 @keyframes bannerShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .offerBannerIn{width:min(1160px,92%);margin:auto;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
 .offerBannerDot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0}
@@ -376,23 +388,6 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 </header>
 
 <main id="home">
-<section class="hero">
- <div class="container hero-copy">
-  <div class="kicker" id="heroKicker"></div>
-  <h1><span id="heroLine1" style="color:var(--white)"></span><br><span id="heroLine2" style="color:var(--gold)"></span><br><span id="heroLine3" style="color:var(--white)"></span></h1>
-  <p id="heroDesc"></p>
-  <div class="actions"><a class="btn gold" href="#season2">RELOADED →</a><a class="btn outline" href="#contact">Get in touch</a></div>
-  <div class="heroStats">
-   <div class="heroStat"><div class="n">9</div><div class="l">RELOADED Teams</div></div>
-   <div class="heroStat"><div class="n">8</div><div class="l">Players / Team</div></div>
-   <div class="heroStat"><div class="n">2</div><div class="l">Seasons &amp; Counting</div></div>
-  </div>
- </div>
- <div class="hero-art">
-  <img class="heroLogoArt" src="assets/gul-logo-neutral.png" alt="The Game Up League logo" loading="lazy">
- </div>
-</section>
-
 <section class="section" id="timeline">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">The Journey</div><h2>The Game Up League Timeline</h2></div></div>
@@ -645,6 +640,16 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
+<section class="section" id="sponsors">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Backed by</div><h2>Our Sponsors</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Sponsor logos coming soon.</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="sponsorsMarquee"></div>
+  </div>
+ </div>
+</section>
+
 <section class="section" id="about">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Who we are</div><h2>More than a game.</h2></div></div>
@@ -652,6 +657,15 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
    <article class="card r-item"><h3>Our Mission</h3><p>Create better football experiences and connect players, teams and communities through competition.</p></article>
    <article class="card r-item"><h3>Our Community</h3><p>Players of every level, from grassroots footballers to serious competitors and football fans.</p></article>
    <article class="card r-item"><h3>Our Mascot</h3><p>The Game Up grey wolf represents energy, teamwork, confidence and the spirit to keep playing.</p></article>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="champions">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="championsMarquee"></div>
   </div>
  </div>
 </section>
@@ -845,6 +859,18 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const logo = teamLogoSrc(t.team);
       return `<div class="trophyItem">${logo ? `<img class="trophyLogo" src="${logo}" alt="${t.team}" loading="lazy">` : `<div class="ico">${t.ico}</div>`}<div class="ttl">${t.ttl}</div><div class="name">${t.team}</div><div class="sub">Football Reimagined — The Game Up League</div></div>`;
     }).join('');
+
+    // Homepage champions marquee - same trophy data, duplicated once so the
+    // CSS marquee animation (translateX -50%) loops seamlessly with no gap.
+    const championChips = trophies.map(t => {
+      const logo = teamLogoSrc(t.team);
+      return `<div class="championChip">${logo ? `<img src="${logo}" alt="${t.team}" loading="lazy">` : ''}<div class="ttl">${t.ttl}</div><div class="nm">${t.team}</div></div>`;
+    }).join('');
+    document.getElementById('championsMarquee').innerHTML = championChips + championChips;
+
+    // Sponsor slots are placeholders until GUL provides real sponsor logos.
+    const sponsorChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Your Logo Here</span></div>`).join('');
+    document.getElementById('sponsorsMarquee').innerHTML = sponsorChips + sponsorChips;
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a => {
       const logo = teamLogoSrc(a.team);
       const heroLogo = teamLogoSrc(a.team || a.winner);
