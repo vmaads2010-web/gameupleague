@@ -198,6 +198,23 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .shineLogo:after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .7s ease}
 .shineLogo:hover:after{left:150%}
 .earlyBirdChip{background:var(--gold);color:#101c31;font-weight:900;font-size:10.5px;letter-spacing:1px;padding:5px 12px;border-radius:999px;text-transform:uppercase}
+
+/* Special Game Up Cards - flip cards */
+.flipCardRow{display:flex;gap:18px;overflow-x:auto;padding:10px 6px 22px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.flipCardRow::-webkit-scrollbar{height:7px}
+.flipCardRow::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:4px}
+.flipCardRow::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px}
+.flipCard{flex:0 0 208px;height:300px;perspective:1300px;scroll-snap-align:start;cursor:pointer}
+.flipCardInner{position:relative;width:100%;height:100%;transition:transform .65s cubic-bezier(.2,.7,.3,1);transform-style:preserve-3d}
+.flipCard.flipped .flipCardInner{transform:rotateY(180deg)}
+.flipCardFace{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.flipCardFront{border:2px solid rgba(245,181,27,.55)}
+.flipCardFront img{width:100%;height:100%;object-fit:cover;display:block}
+.flipCardBack{transform:rotateY(180deg);background:linear-gradient(160deg,#0d1f40,#07152f);border:2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;gap:10px}
+.flipCardBack h4{color:var(--gold);margin:0;font-size:15px;text-transform:uppercase;letter-spacing:.5px}
+.flipCardBack p{color:var(--muted);font-size:12.5px;line-height:1.55;margin:0}
+.flipCardBack .tapHint{margin-top:6px;font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;opacity:.85}
+.flipHintChip{display:inline-flex;align-items:center;gap:6px;background:rgba(245,181,27,.12);border:1px solid rgba(245,181,27,.4);color:var(--gold);font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:999px}
 .tlFooterLinks{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted)}
 .tlFooterLinks a{color:var(--muted);font-weight:700}
 .tlFooterLinks a:hover{color:var(--gold)}
@@ -661,6 +678,15 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
+<section class="section" id="specialCards">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Game Changers</div><h2>Special Game Up Cards</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:6px">Drawn at random during a match, these cards flip the game on its head. Tap a card to see the twist.</p>
+  <div class="flipHintChip reveal" style="margin-bottom:18px">👆 Tap to flip</div>
+  <div class="flipCardRow reveal-stagger" id="flipCardRow"></div>
+ </div>
+</section>
+
 <section class="section" id="champions">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
@@ -950,6 +976,26 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       return `<div class="championChip">${logo ? `<img src="${logo}" alt="${t.team}" loading="lazy">` : ''}<div class="ttl">${t.ttl}</div><div class="nm">${t.team}</div></div>`;
     }).join('');
     document.getElementById('championsMarquee').innerHTML = championChips + championChips;
+
+    // Special Game Up Cards (Joker, Bench Threat, Power Surge, MLS Penalty) -
+    // rule text below is placeholder wording until GUL confirms the official rule copy.
+    const specialCards = [
+      { img: 'assets/cards/joker.jpg', name: 'Joker', rule: 'A wildcard twist revealed only at kickoff - expect a surprise rule change mid-match.' },
+      { img: 'assets/cards/bench-threat.jpg', name: 'Bench Threat', rule: 'A benched player can be subbed on to take one decisive shot - coach\'s call, once per match.' },
+      { img: 'assets/cards/power-surge.jpg', name: 'Power Surge', rule: 'For a short window, the chosen player\'s goals count double.' },
+      { img: 'assets/cards/mls-penalty.jpg', name: 'MLS Penalty', rule: 'MLS-style penalty shootout - a running start instead of a standard spot kick.' }
+    ];
+    document.getElementById('flipCardRow').innerHTML = specialCards.map((c, i) => `
+      <div class="flipCard" data-i="${i}">
+        <div class="flipCardInner">
+          <div class="flipCardFace flipCardFront"><img src="${c.img}" alt="${c.name} card" loading="lazy"></div>
+          <div class="flipCardFace flipCardBack"><h4>${c.name}</h4><p>${c.rule}</p><div class="tapHint">Tap to flip back</div></div>
+        </div>
+      </div>`).join('');
+    document.getElementById('flipCardRow').addEventListener('click', (e) => {
+      const card = e.target.closest('.flipCard');
+      if (card) card.classList.toggle('flipped');
+    });
 
     // Sponsor slots are placeholders until GUL provides real sponsor logos.
     const sponsorChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Your Logo Here</span></div>`).join('');
