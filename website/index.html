@@ -223,6 +223,7 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .momentChip img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .momentChip:hover img{transform:scale(1.06)}
 .momentChip:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(7,21,47,.65) 100%);pointer-events:none}
+.momentLabel{position:absolute;left:10px;bottom:9px;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 
 /* Dash mascot - bouncing in front of Last Season's Champions */
 .champMascotWrap{display:flex;justify-content:center;margin-bottom:-6px}
@@ -1123,14 +1124,18 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
 
     // Real season highlight photos replace the Player Moments placeholder
     // chips - matchday gallery photos plus the GUL squad portrait shoot.
-    const galleryImages = (c.gallery ? c.gallery.images : []).map(g => ({ src: g.src, alt: g.caption || '' }));
-    const squadPortraits = Array.from({ length: 23 }, (_, i) =>
-      ({ src: `assets/squad-portraits/p${String(i + 1).padStart(2, '0')}.jpg`, alt: 'GUL squad portrait' })
+    const galleryImages = (c.gallery ? c.gallery.images : []).map(g => ({ src: g.src, alt: g.caption || '', label: g.caption || '' }));
+    // Deduped from the original 23 camera files down to one photo per person
+    // (several were 2-4 near-identical repeats of the same player) plus one
+    // group shot, so the scroll doesn't repeat the same face back-to-back.
+    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
+    const squadPortraits = squadPortraitNums.map(n =>
+      ({ src: `assets/squad-portraits/p${n}.jpg`, alt: 'GUL squad portrait', label: 'GUL Squad' })
     );
     const momentImages = [...galleryImages, ...squadPortraits];
     if (momentImages.length) {
       const realMomentChips = momentImages.map(g =>
-        `<div class="momentChip"><img src="${g.src}" alt="${g.alt}" loading="lazy"></div>`
+        `<div class="momentChip"><img src="${g.src}" alt="${g.alt}" loading="lazy">${g.label ? `<div class="momentLabel">${g.label}</div>` : ''}</div>`
       ).join('');
       document.getElementById('playerMomentsMarquee').innerHTML = realMomentChips + realMomentChips;
     }
