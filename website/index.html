@@ -740,7 +740,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 <section class="section" id="leadership">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">The team behind GUL</div><h2>Leadership</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:20px">Photos coming soon — roles and names confirmed, some roles still pending final confirmation.</p>
+  <p class="sub reveal" style="margin-bottom:20px">Roles and names confirmed — photos still coming in for a few members.</p>
   <div class="marqueeWrap reveal">
    <div class="leaderGrid marqueeTrack" id="leaderGrid"></div>
   </div>
@@ -762,6 +762,13 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <div class="section-head reveal"><div><div class="eyebrow">Our Players</div><h2>The Game Up League Squad</h2></div></div>
   <p class="sub reveal" style="margin-bottom:16px">Every player who made Season 1 happen.</p>
   <div class="squadWall reveal" id="squadWall"></div>
+ </div>
+</section>
+
+<section class="section" id="players">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Season 1 Roster</div><h2>Players</h2></div></div>
+  <div class="squadWall reveal" id="playersWall"></div>
  </div>
 </section>
 
@@ -1035,18 +1042,26 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     // Season Awards marquee - reuses the same award data as the Football
     // Reimagined archive (photo where available, else the winner's team logo).
     const awardChips = (c.season1.awards || []).map(a => {
-      const photoSrc = a.photo ? `assets/squad/${a.photo}.jpg` : (a.ownerPhoto ? `assets/owners/${a.ownerPhoto}.jpg` : null);
+      const photoSrc = a.photo ? `assets/squad-thumb/${a.photo}.jpg` : (a.ownerPhoto ? `assets/owners/${a.ownerPhoto}.jpg` : null);
       const logo = teamLogoSrc(a.team || a.winner);
       const hero = photoSrc ? `<img src="${photoSrc}" alt="${a.winner}" loading="lazy">` : (logo ? `<img src="${logo}" alt="${a.winner}" loading="lazy" style="object-fit:contain;background:#f4f6fa;padding:10px">` : '');
       return `<div class="championChip">${hero}<div class="ttl">${a.title}</div><div class="nm">${a.winner}</div></div>`;
     }).join('');
     document.getElementById('awardsMarquee').innerHTML = awardChips + awardChips;
 
-    // GUL Squad wall - all season 1 squad photos with names, split into 5 rows
-    // that scroll in alternating directions (odd rows one way, even rows the
-    // other) instead of one flat single-row strip.
+    // GUL Squad section - the real portrait photo shoot only (the people in
+    // the black GUL polo), not the colourful trading cards. Deduped from the
+    // original 23 camera files down to one photo per person plus one group shot.
+    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
+    const portraitChips = squadPortraitNums.map(n =>
+      `<div class="momentChip" style="width:150px"><img src="assets/squad-portraits/p${n}.jpg" alt="GUL squad portrait" loading="lazy"></div>`
+    ).join('');
+    document.getElementById('squadWall').innerHTML = `<div class="marqueeWrap"><div class="marqueeTrack">${portraitChips}${portraitChips}</div></div>`;
+
+    // Players wall - the season 1 trading-card roster, capped at 2 rows
+    // scrolling in alternating directions.
     const squadList = c.season1.squad || [];
-    const ROWS = 5;
+    const ROWS = 2;
     const squadRows = Array.from({ length: ROWS }, () => []);
     squadList.forEach((p, i) => squadRows[i % ROWS].push(p));
     const squadRowHtml = squadRows.map((row, i) => {
@@ -1056,14 +1071,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const dir = i % 2 === 0 ? '' : 'reverseRow';
       return `<div class="marqueeWrap"><div class="marqueeTrack ${dir}">${chips}${chips}</div></div>`;
     }).join('');
-    // Bonus row: the professional squad portrait shoot (deduped from 23 camera
-    // files down to one photo per person plus one group shot).
-    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
-    const portraitChips = squadPortraitNums.map(n =>
-      `<div class="momentChip" style="width:140px"><img src="assets/squad-portraits/p${n}.jpg" alt="GUL squad portrait" loading="lazy"></div>`
-    ).join('');
-    const portraitRowHtml = `<div class="marqueeWrap"><div class="marqueeTrack">${portraitChips}${portraitChips}</div></div>`;
-    document.getElementById('squadWall').innerHTML = squadRowHtml + portraitRowHtml;
+    document.getElementById('playersWall').innerHTML = squadRowHtml;
 
     // Chief Guests is still a placeholder until GUL shares photos.
     const chiefGuestChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Photo Coming Soon</span></div>`).join('');
@@ -1072,7 +1080,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       const logo = teamLogoSrc(a.team);
       const heroLogo = teamLogoSrc(a.team || a.winner);
       let hero = '';
-      if (a.photo) hero = `<img class="awardPhoto" src="assets/squad/${a.photo}.jpg" alt="${a.winner}" loading="lazy">`;
+      if (a.photo) hero = `<img class="awardPhoto" src="assets/squad-thumb/${a.photo}.jpg" alt="${a.winner}" loading="lazy">`;
       else if (a.ownerPhoto) hero = `<img class="awardPhoto" src="assets/owners/${a.ownerPhoto}.jpg" alt="${a.winner}" loading="lazy">`;
       else if (heroLogo) hero = `<div class="awardPhoto awardLogoHero"><img src="${heroLogo}" alt="${a.winner}" loading="lazy"></div>`;
       return `<div class="awardCard r-item">${hero}<div class="ttl">${a.title}</div><div class="name">${a.winner}</div>${a.team ? `<div class="team">${logo ? `<img class="awardTeamLogo" src="${logo}" alt="${a.team}" loading="lazy">` : ''}${a.team}${a.stat ? ' · ' + a.stat : ''}</div>` : (a.stat ? `<div class="team">${a.stat}</div>` : '')}</div>`;
@@ -1095,20 +1103,30 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       `<div class="ownerCard r-item"><img src="assets/owners/${o.file}.jpg" alt="${o.name} - ${o.team} owner" loading="lazy"><div class="ownerCaption"><div class="ownerName">${o.name}</div><div class="ownerTeam">${o.role} · ${o.team}</div></div></div>`
     ).join('');
     const s1Sponsors = [
-      { file: 'shubhsagar', name: 'Shubh Sagar', cat: 'Sponsor' },
-      { file: 'support', name: 'Frsh Fish', cat: 'Support Partner' },
-      { file: 'media', name: 'VAVA Productions', cat: 'Media Partner' },
-      { file: 'apparels', name: 'M Cube', cat: 'Apparel Partner' },
-      { file: 'associate', name: 'Associate Sponsor', cat: 'Associate' }
+      { file: 'vedit-enterprises', name: 'Vedit Enterprises', cat: 'Title Sponsor' },
+      { file: 'vava', name: 'VAVA', cat: 'Kit Partner' },
+      { file: 'vava-sports-academy', name: 'VAVA Sports Academy', cat: 'Fitness Partner' },
+      { file: 'vava-productions', name: 'VAVA Productions', cat: 'Media Partner' },
+      { file: 'vcube', name: 'V Cube', cat: 'Apparel Partner' },
+      { file: 'fast-and-up', name: 'Fast&Up', cat: 'Hydration Partner' },
+      { file: 'frsh-fish', name: 'FRSH Fish', cat: 'Support Partner' },
+      { file: 'sarkar-builders', name: 'Sarkar Builders', cat: 'Sponsor' },
+      { file: 'phoenix', name: 'Phoenix', cat: 'Sponsor' },
+      { file: 'pegasus-brewhouse', name: 'Pegasus Brew House', cat: 'Sponsor' },
+      { file: 'shubh-sagar', name: 'Shubh Sagar', cat: 'Sponsor' },
+      { file: 'stone-oven', name: 'Stone Oven', cat: 'Sponsor' },
+      { file: 'cozmoh', name: 'Cozmoh', cat: 'Sponsor' },
+      { file: 'shreearts', name: 'Shreearts', cat: 'Sponsor' },
+      { file: 'geo', name: 'GEO', cat: 'Sponsor' }
     ];
     document.getElementById('s1Squad').innerHTML = (c.season1.squad || []).map(p =>
-      `<div class="squadCard r-item"><img src="assets/squad/${p.file}.jpg" alt="${p.name} - Football Reimagined" loading="lazy"><div class="squadName">${p.name}</div></div>`
+      `<div class="squadCard r-item"><img src="assets/squad-thumb/${p.file}.jpg" alt="${p.name} - Football Reimagined" loading="lazy"><div class="squadName">${p.name}</div></div>`
     ).join('');
     document.getElementById('s1Mascots').innerHTML = (c.season1.mascots || []).map(m =>
       `<div class="mascotCard r-item"><img src="assets/mascots/${m.file}.jpg" alt="${m.team} superhero mascot" loading="lazy"><div class="mascotTeam">${m.team}</div></div>`
     ).join('');
     document.getElementById('s1Sponsors').innerHTML = s1Sponsors.map(s =>
-      `<div class="sponsorCard r-item"><img src="assets/sponsors/${s.file}.png" alt="${s.name}" loading="lazy"><div class="sponsorName">${s.name}</div><div class="sponsorCat">${s.cat}</div></div>`
+      `<div class="sponsorCard r-item"><img src="assets/sponsors/${s.file}.jpg" alt="${s.name}" loading="lazy"><div class="sponsorName">${s.name}</div><div class="sponsorCat">${s.cat}</div></div>`
     ).join('');
 
     const initials = (name) => name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
