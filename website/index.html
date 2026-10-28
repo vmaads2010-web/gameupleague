@@ -400,7 +400,25 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
    <div class="tlCenter">
     <div class="earlyBirdChip">⏳ Early Bird Open</div>
-    <a class="shineLogo" href="#season2"><video autoplay loop muted playsinline poster="assets/gul-logo-hq.png" aria-label="The Game Up League logo"><source src="assets/gul-logo-anim.webm" type="video/webm"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"></video></a>
+    <a class="shineLogo" href="#season2" id="journeyLogoLink"><video autoplay loop muted playsinline poster="assets/gul-logo-hq.png" aria-label="The Game Up League logo" id="journeyLogoVideo"><source src="assets/gul-logo-anim.webm" type="video/webm"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"></video></a>
+    <script>
+    (function(){
+      // Safari/iOS does not composite WebM alpha transparency correctly (shows a solid box
+      // instead of transparent background), so fall back to the static logo image there.
+      var ua = navigator.userAgent;
+      var isIOS = /iP(hone|od|ad)/.test(ua) || (ua.indexOf('Macintosh') > -1 && 'ontouchend' in document);
+      var isDesktopSafari = /^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(ua) && !isIOS;
+      if (isIOS || isDesktopSafari) {
+        var v = document.getElementById('journeyLogoVideo');
+        if (v) {
+          var img = document.createElement('img');
+          img.src = 'assets/gul-logo-hq.png';
+          img.alt = 'The Game Up League logo';
+          v.replaceWith(img);
+        }
+      }
+    })();
+    </script>
     <div class="tlFooterLinks"><a href="#contact">Feedback</a><a href="#season1">Reimagined</a><a href="#contact">Contact Us</a></div>
    </div>
 
