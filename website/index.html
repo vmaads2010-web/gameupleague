@@ -729,7 +729,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 <section class="section" id="sponsors">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Backed by</div><h2>Our Sponsors</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:16px">Sponsor logos coming soon.</p>
+  <p class="sub reveal" style="margin-bottom:16px">The brands backing Season 1.</p>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="sponsorsMarquee"></div>
   </div>
@@ -997,8 +997,27 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       if (card) card.classList.toggle('flipped');
     });
 
-    // Sponsor slots are placeholders until GUL provides real sponsor logos.
-    const sponsorChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Your Logo Here</span></div>`).join('');
+    // Real Season 1 sponsor logos, supplied by GUL via Drive.
+    const sponsors = [
+      { file: 'vedit-enterprises', name: 'Vedit Enterprises' },
+      { file: 'vava', name: 'VAVA' },
+      { file: 'vava-sports-academy', name: 'VAVA Sports Academy' },
+      { file: 'vava-productions', name: 'VAVA Productions' },
+      { file: 'vcube', name: 'V Cube' },
+      { file: 'fast-and-up', name: 'Fast&Up' },
+      { file: 'frsh-fish', name: 'FRSH Fish' },
+      { file: 'sarkar-builders', name: 'Sarkar Builders' },
+      { file: 'phoenix', name: 'Phoenix' },
+      { file: 'pegasus-brewhouse', name: 'Pegasus Brew House' },
+      { file: 'shubh-sagar', name: 'Shubh Sagar' },
+      { file: 'stone-oven', name: 'Stone Oven' },
+      { file: 'cozmoh', name: 'Cozmoh' },
+      { file: 'shreearts', name: 'Shreearts' },
+      { file: 'geo', name: 'GEO' }
+    ];
+    const sponsorChips = sponsors.map(s =>
+      `<div class="sponsorChip"><img src="assets/sponsors/${s.file}.jpg" alt="${s.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;border-radius:10px;background:#fff;padding:8px"></div>`
+    ).join('');
     document.getElementById('sponsorsMarquee').innerHTML = sponsorChips + sponsorChips;
 
     // Season Awards marquee - reuses the same award data as the Football
