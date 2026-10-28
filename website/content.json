@@ -113,15 +113,15 @@
     "_source": "Full names and confirmed roles from GUL's own typed WhatsApp message, 28 Oct 2026 - supersedes earlier first-names-only/unconfirmed list.",
     "members": [
       { "role": "President", "name": "Ansel Arakal", "photo": null },
-      { "role": "Vice President", "name": "Abhay Arakal", "photo": null },
-      { "role": "Chairperson", "name": "Vishal Mishra", "photo": null },
-      { "role": "Treasurer", "name": "Anmol Arakal", "photo": null },
+      { "role": "Vice President", "name": "Abhay Arakal", "photo": "abhay-arakal.jpg" },
+      { "role": "Chairperson", "name": "Vishal Mishra", "photo": "vishal-mishra.jpg" },
+      { "role": "Treasurer", "name": "Anmol Arakal", "photo": "anmol-arakal.jpg" },
       { "role": "Technical Director", "name": "Neil Lobo", "photo": null },
       { "role": "League Commissioner", "name": "Snedden Dmello", "photo": null },
       { "role": "Social Media", "name": "Harshal Kelaskar", "photo": null },
-      { "role": "Marketing / Public Relations", "name": "Sheryaans Gwade", "photo": null },
+      { "role": "Marketing / Public Relations", "name": "Sheryaans Gwade", "photo": "sheryaans-gwade.jpg" },
       { "role": "League Marshal", "name": "Anslem Crasto", "photo": null },
-      { "role": "League Marshal", "name": "Clyde Devinaden", "photo": null },
+      { "role": "League Marshal", "name": "Clyde Devinaden", "photo": "clyde-devinaden.jpg" },
       { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": null }
     ]
   },

@@ -92,7 +92,7 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .mascot{position:relative;z-index:2;width:min(480px,90%);height:560px;object-fit:contain;mix-blend-mode:screen;filter:drop-shadow(0 25px 35px rgba(0,0,0,.4))}
 .heroLogoArt{position:relative;z-index:2;width:min(380px,80%);object-fit:contain;filter:drop-shadow(0 25px 45px rgba(0,0,0,.5))}
 .marqueeWrap{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.marqueeTrack{display:flex;gap:22px;width:max-content;animation:marqueeScroll 28s linear infinite}
+.marqueeTrack{display:flex;align-items:flex-start;gap:22px;width:max-content;animation:marqueeScroll 28s linear infinite}
 .marqueeWrap:hover .marqueeTrack{animation-play-state:paused}
 @keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .sponsorChip{flex-shrink:0;width:160px;height:90px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
@@ -218,6 +218,14 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .flipCardBack .tapHint{margin-top:6px;font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;opacity:.85}
 .flipHintChip{display:inline-flex;align-items:center;gap:6px;background:rgba(245,181,27,.12);border:1px solid rgba(245,181,27,.4);color:var(--gold);font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:999px}
 
+/* GUL Squad wall - 5 rows scrolling in alternating directions */
+.squadWall{display:flex;flex-direction:column;gap:14px}
+.squadWall .marqueeTrack{gap:14px;animation-duration:34s}
+.squadWall .marqueeTrack.reverseRow{animation-direction:reverse}
+.squadCard{flex-shrink:0;width:92px;text-align:center}
+.squadCard img{width:92px;height:112px;object-fit:cover;border-radius:12px;border:1px solid rgba(245,181,27,.3);box-shadow:0 8px 18px rgba(0,0,0,.3);display:block}
+.squadCardName{font-size:10.5px;font-weight:700;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* Player Moments - professional portrait cards (GUL squad shoot + matchday photos) */
 .momentChip{flex-shrink:0;width:170px;aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(245,181,27,.35);box-shadow:0 10px 26px rgba(0,0,0,.35);background:#0d1f40}
 .momentChip img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
@@ -227,7 +235,7 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 
 /* Dash mascot - bouncing in front of Last Season's Champions */
 .champMascotWrap{display:flex;justify-content:center;margin-bottom:-6px}
-.champMascot{width:150px;height:150px;object-fit:cover;object-position:center 18%;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.22),rgba(13,31,64,.4) 70%);border:3px solid rgba(245,181,27,.55);box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 24px rgba(245,181,27,.25);animation:floatY 3.6s ease-in-out infinite}
+.champMascot{width:150px;height:auto;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45)) drop-shadow(0 0 20px rgba(245,181,27,.3));animation:floatY 3.6s ease-in-out infinite}
 .tlFooterLinks{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:12.5px;color:var(--muted)}
 .tlFooterLinks a{color:var(--muted);font-weight:700}
 .tlFooterLinks a:hover{color:var(--gold)}
@@ -700,7 +708,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 <section class="section" id="champions">
  <div class="container">
   <div class="champMascotWrap reveal">
-   <video class="champMascot" autoplay loop muted playsinline poster="assets/dash-mascot-poster.png" aria-hidden="true" id="champMascotVideo"><source src="assets/dash-mascot.webm" type="video/webm"><img src="assets/dash-mascot-poster.png" alt=""></video>
+   <img class="champMascot" src="assets/dash-mascot-poster.png" alt="The Game Up League mascot">
   </div>
   <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
   <div class="marqueeWrap reveal">
@@ -708,23 +716,6 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   </div>
  </div>
 </section>
-<script>
-(function(){
-  var ua = navigator.userAgent;
-  var isIOS = /iP(hone|od|ad)/.test(ua) || (ua.indexOf('Macintosh') > -1 && 'ontouchend' in document);
-  var isDesktopSafari = /^((?!chrome|android|crios|fxios|edgios).)*safari/i.test(ua) && !isIOS;
-  if (isIOS || isDesktopSafari) {
-    var v = document.getElementById('champMascotVideo');
-    if (v) {
-      var img = document.createElement('img');
-      img.src = 'assets/dash-mascot-poster.png';
-      img.alt = '';
-      img.className = 'champMascot';
-      v.replaceWith(img);
-    }
-  }
-})();
-</script>
 
 <section class="section" id="about">
  <div class="container">
@@ -768,17 +759,15 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="gallery">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>GUL Squad Gallery</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:16px">GUL Squad</p>
-  <div class="marqueeWrap reveal">
-   <div class="marqueeTrack" id="squadMarquee"></div>
-  </div>
+  <div class="section-head reveal"><div><div class="eyebrow">Our Players</div><h2>The Game Up League Squad</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Every player who made Season 1 happen.</p>
+  <div class="squadWall reveal" id="squadWall"></div>
  </div>
 </section>
 
 <section class="section" id="playerMoments">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>Player</h2></div></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Spotlight</div><h2>Player Highlights</h2></div></div>
   <p class="sub reveal" style="margin-bottom:16px">The squad, up close.</p>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="playerMomentsMarquee"></div>
@@ -788,7 +777,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="chiefGuests">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Season Highlights</div><h2>Chief Guests</h2></div></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Special Guests</div><h2>Our Esteemed Guests</h2></div></div>
   <p class="sub reveal" style="margin-bottom:16px">Chief guest photos coming soon.</p>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="chiefGuestsMarquee"></div>
@@ -1053,18 +1042,24 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     }).join('');
     document.getElementById('awardsMarquee').innerHTML = awardChips + awardChips;
 
-    // GUL Squad marquee - the same 65 squad photos already used in the
-    // Football Reimagined archive, reused here as a scrolling highlight reel.
-    const squadChips = (c.season1.squad || []).map(p =>
-      `<div class="sponsorChip" style="width:90px;height:110px;padding:0;overflow:hidden"><img src="assets/squad/${p.file}.jpg" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>`
-    ).join('');
-    document.getElementById('squadMarquee').innerHTML = squadChips + squadChips;
+    // GUL Squad wall - all season 1 squad photos with names, split into 5 rows
+    // that scroll in alternating directions (odd rows one way, even rows the
+    // other) instead of one flat single-row strip.
+    const squadList = c.season1.squad || [];
+    const ROWS = 5;
+    const squadRows = Array.from({ length: ROWS }, () => []);
+    squadList.forEach((p, i) => squadRows[i % ROWS].push(p));
+    const squadRowHtml = squadRows.map((row, i) => {
+      const chips = row.map(p =>
+        `<div class="squadCard"><img src="assets/squad/${p.file}.jpg" alt="${p.name}" loading="lazy"><div class="squadCardName">${p.name}</div></div>`
+      ).join('');
+      const dir = i % 2 === 0 ? '' : 'reverseRow';
+      return `<div class="marqueeWrap"><div class="marqueeTrack ${dir}">${chips}${chips}</div></div>`;
+    }).join('');
+    document.getElementById('squadWall').innerHTML = squadRowHtml;
 
-    // Player Moments and Chief Guests are placeholders until GUL shares photos.
-    const placeholderChip = (label) => `<div class="sponsorChip"><span>${label}</span></div>`;
-    const playerMomentChips = Array.from({ length: 6 }, () => placeholderChip('Photo Coming Soon')).join('');
-    document.getElementById('playerMomentsMarquee').innerHTML = playerMomentChips + playerMomentChips;
-    const chiefGuestChips = Array.from({ length: 6 }, () => placeholderChip('Photo Coming Soon')).join('');
+    // Chief Guests is still a placeholder until GUL shares photos.
+    const chiefGuestChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Photo Coming Soon</span></div>`).join('');
     document.getElementById('chiefGuestsMarquee').innerHTML = chiefGuestChips + chiefGuestChips;
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a => {
       const logo = teamLogoSrc(a.team);
