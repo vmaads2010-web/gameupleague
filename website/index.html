@@ -311,8 +311,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
 .awardCard .team{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
 .awardCard .awardTeamLogo{width:18px;height:18px;object-fit:contain;flex-shrink:0}
-.leaderGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
-.leaderCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.leaderCard{flex-shrink:0;width:170px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .leaderCard:hover{transform:translateY(-5px);border-color:rgba(245,181,27,.4)}
 .leaderAvatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#101c31;object-fit:cover}
 .leaderName{font-size:15px;font-weight:800}
@@ -631,21 +630,24 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
-<section class="section" id="turf">
+<section class="section" id="rules">
  <div class="container">
-  <div class="feature reveal">
-   <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><p class="sub" style="margin-top:8px">📍 <span id="turfLocation"></span> — <a id="turfMapsLink" href="#" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Get Directions →</a></p><div class="actions"><a class="btn gold" href="https://game-up-turf.web.app/book" target="_blank" rel="noopener">Book the Turf →</a><a class="btn outline" href="#contact">Enquire</a></div></div>
-   <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 <span id="turfLocation2"></span><br>📸 Event-ready environment</p></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Know Before You Play</div><h2>Game Up League Rules</h2></div></div>
+  <div class="grid cards reveal-stagger">
+   <article class="card r-item"><h3>⚽ Match Format</h3><p>5-a-side, 20-minute matches, unlimited rolling substitutions.</p></article>
+   <article class="card r-item"><h3>🛡️ Fair Play</h3><p>Zero tolerance for abuse, violence or unsporting conduct — respect first, always.</p></article>
+   <article class="card r-item"><h3>👕 Kit &amp; Safety</h3><p>Turf shoes and shin guards are mandatory. Studs are not allowed.</p></article>
+   <article class="card r-item"><h3>🚫 Discipline</h3><p>No alcohol, drugs or intoxication on tournament premises — strictly enforced.</p></article>
   </div>
+  <p class="sub reveal" style="margin-top:18px"><a href="#season2" style="color:var(--gold);font-weight:700">Read the full Rule Book →</a></p>
  </div>
 </section>
 
-<section class="section" id="sponsors">
+<section class="section" id="champions">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Backed by</div><h2>Our Sponsors</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:16px">Sponsor logos coming soon.</p>
+  <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
   <div class="marqueeWrap reveal">
-   <div class="marqueeTrack" id="sponsorsMarquee"></div>
+   <div class="marqueeTrack" id="championsMarquee"></div>
   </div>
  </div>
 </section>
@@ -661,11 +663,11 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
-<section class="section" id="champions">
+<section class="section" id="awards">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Season Awards</h2></div></div>
   <div class="marqueeWrap reveal">
-   <div class="marqueeTrack" id="championsMarquee"></div>
+   <div class="marqueeTrack" id="awardsMarquee"></div>
   </div>
  </div>
 </section>
@@ -674,14 +676,77 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">The team behind GUL</div><h2>Leadership</h2></div></div>
   <p class="sub reveal" style="margin-bottom:20px">Photos coming soon — roles and names confirmed, some roles still pending final confirmation.</p>
-  <div class="leaderGrid reveal-stagger" id="leaderGrid"></div>
+  <div class="marqueeWrap reveal">
+   <div class="leaderGrid marqueeTrack" id="leaderGrid"></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="sponsors">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Backed by</div><h2>Our Sponsors</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Sponsor logos coming soon.</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="sponsorsMarquee"></div>
+  </div>
  </div>
 </section>
 
 <section class="section" id="gallery">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>Gallery</h2></div></div>
-  <div id="galleryWrap"></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>GUL Squad Gallery</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">GUL Squad</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="squadMarquee"></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="playerMoments">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Moments</div><h2>Player</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Match-day moments coming soon.</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="playerMomentsMarquee"></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="chiefGuests">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Season Highlights</div><h2>Chief Guests</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Chief guest photos coming soon.</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="chiefGuestsMarquee"></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="turf">
+ <div class="container">
+  <div class="feature reveal">
+   <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><p class="sub" style="margin-top:8px">📍 <span id="turfLocation"></span> — <a id="turfMapsLink" href="#" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Get Directions →</a></p><div class="actions"><a class="btn gold" href="https://game-up-turf.web.app/book" target="_blank" rel="noopener">Book the Turf →</a><a class="btn outline" href="#contact">Enquire</a></div></div>
+   <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 <span id="turfLocation2"></span><br>📸 Event-ready environment</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="kitPartner">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Official Gear</div><h2>Kit Partner</h2></div></div>
+  <div class="grid cards reveal-stagger">
+   <article class="card r-item"><h3>Kit Partner</h3><p>VAVA Productions — official kit manufacturing partner. Logo and details coming soon.</p></article>
+   <article class="card r-item"><h3>Jerseys &amp; Shorts</h3><p>Preview coming soon — size guide already live on the registration form.</p></article>
+   <article class="card r-item"><h3>Order Enquiry</h3><p>Want to order a kit? Let us know and we'll get back to you.</p><a class="btn gold" href="#contact" style="margin-top:10px">Enquire →</a></article>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="gameOrder">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Merchandise</div><h2>Game Order</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Order official Game Up League merchandise — details coming soon.</p>
+  <a class="btn gold reveal" href="#contact">Enquire →</a>
  </div>
 </section>
 
@@ -871,6 +936,30 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     // Sponsor slots are placeholders until GUL provides real sponsor logos.
     const sponsorChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Your Logo Here</span></div>`).join('');
     document.getElementById('sponsorsMarquee').innerHTML = sponsorChips + sponsorChips;
+
+    // Season Awards marquee - reuses the same award data as the Football
+    // Reimagined archive (photo where available, else the winner's team logo).
+    const awardChips = (c.season1.awards || []).map(a => {
+      const photoSrc = a.photo ? `assets/squad/${a.photo}.jpg` : (a.ownerPhoto ? `assets/owners/${a.ownerPhoto}.jpg` : null);
+      const logo = teamLogoSrc(a.team || a.winner);
+      const hero = photoSrc ? `<img src="${photoSrc}" alt="${a.winner}" loading="lazy">` : (logo ? `<img src="${logo}" alt="${a.winner}" loading="lazy" style="object-fit:contain;background:#f4f6fa;padding:10px">` : '');
+      return `<div class="championChip">${hero}<div class="ttl">${a.title}</div><div class="nm">${a.winner}</div></div>`;
+    }).join('');
+    document.getElementById('awardsMarquee').innerHTML = awardChips + awardChips;
+
+    // GUL Squad marquee - the same 65 squad photos already used in the
+    // Football Reimagined archive, reused here as a scrolling highlight reel.
+    const squadChips = (c.season1.squad || []).map(p =>
+      `<div class="sponsorChip" style="width:90px;height:110px;padding:0;overflow:hidden"><img src="assets/squad/${p.file}.jpg" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>`
+    ).join('');
+    document.getElementById('squadMarquee').innerHTML = squadChips + squadChips;
+
+    // Player Moments and Chief Guests are placeholders until GUL shares photos.
+    const placeholderChip = (label) => `<div class="sponsorChip"><span>${label}</span></div>`;
+    const playerMomentChips = Array.from({ length: 6 }, () => placeholderChip('Photo Coming Soon')).join('');
+    document.getElementById('playerMomentsMarquee').innerHTML = playerMomentChips + playerMomentChips;
+    const chiefGuestChips = Array.from({ length: 6 }, () => placeholderChip('Photo Coming Soon')).join('');
+    document.getElementById('chiefGuestsMarquee').innerHTML = chiefGuestChips + chiefGuestChips;
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a => {
       const logo = teamLogoSrc(a.team);
       const heroLogo = teamLogoSrc(a.team || a.winner);
@@ -917,23 +1006,25 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     const initials = (name) => name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     const avatarColors = ['#f5b51b', '#1459c7', '#e3262e', '#16865c', '#9b59b6'];
     const colorFor = (name) => avatarColors[[...name].reduce((s, ch) => s + ch.charCodeAt(0), 0) % avatarColors.length];
-    document.getElementById('leaderGrid').innerHTML = (c.leadership ? c.leadership.members : []).map(m => `
-      <div class="leaderCard r-item">
+    const leaderChips = (c.leadership ? c.leadership.members : []).map(m => `
+      <div class="leaderCard">
         ${m.photo
           ? `<img class="leaderAvatar" src="assets/leadership/${m.photo}" alt="${m.name}">`
           : `<div class="leaderAvatar" style="background:${colorFor(m.name)}">${initials(m.name)}</div>`}
         <div class="leaderName">${m.name}</div>
         <div class="leaderRole">${m.role}</div>
       </div>`).join('');
+    document.getElementById('leaderGrid').innerHTML = leaderChips + leaderChips;
 
+    // Real season highlight photos (if any) replace the Player Moments
+    // placeholder chips - this used to be its own static Gallery grid, now
+    // folded into the scrolling Player Moments marquee.
     const galleryImages = c.gallery ? c.gallery.images : [];
-    const galleryWrap = document.getElementById('galleryWrap');
     if (galleryImages.length) {
-      galleryWrap.innerHTML = '<div class="galleryGrid reveal-stagger in">' + galleryImages.map(g =>
-        `<div class="galleryItem r-item"><img src="${g.src}" alt="${g.caption || ''}" loading="lazy">${g.caption ? `<div class="galleryCaption">${g.caption}</div>` : ''}</div>`
-      ).join('') + '</div>';
-    } else {
-      galleryWrap.innerHTML = '<div class="placeholder-box reveal in">Photos coming soon — match days, events and behind-the-scenes moments will be added here.</div>';
+      const realMomentChips = galleryImages.map(g =>
+        `<div class="sponsorChip" style="width:140px;height:110px;padding:0;overflow:hidden"><img src="${g.src}" alt="${g.caption || ''}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></div>`
+      ).join('');
+      document.getElementById('playerMomentsMarquee').innerHTML = realMomentChips + realMomentChips;
     }
 
     set('contactEmailText', c.contact.email);
