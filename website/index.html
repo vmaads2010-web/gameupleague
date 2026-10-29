@@ -150,6 +150,9 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .tlPanel{border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;gap:12px}
 .tlPanelTitle{font-family:var(--font-display);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:0 0 4px}
 .tlItem{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;transition:transform .25s ease}
+.tlStatus{margin-left:auto;flex-shrink:0;font-family:var(--font-stat);font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:3px}
+.tlStatus.done{background:rgba(90,170,255,.18);color:#7fbaff}
+.tlStatus.upcoming{background:rgba(212,255,77,.18);color:var(--gold)}
 .tlYear{font-weight:900;font-size:12.5px;flex-shrink:0;min-width:56px}
 .tlName{font-weight:700;font-size:14px}
 
@@ -412,8 +415,8 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
   <div class="tlGrid reveal">
 
    <div class="tlPanel comicPanel">
-    <a class="tlItem" href="#season1"><span class="tlYear">2025–2026</span><span class="tlName">Football Reimagined</span></a>
-    <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span></a>
+    <a class="tlItem" href="#season1"><span class="tlYear">2025–2026</span><span class="tlName">Football Reimagined</span><span class="tlStatus done">✓ Done</span></a>
+    <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span><span class="tlStatus upcoming">Upcoming</span></a>
     <a class="btn gold" href="register.html" style="font-size:12px;padding:8px 14px;align-self:center">Register →</a>
    </div>
 
