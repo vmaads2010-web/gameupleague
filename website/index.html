@@ -405,7 +405,6 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <a class="offerBannerBtn" href="register.html">Register Now →</a>
  </div>
 </div>
-<div class="notice-bar" id="noticeBar">Loading…</div>
 <header class="nav">
  <div class="container navin">
   <a class="btn gold navRegister" href="register.html">Register</a>
@@ -922,7 +921,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
     const setHref = (id, href) => { const el = document.getElementById(id); if (el) el.href = href; };
 
-    set('noticeBar', c.noticeBar);
 
     set('heroKicker', c.hero.kicker);
     set('heroLine1', c.hero.titleLine1);
@@ -1173,7 +1171,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
   })
   .catch(err => {
     console.error('Could not load content.json', err);
-    document.getElementById('noticeBar').textContent = 'Could not load website content. Please refresh, or contact the site admin if this continues.';
   });
 </script>
 <script src="assets/wolf-chat.js" defer></script>
