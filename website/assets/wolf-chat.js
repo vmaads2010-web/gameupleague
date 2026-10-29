@@ -33,15 +33,15 @@
   const btn = document.createElement('button');
   btn.className = 'wolfBtn';
   btn.setAttribute('aria-label', 'Open GUL assistant');
-  btn.innerHTML = `<img src="${assetsBase}assets/gul-mascot-avatar.png" alt="">`;
+  btn.innerHTML = `<img src="${assetsBase}assets/dash-mascot-poster.png" alt="">`;
   document.body.appendChild(btn);
 
   const panel = document.createElement('div');
   panel.className = 'wolfPanel';
   panel.innerHTML = `
     <div class="wolfHead">
-      <img src="${assetsBase}assets/gul-mascot-avatar.png" alt="">
-      <div><b>GUL Assistant</b><span>Quick answers · not live chat</span></div>
+      <img src="${assetsBase}assets/dash-mascot-poster.png" alt="">
+      <div><b>Dash</b><span>Quick answers · not live chat</span></div>
       <button class="wolfClose" aria-label="Close">×</button>
     </div>
     <div class="wolfBody" id="wolfBody"></div>
@@ -122,7 +122,7 @@
     panel.classList.toggle('open');
     if (!opened) {
       opened = true;
-      addMsg('bot', "Hey! 🐺 I'm the GUL Assistant. I can answer a few common questions — pick one below:");
+      addMsg('bot', "Hey! 🐺 I'm Dash. I can answer a few common questions — pick one below:");
       showMainMenu();
     }
   });

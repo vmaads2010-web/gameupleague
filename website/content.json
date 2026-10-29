@@ -59,8 +59,7 @@
       { "title": "Best Defender", "winner": "Rishi Malkhani", "team": "", "photo": "rishi-malkhani" },
       { "title": "Emerging Player", "winner": "Rosswell", "team": "Global Net", "photo": "roswell" },
       { "title": "Best Manager", "winner": "Donald Pereira", "team": "Palmeiros", "ownerPhoto": "palmeiros" },
-      { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" },
-      { "title": "Most Player-of-the-Match Awards", "winner": "Mayur Chavan", "team": "Palmeiros", "stat": "3 POM", "photo": "mayur-chavan" }
+      { "title": "Fair Play Team", "winner": "Yeshua FC", "team": "" }
     ],
     "pointsTable": [
       { "rank": 1, "team": "Palmeiros", "p": 8, "w": 5, "d": 3, "l": 0, "gf": 29, "ga": 11, "pts": 18 },
@@ -119,7 +118,7 @@
       { "role": "Technical Director", "name": "Neil Lobo", "photo": null },
       { "role": "League Commissioner", "name": "Snedden Dmello", "photo": null },
       { "role": "Social Media", "name": "Harshal Kelaskar", "photo": null },
-      { "role": "Marketing / Public Relations", "name": "Sheryaans Gwade", "photo": "sheryaans-gwade.jpg" },
+      { "role": "Marketing and Public Relation", "name": "Sheryaans Gwade", "photo": "sheryaans-gwade.jpg" },
       { "role": "League Marshal", "name": "Anslem Crasto", "photo": null },
       { "role": "League Marshal", "name": "Clyde Devinaden", "photo": "clyde-devinaden.jpg" },
       { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": null }
@@ -137,7 +136,7 @@
   },
 
   "contact": {
-    "email": "gameupleague@gmail.com",
+    "email": "thegameupleague@gmail.com",
     "phoneDisplay": "+91 97303 80420",
     "phoneHref": "+919730380420",
     "instagramHandle": "@thegameupleague",

@@ -176,13 +176,14 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 .tlYear{font-weight:900;font-size:12.5px;flex-shrink:0;min-width:56px}
 .tlName{font-weight:700;font-size:14px}
 
-/* Comic-book theme */
-.comicPanel{background:#151027;border:3px solid var(--gold);box-shadow:6px 6px 0 rgba(227,38,46,.55);position:relative;overflow:hidden}
-.comicPanel:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1.4px,transparent 1.4px);background-size:9px 9px;opacity:.5;pointer-events:none}
-.comicPanel .tlPanelTitle{color:var(--gold);-webkit-text-stroke:.5px rgba(0,0,0,.4)}
-.comicPanel a.tlItem{background:rgba(245,181,27,.1);border:2px solid rgba(245,181,27,.4);color:#fff}
-.comicPanel a.tlItem:hover{transform:translate(-2px,-2px);background:rgba(245,181,27,.2);border-color:var(--gold);box-shadow:3px 3px 0 var(--red)}
-.comicPanel .tlYear{color:var(--red);-webkit-text-stroke:.3px rgba(0,0,0,.3)}
+/* Comic-book theme - now blue to match the Upcoming panel */
+.comicPanel{background:#060c17;border:1px solid rgba(0,229,255,.35);position:relative;overflow:hidden}
+.comicPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
+.comicPanel .tlPanelTitle{color:#5fe8ff;font-family:'Courier New',monospace;letter-spacing:2px}
+.comicPanel a.tlItem{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.25);color:#fff}
+.comicPanel a.tlItem:hover{background:rgba(0,229,255,.12);border-color:#5fe8ff}
+.comicPanel .tlYear{color:#5fe8ff;font-family:'Courier New',monospace}
+.comicPanel .tlName{color:#cfe9f2}
 
 /* Robotics theme */
 .roboPanel{background:#060c17;border:1px solid rgba(0,229,255,.35);position:relative;overflow:hidden}
@@ -195,12 +196,10 @@ h1 span{color:var(--gold)}.hero p{max-width:590px;color:#c2cde0;font-size:18px}
 
 /* Center logo with hover shine sweep */
 .tlCenter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
-.shineLogo{position:relative;width:min(220px,70%);overflow:hidden;border-radius:16px;cursor:pointer}
-.shineLogo img,.shineLogo video{width:100%;display:block;border-radius:16px;animation:logoFloat 4.5s ease-in-out infinite,logoGlow 3s ease-in-out infinite}
+.shineLogo{position:relative;width:min(220px,70%);cursor:pointer}
+.shineLogo img,.shineLogo video{width:100%;display:block;animation:logoFloat 4.5s ease-in-out infinite,logoGlow 3s ease-in-out infinite}
 @keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.015)}}
 @keyframes logoGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(245,181,27,0))}50%{filter:drop-shadow(0 0 18px rgba(245,181,27,.55))}}
-.shineLogo:after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;background:linear-gradient(115deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .7s ease}
-.shineLogo:hover:after{left:150%}
 .earlyBirdChip{background:var(--gold);color:#101c31;font-weight:900;font-size:10.5px;letter-spacing:1px;padding:5px 12px;border-radius:999px;text-transform:uppercase}
 
 /* Special Game Up Cards - flip cards */
@@ -431,9 +430,9 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
   <div class="tlGrid reveal">
 
    <div class="tlPanel comicPanel">
-    <div class="tlPanelTitle">📖 Register &amp; Archive</div>
-    <a class="tlItem" href="#season1"><span class="tlYear">25–26</span><span class="tlName">Football Reimagined</span></a>
-    <a class="tlItem" href="#season2"><span class="tlYear">26–27</span><span class="tlName">Reloaded</span></a>
+    <a class="tlItem" href="#season1"><span class="tlYear">2025–2026</span><span class="tlName">Football Reimagined</span></a>
+    <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span></a>
+    <a class="btn gold" href="register.html" style="font-size:12px;padding:8px 14px;align-self:center">Register →</a>
    </div>
 
    <div class="tlCenter">
@@ -688,10 +687,9 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Know Before You Play</div><h2>Game Up League Rules</h2></div></div>
   <div class="grid cards reveal-stagger">
-   <article class="card r-item"><h3>⚽ Match Format</h3><p>5-a-side, 20-minute matches, unlimited rolling substitutions.</p></article>
-   <article class="card r-item"><h3>🛡️ Fair Play</h3><p>Zero tolerance for abuse, violence or unsporting conduct — respect first, always.</p></article>
-   <article class="card r-item"><h3>👕 Kit &amp; Safety</h3><p>Turf shoes and shin guards are mandatory. Studs are not allowed.</p></article>
-   <article class="card r-item"><h3>🚫 Discipline</h3><p>No alcohol, drugs or intoxication on tournament premises — strictly enforced.</p></article>
+   <article class="card r-item"><h3>⚽ Match Format</h3><p>5-<span style="font-size:1.3em;font-weight:900;color:var(--gold)">A</span>-side, 20 minute matches, football with a twist.</p></article>
+   <article class="card r-item"><h3>👕 Kit &amp; Safety</h3><p>Turf or flat shoes and shin guards are mandatory. Studs are not allowed.</p></article>
+   <article class="card r-item"><h3>🛡️ Fair Play</h3><p>Zero tolerance for abuse, violence or unsporting conduct.</p></article>
   </div>
   <p class="sub reveal" style="margin-top:18px"><a href="#season2" style="color:var(--gold);font-weight:700">Read the full Rule Book →</a></p>
  </div>
@@ -699,8 +697,8 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="specialCards">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Game Changers</div><h2>Special Game Up Cards</h2></div></div>
-  <p class="sub reveal" style="margin-bottom:6px">Drawn at random during a match, these cards flip the game on its head. Tap a card to see the twist.</p>
+  <div class="section-head reveal"><div><div class="eyebrow">Game Changers</div><h2><span style="color:var(--gold)">Special</span> Game Up Cards</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:6px">Drawn at the beginning and used during the game. Tap a card to see the twist.</p>
   <div class="flipHintChip reveal" style="margin-bottom:18px">👆 Tap to flip</div>
   <div class="flipCardRow reveal-stagger" id="flipCardRow"></div>
  </div>
@@ -710,6 +708,15 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Football Reimagined 25–26</div><h2>Last Season's Champions</h2></div></div>
   <div class="championsGrid reveal-stagger" id="championsMarquee"></div>
+ </div>
+</section>
+
+<section class="section" id="trophy">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">What it's all for</div><h2>The Trophy We Play For</h2></div></div>
+  <div class="reveal" style="display:flex;justify-content:center">
+   <img src="assets/gul-trophy.jpg" alt="The Game Up League Champions Trophy" style="max-width:360px;width:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))">
+  </div>
  </div>
 </section>
 
@@ -743,6 +750,17 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
+<section class="section" id="titleSponsor">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Powered by</div><h2>Title Sponsor</h2></div></div>
+  <div class="reveal" style="display:flex;justify-content:center">
+   <div style="background:#fff;border-radius:18px;padding:28px 40px;box-shadow:0 14px 34px rgba(0,0,0,.35)">
+    <img src="assets/sponsors/vedit-enterprises.jpg" alt="Vedit Enterprises" style="max-width:260px;width:100%;display:block">
+   </div>
+  </div>
+ </div>
+</section>
+
 <section class="section" id="sponsors">
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Backed by</div><h2>Our Sponsors</h2></div></div>
@@ -757,7 +775,9 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">Our Players</div><h2>The Game Up League Squad</h2></div></div>
   <p class="sub reveal" style="margin-bottom:16px">Every player who made Season 1 happen.</p>
-  <div class="squadWall reveal" id="squadWall"></div>
+  <div class="reveal" style="display:flex;justify-content:center">
+   <img src="assets/champions/champion-atlanta.jpg" alt="The Game Up League Squad" style="max-width:700px;width:100%;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,.4)">
+  </div>
  </div>
 </section>
 
@@ -780,7 +800,7 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
 
 <section class="section" id="chiefGuests">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Special Guests</div><h2>Our Esteemed Guests</h2></div></div>
+  <div class="section-head reveal"><div><h2>Our Esteemed Guests</h2></div></div>
   <p class="sub reveal" style="margin-bottom:16px">Chief guest photos coming soon.</p>
   <div class="marqueeWrap reveal">
    <div class="marqueeTrack" id="chiefGuestsMarquee"></div>
@@ -788,10 +808,20 @@ h3{font-family:'Anton',Inter,sans-serif;font-weight:400;letter-spacing:-.3px}
  </div>
 </section>
 
+<section class="section" id="refs">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">The people who keep it fair</div><h2>Our Refs</h2></div></div>
+  <p class="sub reveal" style="margin-bottom:16px">Referee profiles coming soon.</p>
+  <div class="marqueeWrap reveal">
+   <div class="marqueeTrack" id="refsMarquee"></div>
+  </div>
+ </div>
+</section>
+
 <section class="section" id="turf">
  <div class="container">
   <div class="feature reveal">
-   <div><div class="eyebrow">Train. Play. Repeat.</div><div class="big">GAME UP <span>TURF</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><p class="sub" style="margin-top:8px">📍 <span id="turfLocation"></span> — <a id="turfMapsLink" href="#" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Get Directions →</a></p><div class="actions"><a class="btn gold" href="https://game-up-turf.web.app/book" target="_blank" rel="noopener">Book the Turf →</a><a class="btn outline" href="#contact">Enquire</a></div></div>
+   <div><div class="eyebrow">Game Venue</div><div class="big">WHERE IS <span>GAME UP TURF?</span></div><p class="sub">Our home ground for football sessions, team practice, private games and Game Up events.</p><p class="sub" style="margin-top:8px">📍 <span id="turfLocation"></span> — <a id="turfMapsLink" href="#" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700">Get Directions →</a></p><div class="actions"><a class="btn gold" href="#contact">Contact</a></div></div>
    <div class="card"><h3>Facilities</h3><p>⚽ Football turf<br>💡 Match lighting<br>👕 Team-friendly setup<br>📍 <span id="turfLocation2"></span><br>📸 Event-ready environment</p></div>
   </div>
  </div>
@@ -1015,7 +1045,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     const sponsors = [
       { file: 'vedit-enterprises', name: 'Vedit Enterprises' },
       { file: 'vava', name: 'VAVA' },
-      { file: 'vava-sports-academy', name: 'VAVA Sports Academy' },
+      { file: 'vava-sports-academy', name: 'VSA' },
       { file: 'vava-productions', name: 'VAVA Productions' },
       { file: 'vcube', name: 'V Cube' },
       { file: 'fast-and-up', name: 'Fast&Up' },
@@ -1045,15 +1075,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     }).join('');
     document.getElementById('awardsMarquee').innerHTML = awardChips + awardChips;
 
-    // GUL Squad section - the real portrait photo shoot only (the people in
-    // the black GUL polo), not the colourful trading cards. Deduped from the
-    // original 23 camera files down to one photo per person plus one group shot.
-    const squadPortraitNums = ['01', '02', '03', '04', '05', '08', '11', '13', '20', '21', '22', '23'];
-    const portraitChips = squadPortraitNums.map(n =>
-      `<div class="momentChip" style="width:150px"><img src="assets/squad-portraits/p${n}.jpg" alt="GUL squad portrait" loading="lazy"></div>`
-    ).join('');
-    document.getElementById('squadWall').innerHTML = `<div class="marqueeWrap"><div class="marqueeTrack">${portraitChips}${portraitChips}</div></div>`;
-
     // Players wall - the season 1 trading-card roster, capped at 2 rows
     // scrolling in alternating directions.
     const squadList = c.season1.squad || [];
@@ -1072,6 +1093,9 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     // Chief Guests is still a placeholder until GUL shares photos.
     const chiefGuestChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Photo Coming Soon</span></div>`).join('');
     document.getElementById('chiefGuestsMarquee').innerHTML = chiefGuestChips + chiefGuestChips;
+
+    const refChips = Array.from({ length: 6 }, () => `<div class="sponsorChip"><span>Photo Coming Soon</span></div>`).join('');
+    document.getElementById('refsMarquee').innerHTML = refChips + refChips;
     document.getElementById('s1Awards').innerHTML = (c.season1.awards || []).map(a => {
       const logo = teamLogoSrc(a.team);
       const heroLogo = teamLogoSrc(a.team || a.winner);
