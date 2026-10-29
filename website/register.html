@@ -8,25 +8,30 @@
 <link rel="icon" href="assets/gul-logo-hq.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#07152f; --blue:#1459c7; --gold:#f5b51b; --white:#f7f9ff; --muted:#a9b6cf;
+  --navy:#07152f; --blue:#1459c7; --gold:#d4ff4d; --trophy:#f5b51b; --white:#f7f9ff; --muted:#a9b6cf;
   --line:rgba(255,255,255,.11); --shadow:0 18px 50px rgba(0,0,0,.28);
+  --font-ui:Archivo,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --font-display:'Anton',var(--font-ui);
+  --font-stat:'Barlow Condensed',var(--font-ui);
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
-linear-gradient(180deg,#06132b 0%,#081a37 48%,#061126 100%);color:var(--white);line-height:1.5;min-height:100vh}
-a{color:inherit;text-decoration:none}.container{width:min(640px,92%);margin:auto}
+body{margin:0;font-family:var(--font-ui);background:
+linear-gradient(180deg,#06132b 0%,#081a37 48%,#061126 100%);color:var(--white);line-height:1.5;min-height:100vh;position:relative}
+body:before{content:"";position:fixed;top:0;left:0;right:0;height:460px;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse 60% 50% at 50% 0%,rgba(212,255,77,.1),transparent 70%)}
+a{color:inherit;text-decoration:none}.container{width:min(640px,92%);margin:auto;position:relative;z-index:1}
 .nav{position:sticky;top:0;z-index:50;background:rgba(5,16,36,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
 .navin{width:min(1160px,92%);margin:auto;height:78px;display:flex;align-items:center;gap:12px}
 .brand img{width:44px;height:50px;object-fit:contain}
 .brand{display:flex;align-items:center;gap:12px;font-weight:900}
-.wrap{padding:50px 0 80px}
-.eyebrow{color:var(--gold);font-weight:900;letter-spacing:2px;font-size:12px;text-transform:uppercase}
-h1{font-size:clamp(28px,5vw,42px);margin:8px 0 10px;letter-spacing:-1px}
+.wrap{padding:50px 0 80px;position:relative;z-index:1}
+.eyebrow{color:#0d1f14;background:var(--gold);font-family:var(--font-stat);font-weight:700;letter-spacing:.5px;font-size:13px;text-transform:uppercase;display:inline-flex;align-items:center;padding:3px 11px 4px;border-radius:3px 3px 3px 0}
+h1{font-family:var(--font-display);font-weight:400;font-size:clamp(30px,5vw,46px);margin:10px 0 10px;letter-spacing:-.5px;text-transform:uppercase}
 .sub{color:var(--muted);margin:0 0 24px}
-.notice{background:rgba(245,181,27,.1);border:1px solid rgba(245,181,27,.35);border-radius:14px;padding:16px 18px;font-size:14px;color:#ffe6ab;margin-bottom:28px;line-height:1.6}
+.notice{background:rgba(212,255,77,.08);border:1px solid rgba(212,255,77,.3);border-radius:14px;padding:16px 18px;font-size:14px;color:#eaffc2;margin-bottom:28px;line-height:1.6}
 .card{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
 .field{margin-bottom:16px}
 label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#cfd9ef}
@@ -35,7 +40,7 @@ input:focus,select:focus{border-color:var(--gold)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.row2{grid-template-columns:1fr}}
 button{width:100%;margin-top:6px;padding:14px;border-radius:12px;border:0;background:var(--gold);color:#101c31;font-weight:800;font-size:15px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
-button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(245,181,27,.3)}
+button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(212,255,77,.3)}
 button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .status{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;display:none}
 .status.show{display:block}
@@ -43,8 +48,8 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
 .back{display:inline-block;margin-top:24px;color:var(--muted);font-size:13px}
 .back:hover{color:var(--gold)}
-.offerBox{position:relative;overflow:hidden;background:linear-gradient(135deg,#123b83 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(245,181,27,.4);border-radius:20px;padding:24px 24px 22px;margin-bottom:10px;box-shadow:0 20px 45px rgba(0,0,0,.35)}
-.offerBox:before{content:"";position:absolute;top:-40%;right:-10%;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.25),transparent 70%)}
+.offerBox{position:relative;overflow:hidden;background:linear-gradient(135deg,#123b83 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(212,255,77,.4);border-radius:20px;padding:24px 24px 22px;margin-bottom:10px;box-shadow:0 20px 45px rgba(0,0,0,.35)}
+.offerBox:before{content:"";position:absolute;top:-40%;right:-10%;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(212,255,77,.25),transparent 70%)}
 .offerBadge{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#101c31;font-weight:900;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;padding:6px 12px;border-radius:999px}
 .offerBadge .dot{width:7px;height:7px;border-radius:50%;background:#101c31;animation:pulseDot 1.6s ease-in-out infinite}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.25}}
@@ -52,7 +57,7 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .offerMain .price{font-size:44px;font-weight:900;line-height:1;letter-spacing:-1px}
 .offerMain .price small{font-size:16px;font-weight:700;color:var(--muted)}
 .offerMain .window{color:#cfe0ff;font-size:13.5px;font-weight:700;background:rgba(255,255,255,.08);padding:7px 12px;border-radius:10px}
-.offerNoteRow{color:#ffe6ab;font-size:13px;margin-top:12px;position:relative;line-height:1.5}
+.offerNoteRow{color:#eaffc2;font-size:13px;margin-top:12px;position:relative;line-height:1.5}
 .offerUrgency{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.18);font-size:13px;color:var(--muted);position:relative}
 .offerUrgency b{color:#ff9d9d}
 .photoPicker{display:flex;align-items:center;gap:14px}
@@ -60,12 +65,12 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .photoPickBtn{flex:1;padding:12px 13px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:#07172f;color:var(--muted);font-size:13px;text-align:center;cursor:pointer;transition:border-color .2s ease,color .2s ease}
 .photoPickBtn:hover{border-color:var(--gold);color:#fff}
 .photoHint{font-size:11.5px;color:var(--muted);margin-top:6px}
-.photoNotice{background:rgba(245,181,27,.08);border:1px solid rgba(245,181,27,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ffe6ab;margin-bottom:10px;line-height:1.5}
+.photoNotice{background:rgba(212,255,77,.08);border:1px solid rgba(212,255,77,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#eaffc2;margin-bottom:10px;line-height:1.5}
 .sizeGuide{margin-top:8px}
 .sizeGuide summary{cursor:pointer;font-size:11.5px;color:var(--gold);font-weight:700;list-style:none}
 .sizeGuide summary::-webkit-details-marker{display:none}
 .sizeGuide img{width:100%;border-radius:8px;margin-top:8px;display:block}
-.payBox{margin-top:18px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:20px;text-align:center}
+.payBox{margin-top:18px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(212,255,77,.3);border-radius:16px;padding:20px;text-align:center}
 .payBox h3{margin:0 0 4px;font-size:16px}
 .payRequiredNotice{background:rgba(227,38,46,.12);border:1px solid rgba(227,38,46,.4);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ff9d9d;margin-bottom:16px;text-align:left;line-height:1.5}
 .payBox .amt{font-size:30px;font-weight:900;color:var(--gold);margin:8px 0}
@@ -87,7 +92,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
 .termsBody{font-size:12.5px;color:var(--muted);line-height:1.7;padding-bottom:16px;max-height:340px;overflow-y:auto}
 .termsBody h4{color:#cfd9ef;font-size:12.5px;margin:14px 0 4px}
 .termsBody h4:first-child{margin-top:0}
-.consentBox{background:rgba(245,181,27,.06);border:1px solid rgba(245,181,27,.25);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.consentBox{background:rgba(212,255,77,.06);border:1px solid rgba(212,255,77,.25);border-radius:12px;padding:14px 16px;margin-bottom:14px}
 .consentBox .checkRow{background:transparent;border:0;padding:6px 0;margin-bottom:0}
 .required-star{color:#ff9d9d}
 </style>
@@ -133,7 +138,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
    });
   </script>
 
-  <div class="notice">⚠️ <b>2 steps:</b> fill this form, then pay via UPI and upload your payment screenshot — shown right after you submit. Your registration is only complete once both are done.</div>
+  <div class="notice">⚠️ Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once the screenshot is attached.</div>
 
   <div class="card">
    <form id="regForm">
@@ -234,29 +239,30 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
      <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to The Game Up League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
     </div>
 
-    <button type="submit" id="submitBtn">Submit Registration</button>
+    <div class="sectionTitle">6 · Payment</div>
+    <div class="payBox" id="payBox">
+     <div class="payRequiredNotice">⚠️ Required — attach your payment screenshot below before you can submit. The Submit button stays locked until you do.</div>
+     <h3>Pay via UPI</h3>
+     <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
+     <div class="amt" id="payAmt">Loading…</div>
+     <div id="payQr" style="display:flex;justify-content:center"></div>
+     <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
+     <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
+
+     <div class="screenshotBox">
+      <label>Upload your payment screenshot <span class="required-star">*</span></label>
+      <div class="photoPicker">
+       <img class="photoPreview" id="shotPreview" alt="" style="display:none">
+       <label class="photoPickBtn" id="shotPickLabel" for="shotInput">Tap to choose a screenshot</label>
+       <input type="file" id="shotInput" accept="image/*" style="display:none">
+      </div>
+      <div class="photoHint" id="shotHint">Attach this before submitting — it's required.</div>
+     </div>
+    </div>
+
+    <button type="submit" id="submitBtn" disabled>Attach your payment screenshot above to submit</button>
    </form>
    <div id="status" class="status"></div>
-   <div id="payBox" class="payBox" style="display:none">
-    <div class="payRequiredNotice">⚠️ Final step — your registration is <b>not complete</b> until you pay and upload your payment screenshot below.</div>
-    <h3>Pay via UPI</h3>
-    <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
-    <div class="amt" id="payAmt"></div>
-    <div id="payQr" style="display:flex;justify-content:center"></div>
-    <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
-    <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
-
-    <div class="screenshotBox">
-     <label>Upload your payment screenshot <span class="required-star">*</span></label>
-     <div class="photoPicker">
-      <img class="photoPreview" id="shotPreview" alt="" style="display:none">
-      <label class="photoPickBtn" id="shotPickLabel" for="shotInput">Tap to choose a screenshot</label>
-      <input type="file" id="shotInput" accept="image/*" style="display:none">
-     </div>
-     <div class="photoHint" id="shotHint"></div>
-     <button type="button" id="shotUploadBtn" style="margin-top:12px" disabled>Upload Screenshot</button>
-    </div>
-   </div>
   </div>
 
   <p class="sub" style="margin-top:18px">Registering a team instead? <a href="register-team.html" style="color:var(--gold);font-weight:700">Team Owner Registration →</a></p>
@@ -303,6 +309,23 @@ function compressImage(file, maxDim = 500, quality = 0.7) {
 }
 
 let selectedPhotoBlob = null;
+let selectedShotBlob = null;
+// Generated once, immediately - it needs no DB round-trip, so the payment QR
+// (and the reference code shown on it) can be ready before the player has
+// finished filling the rest of the form, not only after a first submit.
+const code = regCode();
+
+// The Submit button is the actual gate the player's screenshot requirement
+// relies on: it stays disabled until both the player photo and the payment
+// screenshot are attached, so there is no way to finish this form with an
+// unpaid-looking registration sitting in the database.
+function updateSubmitGate() {
+  const btn = document.getElementById('submitBtn');
+  const ready = !!selectedPhotoBlob && !!selectedShotBlob;
+  btn.disabled = !ready;
+  btn.textContent = ready ? 'Submit Registration'
+    : (!selectedPhotoBlob ? 'Add your player photo above to submit' : 'Attach your payment screenshot above to submit');
+}
 
 document.getElementById('photoInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -321,10 +344,8 @@ document.getElementById('photoInput').addEventListener('change', async (e) => {
     selectedPhotoBlob = null;
     hint.textContent = 'Could not process that photo: ' + err.message + ' Try a different file, or skip the photo.';
   }
+  updateSubmitGate();
 });
-
-let selectedShotBlob = null;
-let lastRegCode = null;
 
 document.getElementById('shotInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -336,22 +357,35 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
     document.getElementById('shotPreview').src = URL.createObjectURL(selectedShotBlob);
     document.getElementById('shotPreview').style.display = 'block';
     document.getElementById('shotPickLabel').textContent = 'Change screenshot';
-    document.getElementById('shotUploadBtn').disabled = false;
-    hint.textContent = 'Ready to upload.';
+    hint.textContent = 'Ready to submit.';
   } catch (err) {
     selectedShotBlob = null;
     hint.textContent = 'Could not process that file: ' + err.message;
   }
+  updateSubmitGate();
 });
 
 let currentOffer = null;
 
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the offer banner markup), instead of firing
-// a second network request for the same file.
+// a second network request for the same file. Also fills in the QR as soon
+// as the price is known, so payment is ready before the rest of the form is.
 window.__gulContentPromise.then(c => {
   currentOffer = c.registration[c.registration.activeOffer];
-}).catch(() => {});
+  if (currentOffer && window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
+    const amount = currentOffer.price;
+    const note = 'GUL ' + code;
+    const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
+      '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
+      '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
+    document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
+    document.getElementById('payUpiBtn').href = upiLink;
+    new QRCode(document.getElementById('payQr'), { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
+  }
+}).catch(() => {
+  document.getElementById('payAmt').textContent = 'Could not load pricing — contact GUL directly.';
+});
 
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Registration is not connected to the database yet. Please contact GUL directly for now.');
@@ -406,6 +440,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       showStatus('err', 'Please upload your player photograph in Section 4 — it will be used on the website.');
       return;
     }
+    if (!selectedShotBlob) {
+      showStatus('err', 'Please attach your payment screenshot in Section 6 — your registration cannot be submitted without it.');
+      return;
+    }
     if (!document.getElementById('declarationAccepted').checked || !document.getElementById('mediaConsentAccepted').checked) {
       showStatus('err', 'Please accept both consent checkboxes in Section 5 to continue.');
       return;
@@ -426,23 +464,29 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       return;
     }
 
-    const code = regCode();
-    let photoPath = null;
+    showStatus('ok', 'Uploading photo...');
+    // Store just the object key (relative to the player-photos bucket), not
+    // prefixed with the bucket name - that's what the Storage SDK expects
+    // when generating a signed URL later from the admin dashboard.
+    const photoPath = code + '.jpg';
+    const { error: photoErr } = await client.storage
+      .from('player-photos')
+      .upload(photoPath, selectedPhotoBlob, { contentType: 'image/jpeg' });
+    if (photoErr) {
+      showStatus('err', 'Photo upload failed: ' + photoErr.message + '\n\nPlease try submitting again.');
+      btn.disabled = false;
+      return;
+    }
 
-    if (selectedPhotoBlob) {
-      showStatus('ok', 'Uploading photo...');
-      // Store just the object key (relative to the player-photos bucket), not
-      // prefixed with the bucket name - that's what the Storage SDK expects
-      // when generating a signed URL later from the admin dashboard.
-      photoPath = code + '.jpg';
-      const { error: uploadErr } = await client.storage
-        .from('player-photos')
-        .upload(code + '.jpg', selectedPhotoBlob, { contentType: 'image/jpeg' });
-      if (uploadErr) {
-        showStatus('err', 'Photo upload failed: ' + uploadErr.message + '\n\nYou can remove the photo and submit without it, or try again.');
-        btn.disabled = false;
-        return;
-      }
+    showStatus('ok', 'Uploading payment screenshot...');
+    const shotPath = code + '-shot-' + Date.now() + '.jpg';
+    const { error: shotErr } = await client.storage
+      .from('payment-screenshots')
+      .upload(shotPath, selectedShotBlob, { contentType: 'image/jpeg' });
+    if (shotErr) {
+      showStatus('err', 'Payment screenshot upload failed: ' + shotErr.message + '\n\nPlease try submitting again.');
+      btn.disabled = false;
+      return;
     }
 
     showStatus('ok', 'Submitting...');
@@ -478,60 +522,27 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     // We already have the registration_code client-side from payload, so there's
     // nothing to read back anyway.
     const { error } = await client.from('player_registrations').insert(payload);
+    if (error) {
+      showStatus('err', 'Registration failed: ' + error.message + '\n\nYour photo and screenshot are already uploaded - just try submitting again.');
+      btn.disabled = false;
+      return;
+    }
+
+    // Links the already-uploaded screenshot to this registration code. If this
+    // one insert fails, the registration itself is still saved (above), so
+    // nothing the player entered is lost - only this linking step needs a retry,
+    // which GUL can do directly from the admin dashboard if it ever comes to that.
+    const { error: linkErr } = await client.from('payment_screenshots').insert({
+      registration_code: code,
+      image_path: shotPath
+    });
 
     btn.disabled = false;
-    if (error) {
-      showStatus('err', 'Registration failed: ' + error.message);
-      return;
-    }
-
-    lastRegCode = payload.registration_code;
     document.getElementById('regForm').style.display = 'none';
-    showStatus('ok', '✅ Details received!\n\nYour reference code: ' + payload.registration_code +
+    showStatus('ok', '✅ Registration complete!\n\nYour reference code: ' + code +
       (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
-      '\n\nSave this code. Now pay below and upload your payment screenshot — your registration is only complete once that\'s done.');
-
-    if (currentOffer && window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
-      const amount = currentOffer.price;
-      const note = 'GUL ' + payload.registration_code;
-      const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
-        '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
-        '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
-
-      document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
-      document.getElementById('payUpiBtn').href = upiLink;
-      new QRCode(document.getElementById('payQr'), { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
-      document.getElementById('payBox').style.display = 'block';
-    }
-  });
-
-  document.getElementById('shotUploadBtn').addEventListener('click', async () => {
-    if (!selectedShotBlob || !lastRegCode) return;
-    const btn = document.getElementById('shotUploadBtn');
-    btn.disabled = true;
-    btn.textContent = 'Uploading...';
-    const path = lastRegCode + '-' + Date.now() + '.jpg';
-    const { error: uploadErr } = await client.storage
-      .from('payment-screenshots')
-      .upload(path, selectedShotBlob, { contentType: 'image/jpeg' });
-    if (uploadErr) {
-      document.getElementById('shotHint').textContent = 'Upload failed: ' + uploadErr.message;
-      btn.disabled = false;
-      btn.textContent = 'Upload Screenshot';
-      return;
-    }
-    const { error: insertErr } = await client.from('payment_screenshots').insert({
-      registration_code: lastRegCode,
-      image_path: path
-    });
-    if (insertErr) {
-      document.getElementById('shotHint').textContent = 'Saved image but could not record it: ' + insertErr.message;
-      btn.disabled = false;
-      btn.textContent = 'Upload Screenshot';
-      return;
-    }
-    document.getElementById('shotHint').textContent = '✅ Registration complete! GUL will verify your payment against the bank statement.';
-    btn.textContent = 'Uploaded ✓';
+      '\n\nSave this code. GUL will verify your payment against the bank statement.' +
+      (linkErr ? '\n\n(Your screenshot upload succeeded, but linking it had a hiccup - GUL has your code and can match it manually.)' : ''));
   });
 }
 });
