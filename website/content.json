@@ -29,9 +29,9 @@
   "registration": {
     "_instructions_activeOffer": "Change activeOffer to exactly one of: early_bird, referral, regular. This controls which price shows on the website and registration page right now - it does NOT switch automatically by date, so you control exactly when each phase goes live.",
     "activeOffer": "early_bird",
-    "early_bird": { "label": "Early Bird", "price": 1600, "window": "1 – 7 Nov 2026", "note": "" },
-    "referral": { "label": "Referral", "price": 1600, "window": "8 – 14 Nov 2026", "note": "Bring a group of 3 players together to get this rate — ₹1,600 × 3 = ₹4,800 total." },
-    "regular": { "label": "Regular", "price": 1800, "window": "15 Nov – 2 Dec 2026", "note": "" }
+    "early_bird": { "label": "Early Bird", "price": 1600, "window": "1 – 7 Nov 2026", "note": "", "end": "2026-11-07T23:59:59+05:30" },
+    "referral": { "label": "Referral", "price": 1600, "window": "8 – 14 Nov 2026", "note": "Bring a group of 3 players together to get this rate — ₹1,600 × 3 = ₹4,800 total.", "end": "2026-11-14T23:59:59+05:30" },
+    "regular": { "label": "Regular", "price": 1800, "window": "15 Nov – 2 Dec 2026", "note": "", "end": "2026-12-02T23:59:59+05:30" }
   },
 
   "teamRegistration": {
