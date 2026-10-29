@@ -11,8 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#07152f; --navy2:#0b2450; --blue:#1459c7; --red:#e3262e;
-  --gold:#d4ff4d; --trophy:#f5b51b; --white:#f7f9ff; --muted:#a9b6cf; --card:#0d1f40;
+  --navy:#07201c; --navy2:#0e3a30; --blue:#1459c7; --red:#e3262e;
+  --gold:#d4ff4d; --trophy:#f5b51b; --glow2:#ff5aa0; --white:#f7f9ff; --muted:#a9b6cf; --card:#0d2b23;
   --line:rgba(255,255,255,.11); --shadow:0 18px 50px rgba(0,0,0,.28);
   --font-ui:Archivo,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   --font-display:'Anton',var(--font-ui);
@@ -20,7 +20,10 @@
 }
 *{box-sizing:border-box} html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--font-ui);background:
-linear-gradient(180deg,#06132b 0%,#081a37 48%,#061126 100%);color:var(--white);line-height:1.5}
+linear-gradient(165deg,#07201c 0%,#0a2b24 50%,#061a16 100%);color:var(--white);line-height:1.5;position:relative}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(ellipse 55% 40% at 85% 0%,rgba(255,90,160,.14),transparent 70%),
+  radial-gradient(ellipse 50% 40% at 10% 100%,rgba(90,255,180,.1),transparent 70%)}
 a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:auto}
 @media (prefers-reduced-motion: no-preference){
  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
@@ -46,7 +49,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
    the compact Journey hub, not every season's full archive at once. */
 .seasonSection{display:none}
 .seasonSection.open{display:block}
-.nav{position:sticky;top:0;z-index:50;background:rgba(5,16,36,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:50;background:rgba(6,26,20,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
 .navin{height:78px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .navCenter{display:flex;align-items:center;gap:18px;margin:0 auto}
 .navSeasonLink{font-size:12.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#d8e1f2;transition:color .25s ease;white-space:nowrap}
@@ -76,7 +79,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .sponsorChip span{color:#9aa5b8;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .championsGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 @media(max-width:700px){ .championsGrid{grid-template-columns:repeat(2,1fr)} }
-.championChip{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:18px;text-align:center}
+.championChip{background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid rgba(245,181,27,.3);border-radius:16px;padding:18px;text-align:center}
 .championChip img{width:64px;height:64px;object-fit:contain;margin:0 auto 10px}
 .championChip.hasPhoto{padding:0 0 16px;overflow:hidden}
 .championChip.hasPhoto img{width:100%;height:160px;object-fit:cover;object-position:center 22%;margin:0 0 12px;border-radius:0}
@@ -109,7 +112,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 
 /* Each RELOADED poster gets its own clearly labeled section - not a bare grid of thumbnails */
 .posterStack{display:flex;flex-direction:column;gap:20px;margin-top:26px}
-.posterBlock{background:linear-gradient(180deg,rgba(18,43,82,.5),rgba(8,24,49,.6));border:1px solid var(--line);border-radius:18px;padding:22px 22px 0;transition:border-color .3s ease}
+.posterBlock{background:linear-gradient(180deg,rgba(20,60,48,.5),rgba(8,30,24,.6));border:1px solid var(--line);border-radius:18px;padding:22px 22px 0;transition:border-color .3s ease}
 .posterBlock:hover{border-color:rgba(212,255,77,.3)}
 .posterImgWrap img{transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .posterImgWrap:hover img{transform:scale(1.03)}
@@ -120,7 +123,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .posterBlock .sub{margin:0 0 16px;font-size:14px}
 .posterImgWrap{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
 .posterImgWrap img{width:100%;display:block}
-.ruleBook{margin:16px 0 22px;background:#07172f;border:1px solid var(--line);border-radius:12px;padding:4px 18px}
+.ruleBook{margin:16px 0 22px;background:#082018;border:1px solid var(--line);border-radius:12px;padding:4px 18px}
 .ruleBook summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:13.5px;color:var(--gold);list-style:none}
 .ruleBook summary::-webkit-details-marker{display:none}
 .ruleBook summary:before{content:'▸ ';display:inline-block}
@@ -133,16 +136,16 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .ruleBookBody ul{margin:0 0 10px;padding-left:20px}
 .ruleBookBody li{margin-bottom:4px}
 .scheduleGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;margin:16px 0 20px}
-.matchDayCard{background:linear-gradient(180deg,rgba(212,255,77,.08),rgba(8,24,49,.6));border:1px solid rgba(212,255,77,.3);border-radius:14px;padding:14px 10px;text-align:center;position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease}
+.matchDayCard{background:linear-gradient(180deg,rgba(212,255,77,.08),rgba(8,30,24,.6));border:1px solid rgba(212,255,77,.3);border-radius:14px;padding:14px 10px;text-align:center;position:relative;overflow:hidden;transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease}
 .matchDayCard:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(212,255,77,.15)}
 .matchDayCard .round{font-size:9.5px;font-weight:900;letter-spacing:1px;color:var(--gold);text-transform:uppercase}
 .matchDayCard .date{font-family:var(--font-stat);font-size:26px;font-weight:800;color:#fff;margin-top:4px;line-height:1.1}
 .matchDayCard .month{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
 .matchDayCard .day{font-size:11px;color:var(--muted);margin-top:4px}
-.matchDayCard.isFinal{background:linear-gradient(180deg,rgba(245,181,27,.22),rgba(8,24,49,.6));border-color:var(--trophy);box-shadow:0 0 18px rgba(245,181,27,.25)}
+.matchDayCard.isFinal{background:linear-gradient(180deg,rgba(245,181,27,.22),rgba(8,30,24,.6));border-color:var(--trophy);box-shadow:0 0 18px rgba(245,181,27,.25)}
 .matchDayCard.isFinal .round{color:#fff}
 .matchDayCard .trophyMark{font-size:16px;margin-top:2px}
-.scheduleFootnote{font-size:12px;color:var(--muted);line-height:1.6;background:#07172f;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:4px}
+.scheduleFootnote{font-size:12px;color:var(--muted);line-height:1.6;background:#082018;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:4px}
 
 /* Timeline: Register/Archive (comic) on the left, upcoming seasons (robotics) on the right,
    logo with a hover shine sweep in the center. */
@@ -193,7 +196,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .flipCardFace{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.45)}
 .flipCardFront{border:2px solid rgba(212,255,77,.55)}
 .flipCardFront img{width:100%;height:100%;object-fit:cover;display:block}
-.flipCardBack{transform:rotateY(180deg);background:linear-gradient(160deg,#0d1f40,#07152f);border:2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;gap:10px}
+.flipCardBack{transform:rotateY(180deg);background:linear-gradient(160deg,#0d2b23,#07201c);border:2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;gap:10px}
 .flipCardBack h4{color:var(--gold);margin:0;font-size:15px;text-transform:uppercase;letter-spacing:.5px}
 .flipCardBack p{color:var(--muted);font-size:12.5px;line-height:1.55;margin:0}
 .flipCardBack .tapHint{margin-top:6px;font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;opacity:.85}
@@ -208,7 +211,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .squadCardName{font-size:10.5px;font-weight:700;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Player Moments - professional portrait cards (GUL squad shoot + matchday photos) */
-.momentChip{flex-shrink:0;width:170px;aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(212,255,77,.35);box-shadow:0 10px 26px rgba(0,0,0,.35);background:#0d1f40}
+.momentChip{flex-shrink:0;width:170px;aspect-ratio:3/4;border-radius:14px;overflow:hidden;position:relative;border:1px solid rgba(212,255,77,.35);box-shadow:0 10px 26px rgba(0,0,0,.35);background:#0d2b23}
 .momentChip img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .momentChip:hover img{transform:scale(1.06)}
 .momentChip:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(7,21,47,.65) 100%);pointer-events:none}
@@ -238,7 +241,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 }
 .section>.container{position:relative;z-index:1}
 .sub{color:var(--muted);max-width:680px}.grid{display:grid;gap:18px}
-.cards{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.card{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.7,.3,1),border-color .35s ease,box-shadow .35s ease;position:relative}
+.cards{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.card{background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.7,.3,1),border-color .35s ease,box-shadow .35s ease;position:relative}
 .card:before,.card:after{content:"";position:absolute;width:14px;height:14px;border-color:rgba(212,255,77,.5);border-style:solid;pointer-events:none}
 .card:before{top:-1px;left:-1px;border-width:2px 0 0 2px;border-radius:6px 0 0 0}
 .card:after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;border-radius:0 0 6px 0}
@@ -247,18 +250,18 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .card h3{margin:0 0 7px;font-size:19px}.card p{color:var(--muted);margin:0 0 14px}.tag{display:inline-block;padding:6px 9px;border-radius:999px;background:rgba(212,255,77,.12);color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase}
 .tag.pending{background:rgba(233,237,246,.12);color:#c6d0e6}
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.pill{border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:8px 12px;font-size:13px;color:#e4eaff}
-.feature{background:linear-gradient(135deg,#0d2d63,#0b1935);border:1px solid rgba(212,255,77,.25);border-radius:26px;padding:30px;display:grid;grid-template-columns:1.25fr .75fr;gap:25px;align-items:center;overflow:hidden}
+.feature{background:linear-gradient(135deg,#0e3d30,#06160f);border:1px solid rgba(212,255,77,.25);border-radius:26px;padding:30px;display:grid;grid-template-columns:1.25fr .75fr;gap:25px;align-items:center;overflow:hidden}
 .feature .big{font-size:34px;font-weight:900;line-height:1.05}.feature .big span{color:var(--gold)}
 .placeholder-box{border:1px dashed rgba(255,255,255,.25);border-radius:18px;padding:26px;color:var(--muted);text-align:center;font-size:14px}
-.cta{background:linear-gradient(120deg,#123b83,#0b2149);border-radius:26px;border:1px solid var(--line);padding:38px;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
+.cta{background:linear-gradient(120deg,#1a5c44,#0a2a1f);border-radius:26px;border:1px solid var(--line);padding:38px;display:flex;justify-content:space-between;align-items:center;gap:25px;flex-wrap:wrap}
 .contact-actions{display:flex;flex-direction:column;gap:12px}
-.footer{padding:50px 0 28px;border-top:1px solid var(--line);background:#040d1e}.footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px}.footer p,.footer a{color:#9eadc5;font-size:14px}.footer a:hover{color:#fff}.footlogo{width:90px;height:110px;object-fit:contain}
+.footer{padding:50px 0 28px;border-top:1px solid var(--line);background:#041a12}.footgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px}.footer p,.footer a{color:#9eadc5;font-size:14px}.footer a:hover{color:#fff}.footlogo{width:90px;height:110px;object-fit:contain}
 .contactRow{display:flex;align-items:center;gap:12px;margin:0 0 14px}
 .contactIcon{width:38px;height:38px;border-radius:11px;background:rgba(212,255,77,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gold)}
 .contactIcon svg{width:19px;height:19px}
 .contactLabel{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}
 .contactValue{font-size:14.5px;font-weight:700;color:#fff}
-.trophyBanner{position:relative;overflow:hidden;background:linear-gradient(135deg,#1b3a7a 0%,#0d2d63 55%,#0b1935 100%);border:1px solid rgba(245,181,27,.4);border-radius:22px;padding:30px;margin-bottom:22px}
+.trophyBanner{position:relative;overflow:hidden;background:linear-gradient(135deg,#1a5c44 0%,#0e3d30 55%,#06160f 100%);border:1px solid rgba(245,181,27,.4);border-radius:22px;padding:30px;margin-bottom:22px}
 .trophyBanner:before{content:"";position:absolute;top:-30%;left:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.18),transparent 70%)}
 .trophyGlowWrap{position:relative;display:flex;justify-content:center;padding:20px 0}
 .trophyGlowWrap:before{content:"";position:absolute;top:50%;left:50%;width:380px;height:380px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(245,181,27,.3),transparent 70%);pointer-events:none}
@@ -274,13 +277,13 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .trophyItem .name{font-family:var(--font-stat);font-size:28px;font-weight:800;margin-top:4px}
 .trophyItem .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .awardsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.topScorersTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.topScorersTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .topScorersTable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);font-weight:900;padding:10px 14px;border-bottom:1px solid var(--line)}
 .topScorersTable td{padding:10px 14px;font-size:14px;color:#dbe4f5;border-bottom:1px solid rgba(255,255,255,.05)}
 .topScorersTable tr:last-child td{border-bottom:none}
 .topScorersTable td:first-child{color:var(--gold);font-weight:900;width:36px}
 .topScorersTable td:last-child{font-weight:900;color:#fff;text-align:right}
-.pointsTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:560px}
+.pointsTable{width:100%;border-collapse:collapse;background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:560px}
 .pointsTable th{text-align:center;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--gold);font-weight:900;padding:9px 8px;border-bottom:1px solid var(--line)}
 .pointsTable th:nth-child(3){text-align:left}
 .pointsTable td{padding:9px 8px;font-size:13px;color:#dbe4f5;border-bottom:1px solid rgba(255,255,255,.05);text-align:center}
@@ -293,12 +296,12 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .teamLogoCell{width:34px}
 .teamLogoCell img{width:28px;height:28px;object-fit:contain;display:block}
 .teamsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:14px}
-.teamBadge{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.teamBadge{background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .teamBadge:hover{transform:translateY(-4px);border-color:rgba(212,255,77,.4)}
 .teamBadge img{width:56px;height:56px;object-fit:contain;display:block;margin:0 auto 8px}
 .teamBadge .teamName{font-size:11.5px;font-weight:800;color:#dbe4f5}
 .ownersGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-.ownerCard{border-radius:16px;overflow:hidden;border:1px solid var(--line);position:relative;background:#07172f;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.ownerCard{border-radius:16px;overflow:hidden;border:1px solid var(--line);position:relative;background:#082018;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .ownerCard:hover{transform:translateY(-4px);border-color:rgba(212,255,77,.4)}
 .ownerCard img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .ownerCard:hover img{transform:scale(1.06)}
@@ -306,12 +309,12 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .ownerCard .ownerName{font-size:13px;font-weight:900}
 .ownerCard .ownerTeam{font-size:11px;color:var(--gold);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .mascotsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
-.mascotCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1)}
+.mascotCard{background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1)}
 .mascotCard:hover{transform:translateY(-4px)}
 .mascotCard img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;margin-bottom:8px;background:#fff}
 .mascotCard .mascotTeam{font-size:11.5px;font-weight:800;color:#dbe4f5}
 .squadGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
-.squadCard{border-radius:10px;overflow:hidden;position:relative;background:#07172f;border:1px solid var(--line);transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.squadCard{border-radius:10px;overflow:hidden;position:relative;background:#082018;border:1px solid var(--line);transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .squadCard:hover{transform:translateY(-3px);border-color:rgba(212,255,77,.4)}
 .squadCard img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
 .squadCard:hover img{transform:scale(1.08)}
@@ -322,7 +325,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .sponsorCard img{width:70px;height:70px;object-fit:contain;display:block;margin:0 auto 8px}
 .sponsorCard .sponsorName{font-size:12px;font-weight:800;color:#101c31}
 .sponsorCard .sponsorCat{font-size:10px;color:#5a6a85;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-.awardCard{background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px;overflow:hidden;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease}
+.awardCard{background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:16px;padding:16px 18px;overflow:hidden;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease,box-shadow .3s ease}
 .awardCard:hover{transform:translateY(-5px);border-color:rgba(245,181,27,.4);box-shadow:0 16px 32px rgba(0,0,0,.3)}
 .awardCard:hover .awardPhoto{transform:scale(1.05)}
 .awardCard .awardPhoto{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;display:block;margin:-16px -18px 12px;width:calc(100% + 36px);transition:transform .5s cubic-bezier(.2,.7,.3,1)}
@@ -332,18 +335,18 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
 .awardCard .team{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
 .awardCard .awardTeamLogo{width:18px;height:18px;object-fit:contain;flex-shrink:0}
-.leaderCard{flex-shrink:0;width:170px;background:linear-gradient(145deg,rgba(18,43,82,.95),rgba(8,24,49,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.leaderCard{flex-shrink:0;width:170px;background:linear-gradient(145deg,rgba(20,60,48,.95),rgba(8,30,24,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .leaderCard:hover{transform:translateY(-5px);border-color:rgba(212,255,77,.4)}
 .leaderAvatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#101c31;object-fit:cover}
 .leaderName{font-size:15px;font-weight:800}
 .leaderRole{font-size:11.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.6px;margin-top:3px;font-weight:800}
 .galleryGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.galleryItem{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#07172f;border:1px solid var(--line)}
+.galleryItem{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:#082018;border:1px solid var(--line)}
 .galleryItem img{width:100%;height:100%;object-fit:cover;display:block}
 .galleryCaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);color:#fff;font-size:12.5px;padding:18px 12px 10px}
 .mobile{display:none}
 .hamburgerBtn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#fff;font-size:20px;width:44px;height:44px;border-radius:10px;cursor:pointer;line-height:1}
-.mobileMenu{display:flex;flex-direction:column;background:#081a37;border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.2,.7,.3,1)}
+.mobileMenu{display:flex;flex-direction:column;background:#0a2b24;border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.2,.7,.3,1)}
 .mobileMenu.open{max-height:600px}
 .mobileMenu a{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);color:#d8e1f2;font-size:14.5px;font-weight:700}
 .mobileMenu a:hover{color:var(--gold);background:rgba(255,255,255,.03)}
