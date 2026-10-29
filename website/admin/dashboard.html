@@ -7,7 +7,7 @@
 <link rel="icon" href="../assets/gul-logo-hq.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#1a0a0c;--blue:#1459c7;--gold:#ffc93c;--trophy:#f5b51b;--white:#f7f9ff;--muted:#c9b3ac;--line:rgba(255,255,255,.12);--card:#2a0e12;--green:#16a34a;--red:#e3262e;--font-stat:'Barlow Condensed',Archivo,sans-serif}
 *{box-sizing:border-box}
@@ -24,6 +24,13 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
 .secondaryBtn{background:rgba(255,255,255,.08);color:#fff;padding:9px 13px}
 .dangerBtn{background:rgba(227,38,46,.15);color:#ff9d9d;padding:7px 11px}
 .okBtn{background:rgba(22,134,92,.2);color:#6be3b3;padding:7px 11px}
+.waBtn{display:inline-flex;align-items:center;background:rgba(37,211,102,.18);color:#5fe88c;padding:7px 11px;border-radius:10px;font-weight:800;font-size:13px;text-decoration:none;border:1px solid rgba(37,211,102,.3)}
+.waBtn:hover{background:rgba(37,211,102,.28)}
+.cardModalOverlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:20px}
+.cardModalBox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;max-width:92vw;max-height:92vh;overflow:auto;position:relative;text-align:center}
+.cardModalClose{position:absolute;top:10px;right:14px;background:none;border:0;color:#fff;font-size:26px;cursor:pointer;line-height:1}
+#cardCanvas{width:min(320px,80vw);height:auto;border-radius:14px;display:block;margin:10px auto;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.cardModalStatus{color:var(--muted);font-size:13px}
 .msg{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;white-space:pre-wrap;display:none}
 .msg.show{display:block}
 .msg.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
@@ -191,6 +198,15 @@ td.wrap-cell{white-space:normal;max-width:180px}
   </div>
 </div>
 
+<div id="cardModal" class="cardModalOverlay" style="display:none">
+  <div class="cardModalBox">
+    <button class="cardModalClose" id="cardModalClose">×</button>
+    <canvas id="cardCanvas" width="1080" height="1350"></canvas>
+    <div id="cardModalStatus" class="cardModalStatus">Generating card...</div>
+    <a id="cardDownloadBtn" class="primaryBtn" style="display:none;text-align:center;margin-top:12px" download="gul-player-card.jpg">⬇ Download Card</a>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
 <script>
@@ -212,6 +228,21 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
   const money = (paise) => paise == null ? '—' : '₹' + (paise / 100).toLocaleString('en-IN');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // Builds a wa.me link with a pre-filled message - opens WhatsApp with the
+  // text already typed in, admin just has to review and hit send. No
+  // WhatsApp Business API, no cost, works with any normal WhatsApp account.
+  function waLink(mobile, text) {
+    const digits = String(mobile || '').replace(/\D/g, '').replace(/^0+/, '');
+    const withCountryCode = digits.length === 10 ? '91' + digits : digits;
+    return 'https://wa.me/' + withCountryCode + '?text=' + encodeURIComponent(text);
+  }
+  function reminderMessage(name, code, amount) {
+    return `Hi ${name}! 👋 This is GUL (The Game Up League).\n\nWe received your RELOADED registration (code: ${code}), but your payment screenshot hasn't come through yet - your spot isn't confirmed until that's done.\n\nAmount due: ₹${amount}\nPay via UPI and upload the screenshot here: https://thegameupleague.com/register.html\n\nAny trouble, just reply here!`;
+  }
+  function paidConfirmMessage(name, code) {
+    return `Hi ${name}! ✅ Your payment for GUL RELOADED is confirmed (code: ${code}).\n\nWelcome to the league! We'll be in touch with match day details soon. 🏆⚽`;
+  }
 
   // Turns an array of flat objects into a downloadable CSV file - this is the
   // "store data in spreadsheet" path: it opens straight in Excel/Google Sheets,
@@ -414,6 +445,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
           ${t.status !== 'approved' ? `<button class="okBtn" data-action="approve-team">Approve</button>` : ''}
           ${t.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject-team">Reject</button>` : ''}
           ${!paid ? `<button class="secondaryBtn" data-action="markpaid-team">Mark Paid</button>` : ''}
+          ${!paid ? `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(t.mobile, reminderMessage(t.owner_name, t.registration_code, '12,000'))}">💬 Remind</a>` : `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(t.mobile, paidConfirmMessage(t.owner_name, t.registration_code))}">✅ Confirm</a>`}
         </td>
       </tr>`;
     }).join('');
@@ -569,6 +601,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
           ${r.status !== 'approved' ? `<button class="okBtn" data-action="approve">Approve</button>` : ''}
           ${r.status !== 'rejected' ? `<button class="dangerBtn" data-action="reject">Reject</button>` : ''}
           ${!paid ? `<button class="secondaryBtn" data-action="markpaid">Mark Paid</button>` : ''}
+          ${!paid ? `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(r.mobile, reminderMessage(r.full_name, r.registration_code, r.quoted_fee_paise != null ? (r.quoted_fee_paise / 100) : ''))}">💬 Remind</a>` : `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(r.mobile, paidConfirmMessage(r.full_name, r.registration_code))}">✅ Confirm</a>`}
+          <button class="secondaryBtn" data-action="card">🪪 Card</button>
         </td>
       </tr>`;
     }).join('');
@@ -588,6 +622,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       const { data, error } = await client.storage.from('payment-screenshots').createSignedUrl(shotBtn.dataset.shotQuick, 300);
       if (error) { alert('Could not load screenshot: ' + error.message); return; }
       window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const cardBtn = e.target.closest('[data-action="card"]');
+    if (cardBtn) {
+      const id = cardBtn.closest('tr').dataset.id;
+      const reg = allRegs.find(r => r.id === id);
+      if (reg) openPlayerCard(reg);
       return;
     }
 
@@ -677,6 +718,173 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   });
 
   document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+
+  // Player trading card - generated entirely client-side with Canvas, no
+  // external API or storage write needed. Draws the player's own photo over
+  // the site's brand palette with their name/position, ready to download
+  // and send - shareable, organic marketing, zero recurring cost.
+  const cardModal = document.getElementById('cardModal');
+  const cardCanvas = document.getElementById('cardCanvas');
+  const cardStatus = document.getElementById('cardModalStatus');
+  const cardDownloadBtn = document.getElementById('cardDownloadBtn');
+
+  function loadImage(src, crossOrigin) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      if (crossOrigin) img.crossOrigin = crossOrigin;
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Could not load image: ' + src));
+      img.src = src;
+    });
+  }
+
+  function drawCoverImage(ctx, img, x, y, w, h) {
+    const imgRatio = img.width / img.height;
+    const boxRatio = w / h;
+    let sx, sy, sw, sh;
+    if (imgRatio > boxRatio) {
+      sh = img.height; sw = sh * boxRatio; sx = (img.width - sw) / 2; sy = 0;
+    } else {
+      sw = img.width; sh = sw / boxRatio; sx = 0; sy = (img.height - sh) / 2;
+    }
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+  }
+
+  function roundRectPath(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  async function openPlayerCard(reg) {
+    cardModal.style.display = 'flex';
+    cardDownloadBtn.style.display = 'none';
+    cardStatus.style.display = 'block';
+    cardStatus.textContent = 'Generating card...';
+    const ctx = cardCanvas.getContext('2d');
+    ctx.clearRect(0, 0, cardCanvas.width, cardCanvas.height);
+
+    try {
+      await document.fonts.ready;
+      const W = cardCanvas.width, H = cardCanvas.height;
+
+      // Background - same deep maroon-black gradient as the live site
+      const bg = ctx.createLinearGradient(0, 0, W, H);
+      bg.addColorStop(0, '#220d10'); bg.addColorStop(0.5, '#3d1216'); bg.addColorStop(1, '#1a0a0c');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Warm glow accents
+      const glow1 = ctx.createRadialGradient(W * 0.85, 0, 0, W * 0.85, 0, W * 0.6);
+      glow1.addColorStop(0, 'rgba(255,201,60,.25)'); glow1.addColorStop(1, 'rgba(255,201,60,0)');
+      ctx.fillStyle = glow1; ctx.fillRect(0, 0, W, H);
+      const glow2 = ctx.createRadialGradient(W * 0.1, H, 0, W * 0.1, H, W * 0.6);
+      glow2.addColorStop(0, 'rgba(227,38,46,.3)'); glow2.addColorStop(1, 'rgba(227,38,46,0)');
+      ctx.fillStyle = glow2; ctx.fillRect(0, 0, W, H);
+
+      // Outer frame
+      ctx.strokeStyle = 'rgba(255,201,60,.5)';
+      ctx.lineWidth = 6;
+      roundRectPath(ctx, 24, 24, W - 48, H - 48, 28);
+      ctx.stroke();
+
+      // Eyebrow tag
+      ctx.fillStyle = '#ffc93c';
+      roundRectPath(ctx, 60, 60, 420, 50, 4);
+      ctx.fill();
+      ctx.fillStyle = '#2a1206';
+      ctx.font = "700 24px 'Barlow Condensed'";
+      ctx.textBaseline = 'middle';
+      ctx.fillText('THE GAME UP LEAGUE · RELOADED', 76, 86);
+
+      // Player photo
+      const photoBoxX = 90, photoBoxY = 150, photoBoxW = W - 180, photoBoxH = 760;
+      cardStatus.textContent = 'Loading player photo...';
+      let photoImg = null;
+      if (reg.photo_url) {
+        try {
+          const { data } = await client.storage.from('player-photos').createSignedUrl(reg.photo_url, 300);
+          if (data && data.signedUrl) photoImg = await loadImage(data.signedUrl, 'anonymous');
+        } catch (err) { /* falls back to placeholder below */ }
+      }
+      ctx.save();
+      roundRectPath(ctx, photoBoxX, photoBoxY, photoBoxW, photoBoxH, 24);
+      ctx.clip();
+      if (photoImg) {
+        drawCoverImage(ctx, photoImg, photoBoxX, photoBoxY, photoBoxW, photoBoxH);
+      } else {
+        ctx.fillStyle = '#2a0e12';
+        ctx.fillRect(photoBoxX, photoBoxY, photoBoxW, photoBoxH);
+        ctx.fillStyle = '#ffc93c';
+        ctx.font = "900 160px Archivo";
+        ctx.textAlign = 'center';
+        ctx.fillText((reg.full_name || '?').trim().charAt(0).toUpperCase(), photoBoxX + photoBoxW / 2, photoBoxY + photoBoxH / 2 + 50);
+        ctx.textAlign = 'left';
+      }
+      // Subtle bottom fade so the name panel reads cleanly over the photo edge
+      const fade = ctx.createLinearGradient(0, photoBoxY + photoBoxH - 180, 0, photoBoxY + photoBoxH);
+      fade.addColorStop(0, 'rgba(26,10,12,0)'); fade.addColorStop(1, 'rgba(26,10,12,.85)');
+      ctx.fillStyle = fade;
+      ctx.fillRect(photoBoxX, photoBoxY + photoBoxH - 180, photoBoxW, 180);
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(255,201,60,.6)';
+      ctx.lineWidth = 3;
+      roundRectPath(ctx, photoBoxX, photoBoxY, photoBoxW, photoBoxH, 24);
+      ctx.stroke();
+
+      // Position badge
+      cardStatus.textContent = 'Drawing card...';
+      const position = (reg.position || '').split(',')[0].trim() || 'PLAYER';
+      ctx.font = "700 30px 'Barlow Condensed'";
+      const posW = ctx.measureText(position.toUpperCase()).width + 48;
+      ctx.fillStyle = '#e3262e';
+      roundRectPath(ctx, photoBoxX + 20, photoBoxY + photoBoxH - 60, posW, 44, 999);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(position.toUpperCase(), photoBoxX + 44, photoBoxY + photoBoxH - 37);
+
+      // Player name
+      ctx.fillStyle = '#fff';
+      ctx.font = "400 72px Anton";
+      ctx.textBaseline = 'alphabetic';
+      const name = (reg.full_name || '').toUpperCase();
+      // Shrink to fit width if the name is long
+      let nameSize = 72;
+      ctx.font = `400 ${nameSize}px Anton`;
+      while (ctx.measureText(name).width > W - 180 && nameSize > 36) {
+        nameSize -= 4;
+        ctx.font = `400 ${nameSize}px Anton`;
+      }
+      ctx.fillText(name, 90, photoBoxY + photoBoxH + 90);
+
+      // Footer: logo + wordmark + reg code
+      try {
+        const logoImg = await loadImage('../assets/gul-logo-hq.png');
+        ctx.drawImage(logoImg, 90, H - 150, 80, 90);
+      } catch (err) { /* logo is same-origin, failure here is unlikely */ }
+      ctx.fillStyle = '#ffe8b8';
+      ctx.font = "800 28px Archivo";
+      ctx.fillText('SEASON 2026-27', 190, H - 110);
+      ctx.fillStyle = '#c9b3ac';
+      ctx.font = "700 22px 'Barlow Condensed'";
+      ctx.fillText(reg.registration_code || '', 190, H - 75);
+
+      cardStatus.style.display = 'none';
+      cardDownloadBtn.style.display = 'inline-block';
+      cardDownloadBtn.href = cardCanvas.toDataURL('image/jpeg', 0.92);
+      cardDownloadBtn.download = 'gul-' + (reg.full_name || 'player').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-card.jpg';
+    } catch (err) {
+      cardStatus.textContent = 'Could not generate card: ' + err.message;
+    }
+  }
+
+  document.getElementById('cardModalClose').addEventListener('click', () => { cardModal.style.display = 'none'; });
+  cardModal.addEventListener('click', (e) => { if (e.target === cardModal) cardModal.style.display = 'none'; });
 
   async function refreshAuthState() {
     const { data: { session } } = await client.auth.getSession();
