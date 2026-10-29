@@ -261,6 +261,19 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .card:hover{border-color:rgba(255,201,60,.4);box-shadow:0 18px 50px rgba(0,0,0,.28),0 0 24px -4px rgba(255,201,60,.25)}
 .card:hover{transform:translateY(-6px);border-color:rgba(255,201,60,.4);box-shadow:0 22px 50px rgba(0,0,0,.4)}
 .card h3{margin:0 0 7px;font-size:19px}.card p{color:var(--muted);margin:0 0 14px}.tag{display:inline-block;padding:6px 9px;border-radius:999px;background:rgba(255,201,60,.12);color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase}
+
+/* The offer card is a deal, not just another stat card - it earns a
+   distinct treatment (crossed-out price, savings badge) so it reads
+   as a limited-time price cut rather than a flat spec line. */
+.offerDealCard{border-color:var(--gold);position:relative;overflow:hidden}
+.offerDealCard:before{content:"";position:absolute;top:-35%;right:-15%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,201,60,.22),transparent 70%);pointer-events:none}
+.dealPriceRow{display:flex;align-items:baseline;gap:9px;margin:12px 0 2px;position:relative;z-index:1;flex-wrap:wrap}
+.dealPriceOld{font-family:var(--font-stat);font-size:19px;font-weight:700;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px}
+.dealPriceNew{font-family:var(--font-display);font-size:38px;font-weight:400;color:var(--gold);line-height:1}
+.dealPriceUnit{font-size:13px;font-weight:700;color:var(--muted)}
+.dealSaveBadge{display:inline-block;background:var(--red);color:#fff;font-weight:900;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin:8px 0 12px;position:relative;z-index:1}
+.dealSaveBadge:empty{display:none}
+.dealValidity{font-weight:800;font-size:13px;color:#ffe8b8;margin:0 0 14px;position:relative;z-index:1}
 .tag.pending{background:rgba(233,237,246,.12);color:#c6d0e6}
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}.pill{border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:8px 12px;font-size:13px;color:#e4eaff}
 .feature{background:linear-gradient(135deg,#3d1216,#140608);border:1px solid rgba(255,201,60,.25);border-radius:26px;padding:30px;display:grid;grid-template-columns:1.25fr .75fr;gap:25px;align-items:center;overflow:hidden}
@@ -509,7 +522,13 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
   <div class="grid cards reveal-stagger" style="margin-top:10px">
    <article class="card r-item"><span class="tag">Format</span><h3 id="teamCountTitle"></h3><p id="teamCountDesc"></p></article>
    <article class="card r-item"><span class="tag">Format</span><h3 id="playersPerTeamTitle"></h3><p id="playersPerTeamDesc"></p></article>
-   <article class="card r-item"><span class="tag" id="offerTag">Open</span><h3 id="offerTitle"></h3><p id="offerNote"></p><a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a></article>
+   <article class="card offerDealCard r-item">
+    <span class="tag" id="offerTag">Open</span>
+    <div class="dealPriceRow"><span class="dealPriceOld" id="offerOldPrice"></span><span class="dealPriceNew" id="offerNewPrice"></span><span class="dealPriceUnit">/player</span></div>
+    <div class="dealSaveBadge" id="offerSaveBadge"></div>
+    <p class="dealValidity" id="offerNote"></p>
+    <a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a>
+   </article>
    <article class="card r-item"><span class="tag">Team Owners</span><h3 id="teamFeeTitle"></h3><p>Register your team — proposed name + logo. Final squad via auction/draft.</p><a class="btn outline" href="register-team.html" style="margin-top:4px">Register a Team →</a></article>
   </div>
 
@@ -995,8 +1014,16 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     set('pillRegWindow', c.season2.registrationWindow);
 
     const offer = c.registration[c.registration.activeOffer];
-    set('offerTitle', offer.label + ' — ₹' + offer.price.toLocaleString('en-IN') + '/player');
-    set('offerNote', (offer.window ? offer.window + '. ' : '') + (offer.note || ''));
+    const regularOffer = c.registration.regular;
+    document.getElementById('offerTag').textContent = offer.label;
+    set('offerNewPrice', '₹' + offer.price.toLocaleString('en-IN'));
+    if (regularOffer && regularOffer.price > offer.price) {
+      set('offerOldPrice', '₹' + regularOffer.price.toLocaleString('en-IN'));
+      set('offerSaveBadge', 'Save ₹' + (regularOffer.price - offer.price).toLocaleString('en-IN'));
+    } else {
+      document.getElementById('offerOldPrice').style.display = 'none';
+    }
+    set('offerNote', (offer.window ? 'Valid ' + offer.window : '') + (offer.note ? ' — ' + offer.note : ''));
 
     const teamFee = c.teamRegistration ? c.teamRegistration.fee : 12000;
     set('teamFeeTitle', '₹' + teamFee.toLocaleString('en-IN') + ' / team');
