@@ -33,10 +33,10 @@
 }
 *{box-sizing:border-box} html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--font-ui);background:
-linear-gradient(165deg,#1a0a0c 0%,#2a0e12 50%,#140608 100%);color:var(--white);line-height:1.5;position:relative}
+linear-gradient(165deg,#220d10 0%,#3d1216 45%,#1a0a0c 100%);color:var(--white);line-height:1.5;position:relative}
 body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
-  radial-gradient(ellipse 55% 40% at 85% 0%,rgba(255,201,60,.12),transparent 70%),
-  radial-gradient(ellipse 50% 40% at 10% 100%,rgba(227,38,46,.14),transparent 70%)}
+  radial-gradient(ellipse 60% 45% at 85% 0%,rgba(255,201,60,.2),transparent 70%),
+  radial-gradient(ellipse 55% 45% at 10% 100%,rgba(227,38,46,.24),transparent 70%)}
 a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:auto}
 @media (prefers-reduced-motion: no-preference){
  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
@@ -173,22 +173,22 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .tlName{font-weight:700;font-size:14px}
 
 /* Comic-book theme - now blue to match the Upcoming panel */
-.comicPanel{background:#060c17;border:1px solid rgba(0,229,255,.35);position:relative;overflow:hidden}
-.comicPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
-.comicPanel .tlPanelTitle{color:#5fe8ff;font-family:'Courier New',monospace;letter-spacing:2px}
-.comicPanel a.tlItem{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.25);color:#fff}
-.comicPanel a.tlItem:hover{background:rgba(0,229,255,.12);border-color:#5fe8ff}
-.comicPanel .tlYear{color:#5fe8ff;font-family:'Courier New',monospace}
-.comicPanel .tlName{color:#cfe9f2}
+.comicPanel{background:#1f0d10;border:1px solid rgba(255,201,60,.35);position:relative;overflow:hidden}
+.comicPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,201,60,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,201,60,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
+.comicPanel .tlPanelTitle{color:#ffc93c;font-family:'Courier New',monospace;letter-spacing:2px}
+.comicPanel a.tlItem{background:rgba(255,201,60,.05);border:1px solid rgba(255,201,60,.25);color:#fff}
+.comicPanel a.tlItem:hover{background:rgba(255,201,60,.14);border-color:#ffc93c}
+.comicPanel .tlYear{color:#ffc93c;font-family:'Courier New',monospace}
+.comicPanel .tlName{color:#ffe8c2}
 
 /* Robotics theme */
-.roboPanel{background:#060c17;border:1px solid rgba(0,229,255,.35);position:relative;overflow:hidden}
-.roboPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
-.roboPanel .tlPanelTitle{color:#5fe8ff;font-family:'Courier New',monospace;letter-spacing:2px}
-.roboPanel .tlItem{border:1px solid rgba(0,229,255,.25);background:rgba(0,229,255,.04)}
+.roboPanel{background:#1f0d10;border:1px solid rgba(255,201,60,.35);position:relative;overflow:hidden}
+.roboPanel:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,201,60,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,201,60,.07) 1px,transparent 1px);background-size:16px 16px;pointer-events:none}
+.roboPanel .tlPanelTitle{color:#ffc93c;font-family:'Courier New',monospace;letter-spacing:2px}
+.roboPanel .tlItem{border:1px solid rgba(255,201,60,.25);background:rgba(255,201,60,.05)}
 .roboPanel .tlItem.grayed{opacity:.42}
-.roboPanel .tlYear{color:#5fe8ff;font-family:'Courier New',monospace}
-.roboPanel .tlName{color:#cfe9f2}
+.roboPanel .tlYear{color:#ffc93c;font-family:'Courier New',monospace}
+.roboPanel .tlName{color:#ffe8c2}
 
 /* Center logo with hover shine sweep */
 .tlCenter{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
