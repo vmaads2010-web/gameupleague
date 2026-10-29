@@ -73,6 +73,17 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .offerNoteRow{color:#ffe8b8;font-size:13px;margin-top:12px;position:relative;line-height:1.5}
 .offerUrgency{margin-top:14px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.18);font-size:13px;color:var(--muted);position:relative}
 .offerUrgency b{color:#ff9d9d}
+.offerCountdownBig{display:flex;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.offerCountdownBig .cdLabel{font-size:12px;font-weight:800;color:#eaffc2;text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+.offerCountdownBig .cdBox{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.35);border:1px solid rgba(255,201,60,.4);border-radius:10px;padding:7px 12px 5px;min-width:52px;line-height:1}
+.offerCountdownBig .cdBox b{font-family:var(--font-stat);font-size:26px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+.offerCountdownBig .cdBox i{font-style:normal;font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-top:2px}
+.offerCountdownBig .cdSep{color:rgba(255,255,255,.4);font-weight:800;font-size:22px}
+.offerCountdownBig.urgent .cdBox{background:var(--gold);border-color:var(--gold)}
+.offerCountdownBig.urgent .cdBox b,.offerCountdownBig.urgent .cdBox i{color:#2a1206}
+@media (prefers-reduced-motion: no-preference){.offerCountdownBig.urgent .cdBox{animation:countdownPulseBig 1s ease-in-out infinite}}
+@keyframes countdownPulseBig{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@media(max-width:480px){.offerCountdownBig .cdBox{min-width:44px;padding:6px 9px 4px}.offerCountdownBig .cdBox b{font-size:21px}}
 .photoPicker{display:flex;align-items:center;gap:14px}
 .photoPreview{width:64px;height:64px;border-radius:12px;background:#260d10;border:1px dashed rgba(255,255,255,.25);object-fit:cover;flex-shrink:0}
 .photoPickBtn{flex:1;padding:12px 13px;border-radius:10px;border:1px dashed rgba(255,255,255,.3);background:#260d10;color:var(--muted);font-size:13px;text-align:center;cursor:pointer;transition:border-color .2s ease,color .2s ease}
@@ -124,6 +135,7 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
     <div class="price" id="offerPrice"></div>
     <div class="window" id="offerWindow"></div>
    </div>
+   <div class="offerCountdownBig" id="offerCountdownBig" style="display:none"></div>
    <div class="offerNoteRow" id="offerExtraNote"></div>
    <div class="offerUrgency" id="offerUrgency"></div>
   </div>
@@ -145,6 +157,32 @@ details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--
        urgencyEl.innerHTML = '⏳ This rate won\'t last — once this offer closes, the price goes up to <b>₹' + regular.price.toLocaleString('en-IN') + '/player</b>. Register now to lock in ₹' + currentOffer.price.toLocaleString('en-IN') + '.';
      } else {
        urgencyEl.style.display = 'none';
+     }
+
+     // Live countdown to this offer's closing time, right where someone is
+     // about to decide whether to register now or put it off.
+     if (currentOffer.end) {
+       const cdEl = document.getElementById('offerCountdownBig');
+       const endTime = new Date(currentOffer.end).getTime();
+       const pad = (v) => String(v).padStart(2, '0');
+       function tickCountdownBig() {
+         const diff = endTime - Date.now();
+         if (diff <= 0) { cdEl.style.display = 'none'; return; }
+         const d = Math.floor(diff / 86400000);
+         const h = Math.floor((diff % 86400000) / 3600000);
+         const m = Math.floor((diff % 3600000) / 60000);
+         const s = Math.floor((diff % 60000) / 1000);
+         const parts = d > 0 ? [[d, 'D'], [h, 'H'], [m, 'M']] : [[h, 'H'], [m, 'M'], [s, 'S']];
+         cdEl.innerHTML = '<span class="cdLabel">This price ends in</span>' +
+           parts.map(([v, u], idx) =>
+             (idx > 0 ? '<span class="cdSep">:</span>' : '') +
+             '<span class="cdBox"><b>' + pad(v) + '</b><i>' + u + '</i></span>'
+           ).join('');
+         cdEl.classList.toggle('urgent', diff < 24 * 3600000);
+         cdEl.style.display = 'flex';
+       }
+       tickCountdownBig();
+       setInterval(tickCountdownBig, 1000);
      }
    }).catch(() => {
      document.getElementById('offerLabel').textContent = 'Could not load current pricing';
