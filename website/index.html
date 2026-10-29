@@ -71,7 +71,7 @@ a{color:inherit;text-decoration:none}.container{width:min(1160px,92%);margin:aut
 .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
 .brand img{width:52px;height:60px;object-fit:contain;transition:transform .35s ease}
 .brand:hover img{transform:rotate(-8deg) scale(1.06)}
-.brand span{font-size:18px}.links{display:flex;gap:20px;font-size:13.5px;color:#d8e1f2;flex-wrap:wrap}
+.brand span{font-size:18px;white-space:nowrap}.brandShort{display:none}.links{display:flex;gap:20px;font-size:13.5px;color:#d8e1f2;flex-wrap:wrap}
 .links a{position:relative;padding-bottom:3px;transition:color .25s ease}
 .links a:after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--gold);transition:width .3s cubic-bezier(.2,.7,.3,1)}
 .links a:hover{color:var(--gold)}.links a:hover:after{width:100%}
@@ -375,7 +375,9 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
  .navRegister{padding:8px 12px;font-size:12px}
  .navCenter{gap:0}
  .navSeasonLink{display:none}
- .brand img{width:42px;height:48px}
+ .brand img{width:38px;height:44px}
+ .brandFull{display:none}
+ .brandShort{display:inline;font-size:17px;letter-spacing:.5px}
  .section{padding:52px 0}
 }
 /* The hamburger menu is now the universal nav (holds every link except the two
@@ -423,7 +425,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
  <div class="container navin">
   <a class="btn gold navRegister" href="register.html">Register</a>
   <div class="navCenter">
-   <a class="brand" href="#home"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"><span>THE GAME UP LEAGUE</span></a>
+   <a class="brand" href="#home"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"><span class="brandFull">THE GAME UP LEAGUE</span><span class="brandShort">GUL</span></a>
   </div>
   <button class="hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
@@ -998,7 +1000,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
 
     document.getElementById('offerBannerText').innerHTML =
       '🔥 ' + offer.label.toUpperCase() + ' REGISTRATION IS OPEN — <b>₹' + offer.price.toLocaleString('en-IN') + '/player</b>' +
-      (offer.window ? ' · ' + offer.window : '');
+      (offer.window ? ' <span style="white-space:nowrap">· ' + offer.window + '</span>' : '');
     document.getElementById('offerBanner').style.display = 'block';
 
     // Live countdown to this offer's closing time - creates urgency instead of

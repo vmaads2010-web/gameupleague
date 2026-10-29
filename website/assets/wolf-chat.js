@@ -3,12 +3,12 @@
 // Include with: <script src="assets/wolf-chat.js" defer></script>
 (function () {
   const css = `
-  .wolfBtn{position:fixed;right:20px;bottom:20px;width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#1459c7,#0d2d63);border:2px solid rgba(245,181,27,.6);box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;z-index:200;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .25s ease}
+  .wolfBtn{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom, 0px));width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#1459c7,#0d2d63);border:2px solid rgba(245,181,27,.6);box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;z-index:200;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .25s ease}
   .wolfBtn:hover{transform:scale(1.08)}
   .wolfBtn img{width:44px;height:44px;object-fit:contain}
   @media (prefers-reduced-motion: no-preference){.wolfBtn{animation:wolfBob 2.6s ease-in-out infinite}}
   @keyframes wolfBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-  .wolfPanel{position:fixed;right:20px;bottom:92px;width:min(340px,88vw);max-height:min(480px,70vh);background:#0d1f40;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.5);z-index:200;display:none;flex-direction:column;overflow:hidden;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+  .wolfPanel{position:fixed;right:20px;bottom:calc(92px + env(safe-area-inset-bottom, 0px));width:min(340px,88vw);max-height:min(480px,70vh);background:#0d1f40;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.5);z-index:200;display:none;flex-direction:column;overflow:hidden;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
   .wolfPanel.open{display:flex}
   .wolfHead{background:linear-gradient(120deg,#123b83,#0b2149);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
   .wolfHead img{width:34px;height:34px;object-fit:contain;flex-shrink:0}
