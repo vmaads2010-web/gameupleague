@@ -21,7 +21,7 @@
 <link rel="icon" href="assets/gul-logo-hq.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy:#1a0a0c; --navy2:#3d1216; --blue:#1459c7; --red:#e3262e;
@@ -348,7 +348,8 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .awardCard .name{font-size:16.5px;font-weight:800;margin-top:5px}
 .awardCard .team{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
 .awardCard .awardTeamLogo{width:18px;height:18px;object-fit:contain;flex-shrink:0}
-.leaderCard{flex-shrink:0;width:170px;background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
+.leaderGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.leaderCard{background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid var(--line);border-radius:18px;padding:20px;text-align:center;transition:transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s ease}
 .leaderCard:hover{transform:translateY(-5px);border-color:rgba(255,201,60,.4)}
 .leaderAvatar{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#101c31;object-fit:cover}
 .leaderName{font-size:15px;font-weight:800}
@@ -394,13 +395,18 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 .offerBannerBtn{background:#fff;color:#101c31;font-weight:900;font-size:12.5px;padding:7px 16px;border-radius:999px;white-space:nowrap;transition:transform .25s ease}
 .offerBannerBtn:hover{transform:translateY(-2px) scale(1.04)}
 @media(max-width:600px){.offerBannerText{font-size:12px}.offerBannerText b{font-size:13px}}
-.offerCountdown{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.35);padding:5px 12px 5px 10px;border-radius:999px;font-family:var(--font-stat);font-weight:700;font-size:12.5px;letter-spacing:.3px;color:#fff;white-space:nowrap}
-.offerCountdown .clockIco{font-size:13px}
-.offerCountdown b{font-variant-numeric:tabular-nums;font-size:15px;font-weight:800}
-.offerCountdown.urgent{background:rgba(255,255,255,.92);color:#8a0f14;border-color:#fff}
-@media (prefers-reduced-motion: no-preference){.offerCountdown.urgent{animation:countdownPulse 1s ease-in-out infinite}}
-@keyframes countdownPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.045);box-shadow:0 0 14px 2px rgba(255,255,255,.3)}}
-@media(max-width:600px){.offerCountdown{font-size:11px;padding:4px 10px}.offerCountdown b{font-size:13px}}
+.offerCountdown{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.offerCountdown .cdLabel{font-size:10.5px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px;margin-right:2px;opacity:.85}
+.offerCountdown .cdBox{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:3px 7px 2px;min-width:30px;line-height:1}
+.offerCountdown .cdBox b{font-family:var(--font-stat);font-size:17px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+.offerCountdown .cdBox i{font-style:normal;font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.4px;margin-top:1px}
+.offerCountdown .cdSep{color:rgba(255,255,255,.55);font-weight:800;font-size:13px}
+.offerCountdown.urgent .cdBox{background:#fff;border-color:#fff}
+.offerCountdown.urgent .cdBox b{color:#8a0f14}
+.offerCountdown.urgent .cdBox i{color:#8a0f14}
+@media (prefers-reduced-motion: no-preference){.offerCountdown.urgent .cdBox{animation:countdownPulse 1s ease-in-out infinite}}
+@keyframes countdownPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.07);box-shadow:0 0 12px 1px rgba(255,255,255,.35)}}
+@media(max-width:600px){.offerCountdown .cdBox{min-width:26px;padding:2px 5px 1px}.offerCountdown .cdBox b{font-size:14px}.offerCountdown .cdLabel{display:none}}
 </style>
 </head>
 <body>
@@ -440,7 +446,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 
    <div class="tlPanel comicPanel">
     <a class="tlItem" href="#season1"><span class="tlYear">2025–2026</span><span class="tlName">Football Reimagined</span><span class="tlStatus done">✓ Done</span></a>
-    <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span><span class="tlStatus upcoming">Upcoming</span></a>
+    <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span><span class="tlStatus upcoming">Next Up</span></a>
     <a class="btn gold" href="register.html" style="font-size:12px;padding:8px 14px;align-self:center">Register →</a>
    </div>
 
@@ -753,9 +759,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">The team behind GUL</div><h2>Leadership</h2></div></div>
   <p class="sub reveal" style="margin-bottom:20px">Roles and names confirmed — photos still coming in for a few members.</p>
-  <div class="marqueeWrap reveal">
-   <div class="leaderGrid marqueeTrack" id="leaderGrid"></div>
-  </div>
+  <div class="leaderGrid reveal-stagger" id="leaderGrid"></div>
  </div>
 </section>
 
@@ -1015,9 +1019,13 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
-        const parts = d > 0 ? [[d, 'd'], [h, 'h'], [m, 'm']] : [[h, 'h'], [m, 'm'], [s, 's']];
-        countdownEl.innerHTML = '<span class="clockIco">⏳</span> Ends in ' +
-          parts.map(([v, u]) => '<b>' + v + '</b>' + u).join(' ');
+        const parts = d > 0 ? [[d, 'D'], [h, 'H'], [m, 'M']] : [[h, 'H'], [m, 'M'], [s, 'S']];
+        const pad = (v) => String(v).padStart(2, '0');
+        countdownEl.innerHTML = '<span class="cdLabel">Ends in</span>' +
+          parts.map(([v, u], idx) =>
+            (idx > 0 ? '<span class="cdSep">:</span>' : '') +
+            '<span class="cdBox"><b>' + pad(v) + '</b><i>' + u + '</i></span>'
+          ).join('');
         countdownEl.classList.toggle('urgent', diff < 24 * 3600000);
         countdownEl.style.display = 'inline-flex';
       }
@@ -1190,14 +1198,14 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     const avatarColors = ['#f5b51b', '#1459c7', '#e3262e', '#16865c', '#9b59b6'];
     const colorFor = (name) => avatarColors[[...name].reduce((s, ch) => s + ch.charCodeAt(0), 0) % avatarColors.length];
     const leaderChips = (c.leadership ? c.leadership.members : []).map(m => `
-      <div class="leaderCard">
+      <div class="leaderCard r-item">
         ${m.photo
           ? `<img class="leaderAvatar" src="assets/leadership/${m.photo}" alt="${m.name}">`
           : `<div class="leaderAvatar" style="background:${colorFor(m.name)}">${initials(m.name)}</div>`}
         <div class="leaderName">${m.name}</div>
         <div class="leaderRole">${m.role}</div>
       </div>`).join('');
-    document.getElementById('leaderGrid').innerHTML = leaderChips + leaderChips;
+    document.getElementById('leaderGrid').innerHTML = leaderChips;
 
     // Real season highlight photos replace the Player Moments placeholder
     // chips - matchday gallery photos only (squad portraits live in the GUL
