@@ -446,6 +446,43 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 .section:not(#timeline):not(#season1):after{content:"";position:absolute;top:0;left:0;right:0;height:46px;pointer-events:none;z-index:0;background:linear-gradient(176deg,rgba(255,201,60,.09) 0 50%,transparent 50%)}
 .comicPanel .tlItem{transition:translate .25s cubic-bezier(.2,.7,.3,1),border-color .25s}
 .comicPanel .tlItem:hover{translate:6px 0;border-color:var(--gold)}
+/* ===== Kickoff: floodlit matchday hero, scoreboard lower-third, slanted page wipe ===== */
+.kickoff{position:relative;min-height:min(90vh,840px);display:flex;align-items:center;overflow:hidden;padding:56px 0 96px;isolation:isolate;background:radial-gradient(120% 90% at 50% 0%,#3d1216 0%,#1a0a0c 62%)}
+.koBeams i{position:absolute;top:-35%;width:34%;height:170%;background:linear-gradient(180deg,rgba(255,236,170,.2),rgba(255,201,60,.05) 55%,transparent 80%);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);transform-origin:50% 0;z-index:-1}
+.koBeams i:nth-child(1){left:-6%;transform:rotate(-24deg)}
+.koBeams i:nth-child(2){left:33%;opacity:.55}
+.koBeams i:nth-child(3){left:72%;transform:rotate(24deg)}
+.koSlash{position:absolute;top:0;bottom:0;right:-10%;width:44%;background:linear-gradient(165deg,#8b1a22,#3d1216 70%);clip-path:polygon(24% 0,100% 0,100% 100%,0 100%);opacity:.8;z-index:-1}
+.koSpot{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(420px circle at var(--mx,70%) var(--my,30%),rgba(255,201,60,.14),transparent 70%)}
+.koInner{position:relative}
+.koKicker{font-family:var(--font-stat);font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-size:clamp(13px,1.6vw,16px);margin:0}
+.koTitle{font-family:var(--font-display);font-weight:400;font-style:italic;text-transform:uppercase;font-size:clamp(58px,14vw,188px);line-height:.9;letter-spacing:-2px;margin:14px 0 18px}
+.koLine{display:block;overflow:hidden;padding:0 .14em .06em 0}
+.koLine>span{display:inline-block}
+.koOutline>span{color:transparent;-webkit-text-stroke:2px var(--gold)}
+.koSub{max-width:520px;color:var(--muted);font-size:clamp(15px,1.8vw,18px);margin:0 0 26px}
+.koActions{display:flex;flex-wrap:wrap;gap:12px}
+.koActions .btn{min-height:48px;display:inline-flex;align-items:center}
+.koBoard{display:grid;grid-template-columns:repeat(4,1fr);max-width:760px;margin-top:48px;background:rgba(26,10,12,.88);border:1px solid rgba(255,201,60,.35);clip-path:polygon(0 0,100% 0,calc(100% - 22px) 100%,0 100%)}
+.koBoard>div{padding:12px 18px;border-right:1px solid rgba(255,201,60,.18)}
+.koBoard>div:last-child{border-right:0}
+.koBoard b{display:block;font-family:var(--font-stat);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.koBoard span{font-family:var(--font-display);font-style:italic;font-size:clamp(20px,3vw,30px);text-transform:uppercase}
+.wipe{position:fixed;inset:0;z-index:2000;pointer-events:none;background:linear-gradient(115deg,var(--gold) 0 7%,#8b1a22 7%);clip-path:polygon(-40% 0,-40% 0,-60% 100%,-60% 100%)}
+@media (max-width:640px){
+  .kickoff{padding:40px 0 72px}
+  .koTitle{font-size:21vw}
+  .koOutline>span{-webkit-text-stroke-width:1.5px}
+  .koBoard{grid-template-columns:repeat(2,1fr);clip-path:none;margin-top:36px}
+  .koBoard>div:nth-child(2){border-right:0}
+  .koBoard>div:nth-child(-n+2){border-bottom:1px solid rgba(255,201,60,.18)}
+}
+@media (prefers-reduced-motion: no-preference){
+  .koBeams i{animation:beamSway 9s ease-in-out infinite alternate}
+  .koBeams i:nth-child(2){animation-delay:-3s;animation-duration:11s}
+  .koBeams i:nth-child(3){animation-delay:-6s}
+}
+@keyframes beamSway{from{rotate:-4deg}to{rotate:4deg}}
 @keyframes lightSweep{0%{left:-45%;opacity:0}15%,85%{opacity:1}100%{left:130%;opacity:0}}
 @keyframes tickerRun{to{transform:translateX(-50%)}}
 </style>
@@ -484,7 +521,31 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  </div>
 </header>
 
+<div class="wipe" aria-hidden="true"></div>
 <main id="home">
+<section class="kickoff" id="kickoff" aria-label="The Game Up League, Reloaded 2026 to 2027">
+ <div class="koBeams" aria-hidden="true"><i></i><i></i><i></i></div>
+ <div class="koSlash" aria-hidden="true"></div>
+ <div class="koSpot" aria-hidden="true"></div>
+ <div class="container koInner">
+  <p class="koKicker">Season 02 · Reloaded 2026–27</p>
+  <h1 class="koTitle" aria-label="Compete. Game up.">
+   <span class="koLine" aria-hidden="true"><span>Compete.</span></span>
+   <span class="koLine koOutline" aria-hidden="true"><span>Game up.</span></span>
+  </h1>
+  <p class="koSub">5-a-side football with a twist. 20-minute matches. One league that plays like a broadcast.</p>
+  <div class="koActions">
+   <a class="btn gold ctaMagnetic" href="register.html">Register as a player →</a>
+   <a class="btn outline ctaMagnetic" href="register-team.html">Register your team</a>
+  </div>
+  <div class="koBoard" role="list">
+   <div role="listitem"><b>Format</b><span>5-a-side</span></div>
+   <div role="listitem"><b>Match</b><span>20 min</span></div>
+   <div role="listitem"><b>Early bird</b><span>₹1,600</span></div>
+   <div role="listitem"><b>Registration</b><span>1–7 Nov</span></div>
+  </div>
+ </div>
+</section>
 <section class="section" id="timeline">
  <div class="container">
   <div class="tlGrid reveal">
@@ -1327,7 +1388,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     var center = document.querySelector('.tlCenter');
     var robo = document.querySelector('.roboPanel');
     if (!reduced && comic && center && robo) {
-      gsap.timeline({ defaults: { ease: 'power3.out' } })
+      gsap.timeline({ defaults: { ease: 'power3.out' }, scrollTrigger: { trigger: '#timeline', start: 'top 75%', toggleActions: 'play none none none' } })
         .from(center, { opacity: 0, scale: 0.75, duration: 0.7, ease: 'back.out(1.5)' }, 0.1)
         .from(comic, { opacity: 0, x: -50, duration: 0.6 }, 0.35)
         .from(robo, { opacity: 0, x: 50, duration: 0.6 }, 0.35)
@@ -1355,7 +1416,49 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
         if (eb) gsap.from(eb, { x: -40, opacity: 0, duration: 0.5, ease: 'power3.out', scrollTrigger: st });
         if (h2) gsap.from(h2, { clipPath: 'inset(0 100% 0 0)', x: -24, duration: 0.8, delay: 0.1, ease: 'power4.out', scrollTrigger: st, clearProps: 'clipPath' });
       });
-      if (center) gsap.to(center, { y: -50, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
+      if (center) gsap.fromTo(center, { y: 30 }, { y: -30, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top bottom', end: 'bottom top', scrub: true } });
+    }
+
+    // Kickoff hero: headline lines rise out of their masks, the scoreboard
+    // slides in like a broadcast lower-third, the slash drifts on scroll.
+    if (!reduced && document.querySelector('.koTitle')) {
+      gsap.timeline({ defaults: { ease: 'power4.out' } })
+        .from('.koKicker', { opacity: 0, x: -30, duration: 0.6 }, 0.1)
+        .from('.koLine>span', { yPercent: 115, duration: 1, stagger: 0.14 }, 0.2)
+        .from('.koSub, .koActions', { opacity: 0, y: 20, duration: 0.7, stagger: 0.12 }, 0.75)
+        .from('.koBoard', { xPercent: -8, opacity: 0, duration: 0.8 }, 0.95)
+        .from('.koBoard>div', { opacity: 0, y: 10, duration: 0.4, stagger: 0.08 }, 1.2);
+      gsap.to('.koSlash', { yPercent: 10, ease: 'none', scrollTrigger: { trigger: '#kickoff', start: 'top top', end: 'bottom top', scrub: true } });
+      gsap.to('.koInner', { y: -40, opacity: 0.3, ease: 'none', scrollTrigger: { trigger: '#kickoff', start: 'center top', end: 'bottom top', scrub: true } });
+      // Floodlight follows the pointer (fine pointers only).
+      var ko = document.getElementById('kickoff');
+      if (ko && window.matchMedia('(pointer: fine)').matches) {
+        var raf = 0;
+        ko.addEventListener('pointermove', function (e) {
+          if (raf) return;
+          raf = requestAnimationFrame(function () {
+            var r = ko.getBoundingClientRect();
+            ko.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+            ko.style.setProperty('--my', (e.clientY - r.top) + 'px');
+            raf = 0;
+          });
+        });
+      }
+    }
+
+    // Slanted page wipe when heading to the registration pages.
+    var wipe = document.querySelector('.wipe');
+    if (!reduced && wipe) {
+      var wipeOpen = 'polygon(-40% 0,-40% 0,-60% 100%,-60% 100%)';
+      var wipeCover = 'polygon(0 0,140% 0,100% 100%,-40% 100%)';
+      window.addEventListener('pageshow', function (e) { if (e.persisted) gsap.set(wipe, { clipPath: wipeOpen }); });
+      document.querySelectorAll('a[href="register.html"], a[href="register-team.html"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0 || a.target === '_blank') return;
+          e.preventDefault();
+          gsap.to(wipe, { clipPath: wipeCover, duration: 0.55, ease: 'power3.inOut', onComplete: function () { window.location.href = a.href; } });
+        });
+      });
     }
 
     // The trophy is the emotional payoff of the page - gets a deliberate
