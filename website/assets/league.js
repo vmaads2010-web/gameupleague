@@ -281,12 +281,23 @@
     var conn = navigator.connection || {};
     var slow = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') || conn.effectiveType === '3g';
     if (slow) return;
+    // At most five pictures downloading at a time, nearest first, so the warm-up never floods a slow line.
     var queue = function (list) {
-      var i = 0;
-      (function next() {
-        for (var n = 0; i < list.length && n < 4; n++) list[i++].loading = 'eager';
-        if (i < list.length) setTimeout(next, 200);
-      })();
+      var i = 0, active = 0, MAX = 5;
+      var pump = function () {
+        while (active < MAX && i < list.length) {
+          var img = list[i++];
+          if (img.complete && img.naturalWidth) continue;
+          active++;
+          var fired = false;
+          var done = function () { if (fired) return; fired = true; active--; pump(); };
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+          setTimeout(done, 8000);
+          img.loading = 'eager';
+        }
+      };
+      pump();
     };
     var lazy = function () { return Array.prototype.filter.call(d.querySelectorAll('img[loading="lazy"]'), function (img) { return !img.closest('#season1'); }); };
     // Stage 1: pictures on the homepage itself, once the page has finished loading and the browser is idle.
@@ -298,7 +309,9 @@
       setTimeout(warmHome, 4000);
       setTimeout(warmReloaded, 5000);
     };
-    if (d.readyState === 'complete') go(); else window.addEventListener('load', go);
+    var started = false;
+    var begin = function () { if (!started) { started = true; go(); } };
+    if (d.readyState === 'complete') begin(); else { window.addEventListener('load', begin); setTimeout(begin, 6000); }
   })();
 
   // 10. The logo animation starts after everything else has loaded; until then the sharp poster shows.
