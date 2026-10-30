@@ -1,0 +1,364 @@
+/* The Game Up League - premium design layer.
+   Loaded after each page's inline styles. Same content and order as before; only the design changes.
+   Direction: night-black ground, one gold accent, huge italic type, open editorial layouts with hairlines,
+   full-bleed photo cards, slanted gold plates for actions. Written mobile first. */
+
+:root{
+  --night:#0b0506;
+  --ink:#f6f0ea;
+  --muted:#bcaaa4;
+  --surface:#160809;
+  --line:rgba(255,236,224,.14);
+  --red:#c8202c;
+  --gutter:20px;
+  --ease:cubic-bezier(.2,.7,.3,1);
+}
+@media (min-width:900px){:root{--gutter:40px}}
+
+body{background:var(--night);color:var(--ink)}
+body:before{display:none}
+.container{width:min(1200px,calc(100% - 2 * var(--gutter)))}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+main{overflow-x:clip}
+
+/* ---------- Top offer banner: one slim, calm strip ---------- */
+.offerBanner{background:var(--red);animation:none;padding:0}
+.offerBannerIn{width:min(1200px,calc(100% - 24px));margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;padding:9px 0}
+.offerBannerLine{display:flex;align-items:center;justify-content:center;text-align:center}
+.offerBannerDot{display:none}
+.offerBannerText{font-size:12.5px;line-height:1.4}
+.offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px}
+.offerBannerBtn{border-radius:0;padding:7px 14px;font-size:12px}
+
+/* ---------- Nav ---------- */
+.nav{background:rgba(11,5,6,.86);border-bottom:1px solid var(--line)}
+.navin{min-height:64px;padding-block:8px}
+.brand img{width:40px;height:46px}
+.brand span,.brandFull{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:16px;letter-spacing:.04em;white-space:nowrap}
+.hamburgerBtn{border-radius:0}
+.mobileMenu a{font-family:var(--font-display);font-style:italic;font-size:28px;text-transform:uppercase;padding:14px var(--gutter);border-bottom:1px solid var(--line);letter-spacing:.02em}
+
+/* ---------- Buttons: slanted gold plates, squared outlines, one sweep on hover ---------- */
+.btn{
+  border-radius:0;font-family:var(--font-stat);font-style:italic;font-weight:800;
+  text-transform:uppercase;letter-spacing:.08em;font-size:15px;
+  min-height:46px;padding:12px 26px;display:inline-flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.btn.gold{background:var(--gold);color:#1a0a0c;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding-inline:32px;box-shadow:none}
+.btn.gold:before{display:none}
+.btn.gold:after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:translateX(-150%) skewX(-20deg);transition:transform .6s var(--ease);pointer-events:none}
+.btn.gold:hover:after{transform:translateX(400%) skewX(-20deg)}
+.btn.outline{border:2px solid var(--gold);background:transparent;color:var(--ink)}
+.btn.outline:hover{background:var(--gold);color:#1a0a0c;transform:none}
+.roll{display:inline-flex;flex-direction:column;overflow:hidden;height:1.25em;line-height:1.25;vertical-align:bottom}
+.roll>span{display:block;white-space:nowrap;transition:transform .5s cubic-bezier(.7,0,.2,1)}
+@media (hover:hover){a:hover>.roll>span{transform:translateY(-100%)}}
+a:focus-visible>.roll>span{transform:translateY(-100%)}
+
+/* ---------- Sections and headings ---------- */
+.section{padding-block:clamp(72px,12vw,152px)}
+.section:not(#timeline){border-top:1px solid var(--line)}
+.section:not(#season1):before{display:none}
+.section-head{display:block;margin-bottom:clamp(28px,5vw,60px)}
+.eyebrow{background:none;box-shadow:none;border-radius:0;padding:0;color:var(--gold);font-family:var(--font-stat);font-weight:600;font-size:12px;line-height:1;letter-spacing:.2em;text-transform:uppercase;display:inline-flex;align-items:center;gap:12px}
+.eyebrow:before{content:"";width:32px;height:2px;background:var(--gold)}
+main h2{font-size:clamp(44px,10.5vw,124px);line-height:.9;letter-spacing:-.02em;margin:16px 0 0}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .12em .06em 0;margin-right:-.12em}
+.wi{display:inline-block}
+.sub{font-size:clamp(16px,2.2vw,19px);line-height:1.65;color:var(--muted);max-width:58ch}
+
+/* ---------- Hub (first screen): logo as the hero, seasons as a clean list ---------- */
+#timeline{padding-block:clamp(28px,6vw,80px);min-height:calc(100svh - 140px);display:flex;align-items:center}
+.tlGrid{gap:clamp(20px,4vw,56px)}
+@media (min-width:900px){.tlGrid{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);align-items:center}}
+.tlPanel,.comicPanel,.roboPanel{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;gap:0;border-radius:0!important}
+.tlPanel:before,.tlPanel:after{display:none!important}
+.tlItem{padding:20px 0;border-radius:0;border-bottom:1px solid var(--line);gap:16px;background:none}
+.tlItem:hover{transform:none}
+.tlYear{font-family:var(--font-stat);font-weight:600;font-size:15px;letter-spacing:.14em;color:var(--gold);min-width:92px}
+.tlName{font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(24px,3vw,36px);line-height:1;transition:color .25s}
+a.tlItem:hover .tlName{color:var(--gold)}
+.tlStatus{border-radius:0;background:none!important;border:1px solid currentColor;padding:4px 10px;letter-spacing:.14em;font-size:11px}
+.tlItem.grayed{opacity:.5}
+.tlPanelTitle{font-family:var(--font-stat);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.tlPanel .btn{margin-top:26px;align-self:flex-start;font-size:15px!important;padding:12px 32px!important}
+.tlCenter{position:relative}
+.tlCenter:before{content:"";position:absolute;left:50%;top:50%;width:min(120%,560px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,rgba(255,201,60,.2),rgba(200,32,44,.12) 45%,transparent 70%);pointer-events:none}
+.shineLogo{width:min(80vw,440px)}
+.shineLogo img,.shineLogo video{animation:none;filter:none}
+
+/* ---------- Open cards (rules, about, kit partner): hairline above, big type ---------- */
+.cards{grid-template-columns:1fr;gap:34px}
+@media (min-width:860px){.cards{grid-template-columns:repeat(3,1fr);gap:48px}}
+body:not(.reg) .card{background:none;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;padding:26px 0 0;transition:border-color .3s}
+body:not(.reg) .card:hover{transform:none;box-shadow:none;border-top-color:var(--gold)}
+.card h3{font-size:clamp(26px,4.4vw,38px);margin:0 0 12px;line-height:1;text-transform:uppercase}
+.card p{font-size:clamp(16px,2vw,18px);line-height:1.65;color:var(--muted);margin:0}
+
+/* ---------- Special cards: edge-to-edge swipe row, grid on wide screens ---------- */
+.flipHintChip{background:none;border:0;padding:0;border-radius:0;color:var(--gold);font-family:var(--font-stat);font-weight:600;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.flipCardRow{gap:16px;padding:8px var(--gutter) 28px;margin-inline:calc(-1 * var(--gutter));scrollbar-width:none}
+.flipCardRow::-webkit-scrollbar{display:none}
+.flipCard{flex:0 0 clamp(220px,64vw,300px);height:clamp(316px,92vw,430px)}
+.flipCardFace{border-radius:0;box-shadow:none}
+.flipCardFront{border:0}
+.flipCardBack{background:var(--surface);border:1px solid var(--gold);padding:24px}
+.flipCardBack h4{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:30px;letter-spacing:.02em}
+.flipCardBack p{font-size:14px;color:var(--muted)}
+@media (min-width:1100px){
+  .flipCardRow{display:grid;grid-template-columns:repeat(4,1fr);overflow:visible;padding-inline:0;margin-inline:0}
+  .flipCard{flex:none;height:auto;aspect-ratio:208/300}
+}
+
+/* ---------- Champions and awards: photo-first cards with the name over the picture ---------- */
+.championsGrid{grid-template-columns:repeat(2,1fr);gap:12px}
+@media (min-width:900px){.championsGrid{grid-template-columns:repeat(4,1fr);gap:20px}}
+.championChip{position:relative;padding:0!important;border:0;border-radius:0;background:var(--surface);overflow:hidden;text-align:left;aspect-ratio:4/5}
+.marqueeTrack .championChip{flex:0 0 clamp(200px,58vw,270px)}
+.championChip img,.championChip.hasPhoto img{position:absolute;inset:0;width:100%;height:100%;margin:0;object-fit:cover;object-position:center 25%;border-radius:0;transition:transform .9s var(--ease)}
+.championChip:hover img{transform:scale(1.06)}
+.championChip:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(8,3,4,.92));pointer-events:none}
+.championChip .ttl,.championChip .nm{position:absolute;left:14px;right:14px;z-index:1;margin:0}
+.championChip .ttl{bottom:46px;color:var(--gold);font-family:var(--font-stat);font-weight:600;font-size:11px;letter-spacing:.18em}
+.championChip .nm{bottom:14px;font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(20px,3.4vw,28px);text-transform:uppercase;line-height:1}
+
+/* ---------- Trophy ---------- */
+.trophyGlowWrap{padding:0}
+.trophyGlowWrap:before{width:min(130%,680px);height:auto;aspect-ratio:1;background:radial-gradient(circle,rgba(255,201,60,.22),transparent 68%)}
+.trophyGlowImg{max-width:min(86vw,520px);filter:none;border-radius:0}
+
+/* ---------- Leadership: an editorial roster ---------- */
+.leaderGrid{grid-template-columns:repeat(2,1fr);gap:0 20px}
+@media (min-width:700px){.leaderGrid{grid-template-columns:repeat(3,1fr);gap:0 28px}}
+@media (min-width:1000px){.leaderGrid{grid-template-columns:repeat(5,1fr)}}
+.leaderCard{background:none;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;text-align:left;padding:20px 0 28px}
+.leaderAvatar{width:84px;height:84px;margin:0 0 14px}
+.leaderName{font-weight:700;font-size:18px;line-height:1.2}
+.leaderRole{color:var(--gold);font-family:var(--font-stat);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+
+/* ---------- Sponsors, squad, roster, highlights ---------- */
+.marqueeTrack{gap:14px}
+.sponsorChip{border-radius:0;width:170px;height:100px;border:0}
+#titleSponsor .reveal>div{border-radius:0!important;box-shadow:none!important}
+#gallery img{max-width:100%!important;width:100%;border-radius:0!important;box-shadow:none!important}
+.squadCard{flex:0 0 clamp(104px,28vw,150px);width:auto;border-radius:0;border:0;background:none;overflow:visible}
+.squadCard:hover{transform:none}
+.squadCard img{width:100%;height:auto;aspect-ratio:4/5;border-radius:0;border:0;box-shadow:none}
+.squadCardName{font-size:12px;color:var(--ink);margin-top:8px}
+.momentChip{width:clamp(160px,46vw,230px);border-radius:0;border:0;box-shadow:none}
+.momentChip:after{background:linear-gradient(180deg,transparent 55%,rgba(8,3,4,.85))}
+
+/* ---------- Venue, kit partner, contact ---------- */
+.feature{background:none;border:0;border-radius:0;padding:0;grid-template-columns:1fr;gap:44px;align-items:start}
+@media (min-width:900px){.feature{grid-template-columns:1.3fr .7fr}}
+.feature .big{font-family:var(--font-display);font-style:italic;font-weight:400;text-transform:uppercase;font-size:clamp(44px,10vw,112px);line-height:.9;margin:16px 0 22px}
+.feature .big span{color:var(--gold)}
+#turf .card p{line-height:2.1}
+.cta{background:none;border:0;border-radius:0;padding:0;display:grid;grid-template-columns:1fr;gap:36px;align-items:start}
+@media (min-width:900px){.cta{grid-template-columns:1.2fr .8fr;gap:64px}}
+.cta h3{font-size:clamp(32px,5vw,52px);text-transform:uppercase;margin-bottom:12px!important}
+.contactRow{padding:16px 0;border-bottom:1px solid var(--line);margin:0;font-size:clamp(16px,2vw,19px)}
+.contactIcon{background:none;border:1px solid var(--line);border-radius:0;color:var(--gold)}
+.contact-actions .btn{width:100%}
+.footer{background:var(--night);border-top:1px solid var(--line);padding:56px 0 32px}
+
+/* ---------- Registration pages ---------- */
+.reg .card{background:var(--surface);border:1px solid var(--line);border-radius:0;box-shadow:none;padding:clamp(20px,4vw,40px)}
+.reg input,.reg select,.reg textarea{border-radius:0;background:#0f0607}
+.reg input:focus,.reg select:focus,.reg textarea:focus{border-color:var(--gold);box-shadow:0 2px 0 0 var(--gold)}
+.reg form button{border-radius:0;font-family:var(--font-stat);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.08em;min-height:52px;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%)}
+.reg form button:disabled{clip-path:none;filter:grayscale(.6);cursor:not-allowed}
+.reg h1,.reg h2{font-family:var(--font-display);font-style:italic;font-weight:400;text-transform:uppercase;letter-spacing:-.01em}
+.wipeArrive{position:fixed;inset:0;z-index:2000;pointer-events:none;background:linear-gradient(115deg,var(--gold) 0 7%,var(--red) 7%);animation:wipeArrive .7s cubic-bezier(.7,0,.2,1) .05s both}
+@keyframes wipeArrive{from{clip-path:polygon(0 0,140% 0,100% 100%,-40% 100%)}to{clip-path:polygon(140% 0,140% 0,120% 100%,120% 100%)}}
+.wipe{position:fixed;inset:0;z-index:2000;pointer-events:none;background:linear-gradient(115deg,var(--gold) 0 7%,var(--red) 7%);clip-path:polygon(-40% 0,-40% 0,-60% 100%,-60% 100%)}
+
+/* ---------- Smooth scroll hooks and reduced motion ---------- */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+@media (prefers-reduced-motion: reduce){
+  .wipeArrive{display:none}
+  .roll>span,.championChip img{transition:none}
+  .btn.gold:after{display:none}
+}
+
+/* Mobile nav: everything must fit a 360px phone */
+.navin{gap:10px}
+.navCenter{min-width:0;flex:1;display:flex;justify-content:center}
+.navRegister{font-size:13px!important;padding:8px 20px!important;min-height:40px;flex-shrink:0}
+.brand{gap:8px;min-width:0}
+.brand img{width:32px;height:38px;flex-shrink:0}
+.brand span,.brandFull{font-size:13px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis}
+.hamburgerBtn{flex-shrink:0;width:42px;height:42px;padding:0}
+@media (min-width:480px){.brand span,.brandFull{font-size:16px}.brand img{width:40px;height:46px}.navRegister{font-size:15px!important;padding:10px 26px!important}}
+
+/* Hub: no leftover comic-panel boxes; first screen shows the logo and the start of the list */
+.comicPanel a.tlItem,.roboPanel .tlItem,.tlPanel .tlItem{background:none!important;border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
+.comicPanel .tlPanelTitle,.roboPanel .tlPanelTitle{font-family:var(--font-stat);letter-spacing:.2em;color:var(--muted)}
+#timeline{min-height:0;padding-block:24px 56px}
+.shineLogo{width:min(66vw,360px)}
+@media (min-width:900px){#timeline{min-height:calc(100svh - 140px);padding-block:48px 72px}.shineLogo{width:min(34vw,480px)}}
+
+/* Polish pass: italic overhang, brand name, caption stacking, snap alignment */
+.w{padding-right:.2em;margin-right:-.2em}
+.brand span,.brandFull{font-size:12px;letter-spacing:0;text-overflow:clip}
+@media (min-width:480px){.brand span,.brandFull{font-size:16px}}
+.championChip{display:flex;flex-direction:column;justify-content:flex-end;padding:14px!important}
+.championChip .ttl,.championChip .nm{position:relative;left:auto;right:auto;bottom:auto;z-index:1}
+.championChip .ttl{margin-bottom:6px}
+.flipCardRow{scroll-padding-inline:var(--gutter)}
+
+/* Title sponsor: a deliberate logo plate, not a full-width block */
+#titleSponsor .reveal{justify-content:flex-start!important}
+#titleSponsor .reveal>div{padding:24px 32px!important;width:min(100%,420px)}
+
+/* ---------- RELOADED and archive pages: same system, no leftover rounded boxes ---------- */
+.pills{gap:10px;margin:20px 0 28px}
+.pill{border-radius:0;border:1px solid var(--line);background:none;color:var(--ink);padding:10px 14px;font-size:14px}
+.posterStack{gap:56px;margin-top:40px}
+.posterBlock{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:28px 0 0}
+.posterBlock:hover{border-top-color:var(--gold)}
+.posterIco{display:none}
+.posterEyebrow{font-family:var(--font-stat);font-weight:600;font-size:12px;letter-spacing:.2em;color:var(--gold)}
+.posterHead h3{font-size:clamp(28px,5vw,44px);text-transform:uppercase;margin:6px 0 0}
+.posterBlock .sub{font-size:clamp(16px,2vw,18px);margin:10px 0 22px}
+.posterImgWrap{border-radius:0;border:0}
+.ruleBook{background:none;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;padding:4px 0}
+.ruleBook summary{font-family:var(--font-stat);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+.offerDealCard{border-radius:0}
+.offerDealCard:before{display:none}
+.offerTag,.earlyBirdChip{border-radius:0;background:var(--gold);color:#1a0a0c;letter-spacing:.14em}
+.matchDayCard{border-radius:0;background:none;border:1px solid var(--line)}
+.matchDayCard.isFinal{border-color:var(--gold)}
+
+/* Last old-design leftovers */
+.card:before,.card:after{display:none!important}
+.tag{border-radius:0;letter-spacing:.14em}
+
+/* Logo video edges fade into the page; brand name keeps its italic overhang */
+.shineLogo img,.shineLogo video{-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 64%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 64%,transparent 100%)}
+.brand span,.brandFull{overflow:visible;padding-right:.2em}
+
+/* Hub stays stacked until there is real room for three columns */
+@media (min-width:900px) and (max-width:1099px){.tlGrid{grid-template-columns:minmax(0,1fr)}.tlCenter{order:-1}.tlPanel{max-width:760px}}
+
+/* Registration pages: squared boxes everywhere inside the form card */
+.reg :where(div,section,label,span,a,details,summary,input,select,textarea,button):not(.leaderAvatar){border-radius:0!important}
+.reg .offerBadge{letter-spacing:.12em}
+
+/* =====================================================================
+   UPGRADE: cinematic hub, richer photo sections, premium registration
+   ===================================================================== */
+
+/* ---------- Hub: stadium light cones, pointer spotlight, bigger season names ---------- */
+#timeline{position:relative;isolation:isolate;overflow:hidden}
+#timeline:before{content:"";position:absolute;left:50%;top:-12%;width:min(1400px,170%);height:125%;translate:-50% 0;z-index:-1;pointer-events:none;
+  background:conic-gradient(from 180deg at 50% 0%,transparent 38%,rgba(255,201,60,.13) 44%,transparent 50%,transparent 55%,rgba(255,236,190,.09) 61%,transparent 67%,transparent 72%,rgba(255,201,60,.08) 77%,transparent 83%);
+  -webkit-mask-image:linear-gradient(#000 0,transparent 78%);mask-image:linear-gradient(#000 0,transparent 78%);transform-origin:50% 0}
+#timeline:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(520px circle at var(--mx,50%) var(--my,35%),rgba(255,201,60,.10),transparent 70%)}
+@media (prefers-reduced-motion: no-preference){#timeline:before{animation:coneSway 14s ease-in-out infinite alternate}}
+@keyframes coneSway{from{rotate:-2.5deg}to{rotate:2.5deg}}
+.tlName{font-size:clamp(28px,3.6vw,48px)}
+.tlCenter .shineLogo{translate:calc(var(--px,0) * 16px) calc(var(--py,0) * 10px);transition:translate .35s var(--ease)}
+.tlYear{font-size:16px}
+
+/* ---------- About: statements, not cards ---------- */
+#about .card h3{font-family:var(--font-stat);font-style:normal;font-weight:600;font-size:13px;letter-spacing:.2em;color:var(--gold);margin-bottom:16px}
+#about .card p{font-size:clamp(20px,2.6vw,28px);line-height:1.4;color:var(--ink);max-width:22ch}
+
+/* ---------- Trophy: spotlight and a slow float ---------- */
+.trophyGlowWrap:before{width:min(150%,820px);background:radial-gradient(circle,rgba(255,201,60,.28),rgba(200,32,44,.10) 45%,transparent 70%)}
+@media (prefers-reduced-motion: no-preference){.trophyGlowImg{animation:trophyFloat 7s ease-in-out infinite alternate}}
+@keyframes trophyFloat{from{translate:0 -8px}to{translate:0 8px}}
+
+/* ---------- Photos: tilt, sheen, hover polish ---------- */
+.tiltable{transition:rotate .2s ease-out,scale .2s ease-out}
+.holo{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;mix-blend-mode:overlay;z-index:2;background:radial-gradient(circle at var(--hx,50%) var(--hy,50%),rgba(255,255,255,.38),transparent 45%),linear-gradient(115deg,transparent 30%,rgba(255,201,60,.26) 46%,rgba(255,106,61,.14) 56%,transparent 70%)}
+.tiltable:hover>.holo{opacity:1}
+.leaderAvatar{transition:box-shadow .3s,translate .3s var(--ease)}
+.leaderCard:hover .leaderAvatar{box-shadow:0 0 0 3px var(--night),0 0 0 5px var(--gold);translate:0 -4px}
+.squadCard img,.momentChip img{transition:transform .6s var(--ease),filter .4s}
+.squadCard:hover img{transform:scale(1.05)}
+#gallery .reveal{overflow:hidden}
+@media (min-width:900px){
+  .championsGrid{gap:24px}
+  .flipCard{transition:translate .35s var(--ease)}
+  .flipCard:hover{translate:0 -8px}
+}
+
+/* ---------- Registration: two-column on desktop, bigger controls everywhere ---------- */
+.reg h1{font-size:clamp(52px,12vw,128px);line-height:.9;letter-spacing:-.02em;margin:28px 0 8px}
+.regSide>.sub{font-family:var(--font-stat);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 28px}
+.reg .offerBox,.reg .feeBox{background:var(--surface);border:0;border-top:3px solid var(--gold);border-radius:0;box-shadow:none;padding:clamp(20px,3vw,32px)}
+.reg .offerBox .price{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(56px,10vw,92px);line-height:1;color:var(--gold)}
+.reg .offerBox .price small{font-family:var(--font-stat);font-size:15px;font-style:normal;letter-spacing:.14em;color:var(--muted)}
+.reg .notice{background:none;border:1px solid var(--line);border-radius:0;color:var(--muted)}
+.reg .sectionTitle{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(24px,4vw,34px);letter-spacing:0;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--line);padding-top:26px;margin:44px 0 20px}
+.reg .sectionTitle:first-child{border-top:0;margin-top:0;padding-top:0}
+.reg label{font-size:14px;color:var(--muted)}
+.reg input:not([type=checkbox]):not([type=radio]),.reg select,.reg textarea{min-height:54px;font-size:16px;padding:12px 16px;border:1px solid var(--line);border-radius:0;background:#0f0607;color:var(--ink)}
+.reg textarea{min-height:110px}
+.reg .checkRow,.reg .radioRow{border-radius:0;border:1px solid var(--line);background:none;min-height:54px}
+.reg .payBox{background:var(--surface);border:1px solid var(--line);border-radius:0}
+.reg form button{min-height:58px;font-size:17px}
+.regSide>*{max-width:none}
+@media (min-width:1000px){
+  .reg .wrap>.container{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:72px;align-items:start}
+  .regSide{position:sticky;top:96px;grid-column:1;grid-row:1 / span 3}
+  .reg .wrap>.container>.card{grid-column:2;grid-row:1}
+  .reg .wrap>.container>.sub:not(.regSide *),.reg .wrap>.container>.back{grid-column:2}
+}
+
+/* ---------- End-to-end pass: Season 1 archive in the same system, menu text, roll overhang ---------- */
+.roll>span{padding-right:.2em}
+.mobileMenu a .roll{height:1.3em}
+.trophyBanner{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;padding:28px 0 0!important}
+.trophyItem{border-radius:0;background:none}
+.trophyItem:hover{transform:none;background:none}
+.trophyItem .ttl{font-family:var(--font-stat);font-weight:600;letter-spacing:.18em;color:var(--gold)}
+.trophyItem .name{font-family:var(--font-display);font-style:italic;font-weight:400;text-transform:uppercase;font-size:clamp(30px,5vw,48px);line-height:1}
+.topScorersTable,.pointsTable{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important}
+.topScorersTable th,.pointsTable th{font-family:var(--font-stat);font-weight:600;letter-spacing:.16em;color:var(--gold)}
+#season1 :where([class*="Card"],[class*="Chip"],[class*="Wrap"],[class*="Grid"]>div){border-radius:0}
+#season1 :where([class*="Card"]){background:var(--surface);border:0}
+#season1 img{border-radius:0}
+#season1 .mascotCard img{aspect-ratio:1/1}
+.ownerCard,.mascotCard,.teamCard{border-radius:0!important;border:0!important;background:var(--surface)!important}
+
+/* Season 1 archive grids: two across on phones so the page is not endless, more on wide screens */
+.awardsGrid,.ownersGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:760px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+@media (min-width:1100px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Phones and tablets without a pointer: no continuous background animation */
+@media (hover:none){#timeline:before{animation:none}.trophyGlowImg{animation:none}}
+
+/* =====================================================================
+   MORE MOTION: all transform and opacity, all off for reduced motion
+   ===================================================================== */
+
+/* Eyebrow line draws itself; a gold line sweeps across each section's top edge as it arrives */
+.js .section-head .eyebrow:before{transform:scaleX(0);transform-origin:0 50%;transition:transform .9s var(--ease) .15s}
+.js .section-head.in .eyebrow:before{transform:scaleX(1)}
+.section:not(#timeline):not(#season1):before{display:block;content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:0 50%;opacity:0;pointer-events:none}
+.section.sec-in:not(#timeline):not(#season1):before{animation:secSweep 1.5s var(--ease) forwards}
+@keyframes secSweep{0%{transform:scaleX(0);opacity:1}55%{transform:scaleX(1);opacity:1}100%{transform:scaleX(.12);opacity:1}}
+
+/* Touch feedback and hover lift */
+.btn:active,.reg form button:active{scale:.97}
+.sponsorChip,.momentChip,.squadCard{transition:translate .35s var(--ease)}
+@media (hover:hover){.sponsorChip:hover,.momentChip:hover,.squadCard:hover{translate:0 -6px}}
+
+/* Idle life: the hub logo breathes, the trophy gets slowly turning light rays */
+@media (prefers-reduced-motion: no-preference) and (hover:hover){
+  .shineLogo video,.shineLogo img{animation:logoFloat 5s ease-in-out infinite alternate}
+}
+@keyframes logoFloat{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
+.trophyGlowWrap:after{content:"";position:absolute;left:50%;top:50%;width:min(160%,900px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;pointer-events:none;z-index:0;
+  background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,201,60,.16) 10% 12%,transparent 14% 33%,rgba(255,201,60,.11) 35% 37%,transparent 39% 58%,rgba(255,201,60,.16) 60% 62%,transparent 64% 83%,rgba(255,201,60,.11) 85% 87%,transparent 89%);
+  -webkit-mask-image:radial-gradient(circle,#000 18%,transparent 66%);mask-image:radial-gradient(circle,#000 18%,transparent 66%)}
+@media (prefers-reduced-motion: no-preference){.trophyGlowWrap:after{animation:raysSpin 40s linear infinite}}
+@keyframes raysSpin{to{rotate:360deg}}
+@media (prefers-reduced-motion: reduce){.section.sec-in:before{animation:none;opacity:1;transform:scaleX(.12)}}
