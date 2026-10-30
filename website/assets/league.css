@@ -172,7 +172,7 @@ main .section-head h2{font-size:clamp(40px,11.5vw,108px);line-height:.9;letter-s
 }
 @media (hover:hover) and (pointer:fine) and (min-width:900px){
   .reelList{display:block;overflow:visible;margin:0;padding:0}
-  .reelRow{display:flex;align-items:baseline;justify-content:space-between;gap:24px;aspect-ratio:auto;flex:none;background:transparent;clip-path:none;box-shadow:none;border-top:1px solid rgba(255,255,255,.14);padding:18px 0;transition:opacity .3s,padding .4s cubic-bezier(.7,0,.2,1)}
+  .reelRow{display:flex;align-items:baseline;justify-content:space-between;gap:24px;aspect-ratio:auto;flex:none;background:transparent;clip-path:none;box-shadow:none;border-top:1px solid rgba(255,255,255,.14);padding:18px 0;transition:opacity .3s}
   .reelRow:last-child{border-bottom:1px solid rgba(255,255,255,.14)}
   .reelMedia{display:none}
   .reelNum,.reelTitle,.reelMeta{position:static;background:none;padding:0;text-shadow:none}
@@ -180,8 +180,8 @@ main .section-head h2{font-size:clamp(40px,11.5vw,108px);line-height:.9;letter-s
   .reelTitle{flex:1;font-size:clamp(56px,10vw,150px);line-height:.9;color:#f7f1e8}
   .reelMeta{color:#e8d9c8;font-size:12px}
   .reelList:hover .reelRow:not(:hover){opacity:.3}
-  .reelRow:hover{padding-left:24px}
-  .reelRow:hover .reelTitle{color:var(--gold)}
+    .reelTitle{transition:translate .4s cubic-bezier(.7,0,.2,1),color .3s}
+  .reelRow:hover .reelTitle{color:var(--gold);translate:24px 0}
 }
 @media (prefers-reduced-motion: reduce){
   .roll>span,.reelRow,.reelPreview{transition:none}
