@@ -1,0 +1,90 @@
+/* The Game Up League - broadcast design system.
+   Loaded after each page's inline styles, so these rules win by order.
+   Direction: matchday broadcast graphics. Night-black ground, gold for action,
+   club red for emphasis, slanted cuts instead of rounded pills, italic condensed type. */
+
+:root{
+  --night:#120708;
+  --pitch-dark:#1a0a0c;
+  --club-red:#8b1a22;
+  --cut:14px;
+  --slant:polygon(var(--cut) 0,100% 0,calc(100% - var(--cut)) 100%,0 100%);
+}
+
+body{background:var(--night)}
+body:before{
+  background:
+    radial-gradient(ellipse 70% 38% at 50% -6%,rgba(255,201,60,.16),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 100%,rgba(139,26,34,.35),transparent 70%)
+}
+
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* Nav: flat night bar with a gold notch under the brand */
+.nav{background:rgba(18,7,8,.94);border-bottom:2px solid rgba(255,201,60,.45)}
+.brand span{font-family:var(--font-display);font-style:italic;letter-spacing:.5px;text-transform:uppercase}
+
+/* Buttons: slanted gold plates, squared outlines, one sweep on hover */
+.btn,form button{
+  border-radius:0;
+  font-family:var(--font-stat);font-style:italic;font-weight:800;
+  text-transform:uppercase;letter-spacing:1px;
+  min-height:44px;
+  position:relative;overflow:hidden;
+}
+.btn.gold,form button:not(.photoPickBtn):not(.logoPickBtn):not([type="button"]){
+  clip-path:var(--slant);
+  padding-left:calc(18px + var(--cut)/2);padding-right:calc(18px + var(--cut)/2);
+}
+.btn.gold:after,form button:not(.photoPickBtn):not(.logoPickBtn):not([type="button"]):after{
+  content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-20deg);transition:left .55s cubic-bezier(.2,.7,.3,1);pointer-events:none;
+}
+.btn.gold:hover:after,form button:not(.photoPickBtn):not(.logoPickBtn):not([type="button"]):hover:after{left:130%}
+.btn.outline{border:2px solid var(--gold);background:transparent;color:#fff}
+.btn.outline:hover{background:var(--gold);color:#2a1206}
+form button:disabled{clip-path:none;filter:grayscale(.6);cursor:not-allowed}
+form button:disabled:after{display:none}
+
+/* Cards: scoreboard tiles. Gold spine on the left, one cut corner, no soft shadow */
+.card{
+  background:linear-gradient(180deg,#241013,#1a0a0c);
+  border:0;border-left:4px solid var(--gold);border-radius:0;
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);
+  box-shadow:none;
+}
+.card:hover{box-shadow:none}
+
+.leaderCard,.ownerCard,.matchDayCard{border:0;border-left:4px solid var(--gold);border-radius:0;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+.sponsorCard{border-radius:0;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%)}
+
+/* Fields: squared, dark wells, gold focus bar */
+input,select,textarea{border-radius:4px;background:#0f0607}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 2px 0 0 var(--gold)}
+
+/* Slanted section bands on the homepage so the page reads as stacked broadcast graphics */
+main>.section:nth-of-type(even){
+  background:rgba(0,0,0,.26);
+  clip-path:polygon(0 26px,100% 0,100% calc(100% - 26px),0 100%);
+  margin-block:-26px;padding-block:calc(72px + 26px);
+}
+@media (max-width:760px){
+  main>.section:nth-of-type(even){clip-path:polygon(0 14px,100% 0,100% calc(100% - 14px),0 100%);margin-block:-14px;padding-block:calc(52px + 14px)}
+  .card{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+}
+
+/* Registration pages: arrival wipe that finishes the homepage's departure wipe */
+.wipeArrive{
+  position:fixed;inset:0;z-index:2000;pointer-events:none;
+  background:linear-gradient(115deg,var(--gold) 0 7%,var(--club-red) 7%);
+  animation:wipeArrive .7s cubic-bezier(.7,0,.2,1) .05s both;
+}
+@keyframes wipeArrive{
+  from{clip-path:polygon(0 0,140% 0,100% 100%,-40% 100%)}
+  to{clip-path:polygon(140% 0,140% 0,120% 100%,120% 100%)}
+}
+@media (prefers-reduced-motion: reduce){
+  .wipeArrive{display:none}
+  .btn.gold:after,form button:after{display:none}
+}
