@@ -199,23 +199,29 @@
     if (hubLogo) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
 
     // Things the page draws itself (champions, cards, contact rows) arrive one after another.
-    var staged = function (sel, from) {
-      var els = d.querySelectorAll(sel);
-      if (!els.length) return;
-      try {
-        gsap.set(els, from);
-        ScrollTrigger.batch(els, { start: 'top 92%', once: true, onEnter: function (batch) {
-          gsap.to(batch, { opacity: 1, y: 0, x: 0, scale: 1, rotationY: 0, duration: 0.9, ease: 'power3.out', stagger: 0.09, overwrite: true, clearProps: 'transform,opacity' });
-        } });
-      } catch (e) { gsap.set(els, { clearProps: 'all' }); }
+    // Items the page draws itself arrive one after another. Fail-open: they only start hidden once this
+    // runs, and a timer shows any that are still waiting after 7 seconds.
+    var staged = function (sel, kind) {
+      var els = Array.prototype.slice.call(d.querySelectorAll(sel));
+      if (!els.length || !('IntersectionObserver' in window)) return;
+      els.forEach(function (el, i) { el.style.setProperty('--i', i % 6); el.classList.add('pre', 'pre-' + kind); });
+      var show = function (el) {
+        el.classList.add('go');
+        setTimeout(function () { el.classList.remove('pre', 'pre-' + kind, 'go'); el.style.removeProperty('--i'); }, 1500);
+      };
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); show(e.target); } });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+      els.forEach(function (el) { io.observe(el); });
+      setTimeout(function () { els.forEach(function (el) { if (el.classList.contains('pre') && !el.classList.contains('go')) show(el); }); }, 7000);
     };
     var tries = 0;
     (function stage() {
       var ready = d.querySelector('.championChip') && d.querySelector('.flipCard') && d.querySelector('.contactRow');
       if (!ready && ++tries < 40) { setTimeout(stage, 100); return; }
-      staged('.championsGrid .championChip', { opacity: 0, y: 60, scale: 0.94 });
-      staged('.flipCard', { opacity: 0, y: 70, rotationY: -30, transformPerspective: 900 });
-      staged('.contactRow', { opacity: 0, x: -30 });
+      staged('.championsGrid .championChip', 'rise');
+      staged('.flipCard', 'deal');
+      staged('.contactRow', 'slide');
 
       // The sponsor, award and player strips surge while you scroll and settle when you stop. Two cheap
       // updates per scroll burst (start and stop), not one per frame, so phones stay smooth.
@@ -274,7 +280,7 @@
   (function () {
     var conn = navigator.connection || {};
     var slow = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') || conn.effectiveType === '3g';
-    if (slow || !hoverFine) return;
+    if (slow) return;
     var queue = function (list) {
       var i = 0;
       (function next() {

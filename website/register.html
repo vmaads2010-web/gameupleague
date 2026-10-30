@@ -419,10 +419,18 @@ a.tlItem{position:relative;overflow:hidden}
 .btn.gold .ripple,form button .ripple{background:rgba(255,255,255,.55)}
 @keyframes rippleOut{to{transform:scale(1);opacity:0}}
 @media (max-width:1099px){
-.focusrow .flipCard{scale:.92;opacity:.6;transition:scale .45s var(--ease),opacity .45s}
+.focusrow .flipCard{scale:.95;opacity:.88;transition:scale .45s var(--ease),opacity .45s}
 .focusrow .flipCard.inview{scale:1;opacity:1}
 }
 @media (prefers-reduced-motion: reduce){.ripple,.tlCenter:after{display:none}.focusrow .flipCard{scale:1;opacity:1}}
+.reveal-all .reveal{opacity:1!important;transform:none!important}
+.reveal-all .reveal-stagger .r-item{opacity:1!important}
+.pre{opacity:0;transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--i,0) * 90ms)}
+.pre-rise{transform:translateY(50px) scale(.95)}
+.pre-deal{transform:translateY(60px) rotateY(-30deg)}
+.pre-slide{transform:translateX(-28px)}
+.pre.go{opacity:1;transform:none}
+.squadCard img,.momentChip img,.championChip img,.sponsorChip{background-color:#1a0d10}
 </style>
 <!-- league-css:end -->
 </head>
