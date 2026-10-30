@@ -290,7 +290,7 @@ html.lenis,html.lenis body{height:auto}
 
 /* ---------- Registration: two-column on desktop, bigger controls everywhere ---------- */
 .reg h1{font-size:clamp(52px,12vw,128px);line-height:.9;letter-spacing:-.02em;margin:28px 0 8px}
-.reg .wrap>.container>.sub:first-of-type,.regSide>.sub{font-family:var(--font-stat);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 28px}
+.regSide>.sub{font-family:var(--font-stat);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 28px}
 .reg .offerBox,.reg .feeBox{background:var(--surface);border:0;border-top:3px solid var(--gold);border-radius:0;box-shadow:none;padding:clamp(20px,3vw,32px)}
 .reg .offerBox .price{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(56px,10vw,92px);line-height:1;color:var(--gold)}
 .reg .offerBox .price small{font-family:var(--font-stat);font-size:15px;font-style:normal;letter-spacing:.14em;color:var(--muted)}
@@ -310,3 +310,24 @@ html.lenis,html.lenis body{height:auto}
   .reg .wrap>.container>.card{grid-column:2;grid-row:1}
   .reg .wrap>.container>.sub:not(.regSide *),.reg .wrap>.container>.back{grid-column:2}
 }
+
+/* ---------- End-to-end pass: Season 1 archive in the same system, menu text, roll overhang ---------- */
+.roll>span{padding-right:.2em}
+.mobileMenu a .roll{height:1.3em}
+.trophyBanner{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;padding:28px 0 0!important}
+.trophyItem{border-radius:0;background:none}
+.trophyItem:hover{transform:none;background:none}
+.trophyItem .ttl{font-family:var(--font-stat);font-weight:600;letter-spacing:.18em;color:var(--gold)}
+.trophyItem .name{font-family:var(--font-display);font-style:italic;font-weight:400;text-transform:uppercase;font-size:clamp(30px,5vw,48px);line-height:1}
+.topScorersTable,.pointsTable{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important}
+.topScorersTable th,.pointsTable th{font-family:var(--font-stat);font-weight:600;letter-spacing:.16em;color:var(--gold)}
+#season1 :where([class*="Card"],[class*="Chip"],[class*="Wrap"],[class*="Grid"]>div){border-radius:0}
+#season1 :where([class*="Card"]){background:var(--surface);border:0}
+#season1 img{border-radius:0}
+#season1 .mascotCard img{aspect-ratio:1/1}
+.ownerCard,.mascotCard,.teamCard{border-radius:0!important;border:0!important;background:var(--surface)!important}
+
+/* Season 1 archive grids: two across on phones so the page is not endless, more on wide screens */
+.awardsGrid,.ownersGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (min-width:760px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+@media (min-width:1100px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
