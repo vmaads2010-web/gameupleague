@@ -443,6 +443,9 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
   .tickerTrack{animation:tickerRun 28s linear infinite}
   .ticker:hover .tickerTrack{animation-play-state:paused}
 }
+.section:not(#timeline):not(#season1):after{content:"";position:absolute;top:0;left:0;right:0;height:46px;pointer-events:none;z-index:0;background:linear-gradient(176deg,rgba(255,201,60,.09) 0 50%,transparent 50%)}
+.comicPanel .tlItem{transition:translate .25s cubic-bezier(.2,.7,.3,1),border-color .25s}
+.comicPanel .tlItem:hover{translate:6px 0;border-color:var(--gold)}
 @keyframes lightSweep{0%{left:-45%;opacity:0}15%,85%{opacity:1}100%{left:130%;opacity:0}}
 @keyframes tickerRun{to{transform:translateX(-50%)}}
 </style>
@@ -1361,7 +1364,10 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
     if (trophyImg) {
       gsap.from(trophyImg, {
         opacity: 0, scale: 0.8, duration: reduced ? 0.01 : 1, ease: 'back.out(1.3)',
-        scrollTrigger: { trigger: trophyImg, start: 'top 85%', toggleActions: 'play none none none' }
+        scrollTrigger: { trigger: trophyImg, start: 'top 85%', toggleActions: 'play none none none' },
+        onComplete: function () {
+          if (!reduced) gsap.to(trophyImg, { y: -10, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+        }
       });
     }
   } catch (err) {
