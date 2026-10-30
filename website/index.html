@@ -446,7 +446,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
 </div>
 <header class="nav">
  <div class="container navin">
-  <a class="btn gold navRegister" href="register.html">Register</a>
+  <a class="btn gold navRegister ctaMagnetic" href="register.html">Register</a>
   <div class="navCenter">
    <a class="brand" href="#home"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"><span class="brandFull">THE GAME UP LEAGUE</span></a>
   </div>
@@ -472,7 +472,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
    <div class="tlPanel comicPanel">
     <a class="tlItem" href="#season1"><span class="tlYear">2025–2026</span><span class="tlName">Football Reimagined</span><span class="tlStatus done">✓ Done</span></a>
     <a class="tlItem" href="#season2"><span class="tlYear">2026–2027</span><span class="tlName">Reloaded</span><span class="tlStatus upcoming">Next Up</span></a>
-    <a class="btn gold" href="register.html" style="font-size:12px;padding:8px 14px;align-self:center">Register →</a>
+    <a class="btn gold ctaMagnetic" href="register.html" style="font-size:12px;padding:8px 14px;align-self:center">Register →</a>
    </div>
 
    <div class="tlCenter">
@@ -528,7 +528,7 @@ h3{font-family:var(--font-display);font-weight:400;letter-spacing:-.3px}
     <div class="dealPriceRow"><span class="dealPriceOld" id="offerOldPrice"></span><span class="dealPriceNew" id="offerNewPrice"></span><span class="dealPriceUnit">/player</span></div>
     <div class="dealSaveBadge" id="offerSaveBadge"></div>
     <p class="dealValidity" id="offerNote"></p>
-    <a class="btn gold" href="register.html" style="margin-top:4px">Register Now →</a>
+    <a class="btn gold ctaMagnetic" href="register.html" style="margin-top:4px">Register Now →</a>
    </article>
    <article class="card r-item"><span class="tag">Team Owners</span><h3 id="teamFeeTitle"></h3><p>Register your team — proposed name + logo. Final squad via auction/draft.</p><a class="btn outline" href="register-team.html" style="margin-top:4px">Register a Team →</a></article>
   </div>
@@ -1282,6 +1282,57 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
   .catch(err => {
     console.error('Could not load content.json', err);
   });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  // Pure progressive enhancement: if the CDN is blocked or fails to load,
+  // the page stays exactly as it already is - fully visible, fully usable,
+  // just without the extra motion. Nothing is ever hidden waiting on this.
+  if (typeof gsap === 'undefined') return;
+  try {
+    gsap.registerPlugin(ScrollTrigger);
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Signature entrance: the Journey hub assembling on load - the first
+    // thing every visitor sees. One deliberate moment; everything else on
+    // the page keeps its existing scroll-reveal system untouched.
+    var comic = document.querySelector('.comicPanel');
+    var center = document.querySelector('.tlCenter');
+    var robo = document.querySelector('.roboPanel');
+    if (!reduced && comic && center && robo) {
+      gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .from(center, { opacity: 0, scale: 0.75, duration: 0.7, ease: 'back.out(1.5)' }, 0.1)
+        .from(comic, { opacity: 0, x: -50, duration: 0.6 }, 0.35)
+        .from(robo, { opacity: 0, x: 50, duration: 0.6 }, 0.35)
+        .from('.comicPanel .tlItem, .roboPanel .tlItem', { opacity: 0, y: 12, duration: 0.4, stagger: 0.08 }, 0.6);
+    }
+
+    // Premium magnetic-lift hover on the primary conversion buttons only -
+    // boldness spent in one place, not on every button site-wide.
+    if (!reduced) {
+      document.querySelectorAll('.ctaMagnetic').forEach(function (btn) {
+        var yTo = gsap.quickTo(btn, 'y', { duration: 0.3, ease: 'power3.out' });
+        var sTo = gsap.quickTo(btn, 'scale', { duration: 0.3, ease: 'power3.out' });
+        btn.addEventListener('mouseenter', function () { yTo(-4); sTo(1.04); });
+        btn.addEventListener('mouseleave', function () { yTo(0); sTo(1); });
+      });
+    }
+
+    // The trophy is the emotional payoff of the page - gets a deliberate
+    // scale+glow reveal instead of the generic fade the rest of the page uses.
+    var trophyImg = document.querySelector('.trophyGlowImg');
+    if (trophyImg) {
+      gsap.from(trophyImg, {
+        opacity: 0, scale: 0.8, duration: reduced ? 0.01 : 1, ease: 'back.out(1.3)',
+        scrollTrigger: { trigger: trophyImg, start: 'top 85%', toggleActions: 'play none none none' }
+      });
+    }
+  } catch (err) {
+    console.error('Animation setup failed (page remains fully usable):', err);
+  }
+})();
 </script>
 <script src="assets/wolf-chat.js" defer></script>
 </body>
