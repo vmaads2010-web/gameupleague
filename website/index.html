@@ -428,6 +428,23 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 @media (prefers-reduced-motion: no-preference){.offerCountdown.urgent .cdBox{animation:countdownPulse 1s ease-in-out infinite}}
 @keyframes countdownPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.07);box-shadow:0 0 12px 1px rgba(255,255,255,.35)}}
 @media(max-width:600px){.offerCountdown .cdBox{min-width:26px;padding:2px 5px 1px}.offerCountdown .cdBox b{font-size:14px}.offerCountdown .cdLabel{display:none}}
+/* ===== Broadcast layer: feathered hero logo, stadium light sweep, slanted type accents, match-centre ticker ===== */
+.shineLogo video,.shineLogo img{-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 66%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 66%,transparent 100%)}
+#timeline{overflow:hidden}
+#timeline:after{content:"";position:absolute;top:-20%;bottom:-20%;left:-45%;width:32%;pointer-events:none;z-index:0;background:linear-gradient(100deg,transparent,rgba(255,201,60,.11),transparent);transform:skewX(-18deg);opacity:0}
+.eyebrow{clip-path:polygon(0 0,100% 0,calc(100% - 9px) 100%,0 100%);padding-right:20px}
+.section-head h2:after{content:"";display:block;width:84px;height:6px;margin-top:10px;background:linear-gradient(90deg,var(--gold),var(--glow2));transform:skewX(-25deg)}
+.ticker{position:relative;z-index:2;overflow:hidden;background:var(--gold);color:#2a1206;border-block:3px solid #1a0a0c;transform:skewY(-1deg);margin:18px 0 6px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.tickerTrack{display:flex;width:max-content;font-family:var(--font-stat);font-weight:700;font-style:italic;text-transform:uppercase;letter-spacing:1px;font-size:clamp(15px,2.2vw,20px)}
+.tickerTrack span{padding:9px 26px;white-space:nowrap}
+.tickerTrack span:nth-child(even){color:#8b1a22}
+@media (prefers-reduced-motion: no-preference){
+  #timeline:after{animation:lightSweep 8s ease-in-out 1.2s infinite}
+  .tickerTrack{animation:tickerRun 28s linear infinite}
+  .ticker:hover .tickerTrack{animation-play-state:paused}
+}
+@keyframes lightSweep{0%{left:-45%;opacity:0}15%,85%{opacity:1}100%{left:130%;opacity:0}}
+@keyframes tickerRun{to{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
@@ -507,6 +524,11 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
   </div>
  </div>
 </section>
+
+<div class="ticker" aria-hidden="true"><div class="tickerTrack">
+ <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
+ <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
+</div></div>
 
 <section class="section seasonSection" id="season2">
  <div class="container">
@@ -1318,6 +1340,19 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
         btn.addEventListener('mouseenter', function () { yTo(-4); sTo(1.04); });
         btn.addEventListener('mouseleave', function () { yTo(0); sTo(1); });
       });
+    }
+
+    // Broadcast section headers: eyebrow slams in, headline wipes open left to right.
+    // Hero logo drifts up slightly as you scroll away for a parallax feel.
+    if (!reduced) {
+      document.querySelectorAll('.section-head').forEach(function (head) {
+        var eb = head.querySelector('.eyebrow');
+        var h2 = head.querySelector('h2');
+        var st = { trigger: head, start: 'top 88%', toggleActions: 'play none none none' };
+        if (eb) gsap.from(eb, { x: -40, opacity: 0, duration: 0.5, ease: 'power3.out', scrollTrigger: st });
+        if (h2) gsap.from(h2, { clipPath: 'inset(0 100% 0 0)', x: -24, duration: 0.8, delay: 0.1, ease: 'power4.out', scrollTrigger: st, clearProps: 'clipPath' });
+      });
+      if (center) gsap.to(center, { y: -50, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
     }
 
     // The trophy is the emotional payoff of the page - gets a deliberate
