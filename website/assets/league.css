@@ -186,3 +186,14 @@ main .section-head h2{font-size:clamp(40px,11.5vw,108px);line-height:.9;letter-s
 @media (prefers-reduced-motion: reduce){
   .roll>span,.reelRow,.reelPreview{transition:none}
 }
+
+/* Hero is three official lines now; on wide screens the copy, buttons and numbers sit beside the headline */
+.koTitle{font-size:min(24vw,30vh)}
+.koBoard:empty{display:none}
+@media (min-width:1000px) and (min-height:560px){
+  .koInner{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);grid-template-areas:'top top' 'title side';column-gap:40px;align-items:end}
+  .koTop{grid-area:top}
+  .koTitle{grid-area:title;font-size:min(15vw,28vh);margin:0}
+  .koSide{grid-area:side;padding-bottom:.6em}
+  .koBoard{grid-template-columns:repeat(2,1fr);margin-top:24px}
+}

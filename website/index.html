@@ -524,26 +524,24 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 
 <div class="wipe" aria-hidden="true"></div>
 <main id="home">
-<section class="kickoff" id="kickoff" aria-label="The Game Up League, Reloaded 2026 to 2027">
+<section class="kickoff" id="kickoff" aria-label="The Game Up League">
  <div class="koBeams" aria-hidden="true"><i></i><i></i><i></i></div>
  <div class="koSlash" aria-hidden="true"></div>
  <div class="koSpot" aria-hidden="true"></div>
  <div class="container koInner">
-  <div class="koTop"><p class="koKicker">Season 02 — Reloaded 2026–27</p><span class="koCue" aria-hidden="true">Scroll ↓</span></div>
-  <h1 class="koTitle" aria-label="Compete. Game up.">
-   <span class="koLine" aria-hidden="true"><span>Compete.</span></span>
-   <span class="koLine koOutline" aria-hidden="true"><span>Game up.</span></span>
+  <div class="koTop"><p class="koKicker" id="koKicker">⚽ Football • Community • Competition</p><span class="koCue" aria-hidden="true">Scroll ↓</span></div>
+  <h1 class="koTitle" id="koTitle" aria-label="Play. Compete. Game up.">
+   <span class="koLine" aria-hidden="true"><span id="koL1">PLAY.</span></span>
+   <span class="koLine" aria-hidden="true"><span id="koL2">COMPETE.</span></span>
+   <span class="koLine koOutline" aria-hidden="true"><span id="koL3">GAME UP.</span></span>
   </h1>
-  <p class="koSub">5-a-side football with a twist. 20-minute matches. One league that plays like a broadcast.</p>
-  <div class="koActions">
-   <a class="btn gold ctaMagnetic" href="register.html">Register as a player →</a>
-   <a class="btn outline ctaMagnetic" href="register-team.html">Register your team</a>
-  </div>
-  <div class="koBoard" role="list">
-   <div role="listitem"><b>Format</b><span>5-a-side</span></div>
-   <div role="listitem"><b>Match</b><span>20 min</span></div>
-   <div role="listitem"><b>Early bird</b><span>₹1,600</span></div>
-   <div role="listitem"><b>Registration</b><span>1–7 Nov</span></div>
+  <div class="koSide">
+   <p class="koSub" id="koSub">A football-first community built for players, teams and unforgettable matchday experiences. RELOADED is on its way.</p>
+   <div class="koActions">
+    <a class="btn gold ctaMagnetic" href="register.html">Register as a player →</a>
+    <a class="btn outline ctaMagnetic" href="register-team.html">Register your team</a>
+   </div>
+   <div class="koBoard" id="koBoard" role="list"></div>
   </div>
  </div>
 </section>
@@ -590,10 +588,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  </div>
 </section>
 
-<div class="ticker" aria-hidden="true"><div class="tickerTrack">
- <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
- <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
-</div></div>
+<div class="ticker" aria-hidden="true"><div class="tickerTrack" id="koTicker"><span>The Game Up League</span><span>Reloaded</span><span>The Game Up League</span><span>Reloaded</span></div></div>
 
 <section class="section flat" id="reels">
  <div class="container">
@@ -610,7 +605,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  <div class="jhead"><span>The journey</span><span>Swipe or scroll →</span></div>
  <div class="jtrack">
   <article class="jpanel jdone"><span class="jnum">25–26</span><div class="jmeta"><b>Football Reimagined</b><span>Season 01 · Done</span><a class="btn outline" href="#season1">Relive it</a></div></article>
-  <article class="jpanel jnow"><span class="jnum">26–27</span><div class="jmeta"><b>Reloaded</b><span>Next up · Registration open</span><a class="btn gold" href="register.html">Register →</a></div></article>
+  <article class="jpanel jnow"><span class="jnum">26–27</span><div class="jmeta"><b>Reloaded</b><span id="jReg">Next up</span><a class="btn gold" href="register.html">Register →</a></div></article>
   <article class="jpanel jlate"><span class="jnum">27–28</span><div class="jmeta"><b>No Mercy</b><span>Coming soon</span></div></article>
   <article class="jpanel jlate"><span class="jnum">28–29</span><div class="jmeta"><b>Unleashed</b><span>Coming soon</span></div></article>
   <article class="jpanel jlate"><span class="jnum">29–30</span><div class="jmeta"><b>Warzone</b><span>Coming soon</span></div></article>
@@ -1133,6 +1128,36 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
       set('offerSaveBadge', 'Save ₹' + (regularOffer.price - offer.price).toLocaleString('en-IN'));
     } else {
       document.getElementById('offerOldPrice').style.display = 'none';
+    }
+    // Kickoff hero, scoreboard and ticker: every word and number comes from content.json,
+    // the same file the rest of this page reads, so nothing here can drift from the live data.
+    const esc = x => String(x).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    set('koKicker', c.hero.kicker);
+    set('koL1', c.hero.titleLine1); set('koL2', c.hero.titleLine2); set('koL3', c.hero.titleLine3);
+    set('koSub', c.hero.description);
+    const koT = document.getElementById('koTitle');
+    if (koT) koT.setAttribute('aria-label', [c.hero.titleLine1, c.hero.titleLine2, c.hero.titleLine3].join(' '));
+    set('jReg', c.season2.registrationWindow);
+    const koBoard = document.getElementById('koBoard');
+    if (koBoard) {
+      const num = x => { const m = String(x || '').match(/\d+/); return m ? m[0] : ''; };
+      koBoard.innerHTML = [
+        ['Teams', num(c.season2.teamCountTitle)],
+        ['Per team', num(c.season2.playersPerTeamTitle)],
+        ['Match days', String(c.season2.pillMatchDays || '').replace(/^match days:\s*/i, '')],
+        [offer.label, '₹' + offer.price.toLocaleString('en-IN')]
+      ].filter(x => x[1]).map(x => '<div role="listitem"><b>' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></div>').join('');
+    }
+    const koTicker = document.getElementById('koTicker');
+    if (koTicker) {
+      const items = [
+        offer.label + ' registration · ₹' + offer.price.toLocaleString('en-IN') + ' / player' + (offer.window ? ' · ' + offer.window : ''),
+        c.season2.registrationWindow,
+        c.season2.pillDates && 'League ' + c.season2.pillDates,
+        c.season2.pillTrials,
+        c.season2.pillAuction
+      ].filter(Boolean).map(t => '<span>' + esc(t) + '</span>').join('');
+      koTicker.innerHTML = items + items;
     }
     set('offerNote', (offer.window ? 'Valid ' + offer.window : '') + (offer.note ? ' — ' + offer.note : ''));
 
