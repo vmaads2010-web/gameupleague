@@ -64,13 +64,13 @@ input,select,textarea{border-radius:4px;background:#0f0607}
 input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 2px 0 0 var(--gold)}
 
 /* Slanted section bands on the homepage so the page reads as stacked broadcast graphics */
-main>.section:nth-of-type(even){
+main>.section:nth-of-type(even):not(.flat){
   background:rgba(0,0,0,.26);
   clip-path:polygon(0 26px,100% 0,100% calc(100% - 26px),0 100%);
   margin-block:-26px;padding-block:calc(72px + 26px);
 }
 @media (max-width:760px){
-  main>.section:nth-of-type(even){clip-path:polygon(0 14px,100% 0,100% calc(100% - 14px),0 100%);margin-block:-14px;padding-block:calc(52px + 14px)}
+  main>.section:nth-of-type(even):not(.flat){clip-path:polygon(0 14px,100% 0,100% calc(100% - 14px),0 100%);margin-block:-14px;padding-block:calc(52px + 14px)}
   .card{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
 }
 
@@ -87,4 +87,102 @@ main>.section:nth-of-type(even){
 @media (prefers-reduced-motion: reduce){
   .wipeArrive{display:none}
   .btn.gold:after,form button:after{display:none}
+}
+
+/* ===== Revised direction: monumental type, mono microtype, text roll, reels, journey =====
+   Written mobile first; larger screens refine it. */
+:root{--font-mono:ui-monospace,'SF Mono','Cascadia Mono',Menlo,Consolas,monospace}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+main{overflow-x:clip}
+
+/* Text roll */
+.roll{display:inline-flex;flex-direction:column;overflow:hidden;height:1.25em;line-height:1.25;vertical-align:bottom;text-align:inherit}
+.roll>span{display:block;white-space:nowrap;transition:transform .5s cubic-bezier(.7,0,.2,1)}
+@media (hover:hover){a:hover>.roll>span{transform:translateY(-100%)}}
+a:focus-visible>.roll>span{transform:translateY(-100%)}
+
+/* Hero: the headline is the stage */
+.kickoff{min-height:calc(100svh - 118px);padding:16px 0 28px;align-items:flex-end}
+.koBeams{opacity:.55}
+.koInner{display:flex;flex-direction:column;width:min(1160px,92%)}
+.koTop{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:6vh}
+.koKicker,.koCue{font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:1.5px;text-transform:uppercase;color:#e8d9c8;margin:0}
+.koKicker{color:var(--gold)}
+.koTitle{font-size:min(26.5vw,336px);line-height:.82;letter-spacing:-.045em;margin:0 0 20px}
+.koLine{padding-right:.14em;white-space:nowrap}
+.koOutline>span{-webkit-text-stroke:1.5px var(--gold)}
+.koSub{font-size:16px;margin-bottom:20px}
+.koActions{flex-direction:column;gap:10px}
+.koActions .btn{width:100%;justify-content:center;min-height:52px}
+.koBoard{max-width:none;margin-top:28px}
+.koBoard b,.koBoard span{letter-spacing:.5px}
+.koBoard b{font-family:var(--font-mono);font-weight:400}
+
+/* Section headlines go big, with masked word reveals */
+main .section-head h2{font-size:clamp(40px,11.5vw,108px);line-height:.9;letter-spacing:-.03em}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .12em .06em 0;margin-right:-.12em}
+.wi{display:inline-block}
+.eyebrow{font-family:var(--font-mono);font-weight:400;font-size:11px;letter-spacing:1.5px}
+
+/* Reels: portrait cards on touch */
+.reelList{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -4vw;padding:0 4vw 10px;scrollbar-width:none}
+.reelList::-webkit-scrollbar{display:none}
+.reelRow{position:relative;flex:0 0 min(72vw,330px);aspect-ratio:9/16;scroll-snap-align:center;background:#1a0a0c;overflow:hidden;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);box-shadow:inset 0 0 0 1px rgba(255,201,60,.16)}
+.reelMedia,.reelMedia video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.reelNum{position:absolute;top:12px;left:14px;z-index:1;font-family:var(--font-mono);font-size:11px;letter-spacing:2px;color:var(--gold);text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.reelTitle{position:absolute;left:0;right:0;bottom:40px;z-index:1;padding:8px 14px;background:rgba(18,7,8,.88);font-family:var(--font-display);font-style:italic;text-transform:uppercase;font-size:clamp(30px,9vw,46px);line-height:.95}
+.reelMeta{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:10px 14px;background:var(--gold);color:#2a1206;font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.reelPreview{position:fixed;left:0;top:0;z-index:900;width:200px;aspect-ratio:9/16;pointer-events:none;background:var(--gold);padding:3px;opacity:0;scale:.8;transition:opacity .25s,scale .35s cubic-bezier(.2,.7,.3,1);clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%)}
+.reelPreview.on{opacity:1;scale:1}
+.reelPreview video{width:100%;height:100%;object-fit:cover;display:block;background:#120708}
+
+/* Journey: native swipe row by default; pinned and driven by scroll when JS and motion are available */
+.journey{position:relative;background:#0c0405;overflow:hidden}
+.jhead{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;justify-content:space-between;padding:18px 4vw;font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#e8d9c8}
+.jtrack{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:100svh;min-height:520px}
+.jtrack::-webkit-scrollbar{display:none}
+.jpanel{flex:0 0 100%;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:72px 4vw 9vh}
+.jnum{font-family:var(--font-display);font-style:italic;font-size:clamp(96px,31vw,430px);line-height:.82;letter-spacing:-.04em;color:#f7f1e8;white-space:nowrap}
+.jnow .jnum{color:var(--gold)}
+.jdone .jnum{color:transparent;-webkit-text-stroke:2px var(--gold)}
+.jlate .jnum{color:transparent;-webkit-text-stroke:2px rgba(255,201,60,.4)}
+.jmeta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:22px}
+.jmeta b{font-family:var(--font-display);font-style:italic;font-weight:400;text-transform:uppercase;font-size:clamp(26px,5vw,48px)}
+.jmeta span{font-family:var(--font-mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#e8d9c8}
+.jbar{position:absolute;left:4vw;right:4vw;bottom:3vh;height:3px;background:rgba(255,255,255,.14);z-index:2}
+.jbar i{display:block;height:100%;background:var(--gold);transform-origin:0 50%;transform:scaleX(.2)}
+.journey.pinned .jtrack{overflow:visible;scroll-snap-type:none;width:max-content}
+.journey.pinned .jpanel{flex:0 0 100vw}
+
+/* Foil sheen on tilting cards */
+.tiltable{transition:rotate .2s ease-out,scale .2s ease-out,transform .3s cubic-bezier(.2,.7,.3,1),border-color .3s}
+.holo{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;mix-blend-mode:overlay;background:radial-gradient(circle at var(--hx,50%) var(--hy,50%),rgba(255,255,255,.4),transparent 45%),linear-gradient(115deg,transparent 30%,rgba(255,201,60,.28) 46%,rgba(255,106,61,.16) 56%,transparent 70%)}
+.tiltable:hover>.holo{opacity:1}
+
+/* Larger screens */
+@media (min-width:700px){
+  .koActions{flex-direction:row}
+  .koActions .btn{width:auto;min-height:48px}
+  .koOutline>span{-webkit-text-stroke-width:2px}
+  .koSub{font-size:18px}
+  .koBoard{max-width:760px}
+  .jhead{padding:24px 4vw}
+}
+@media (hover:hover) and (pointer:fine) and (min-width:900px){
+  .reelList{display:block;overflow:visible;margin:0;padding:0}
+  .reelRow{display:flex;align-items:baseline;justify-content:space-between;gap:24px;aspect-ratio:auto;flex:none;background:transparent;clip-path:none;box-shadow:none;border-top:1px solid rgba(255,255,255,.14);padding:18px 0;transition:opacity .3s,padding .4s cubic-bezier(.7,0,.2,1)}
+  .reelRow:last-child{border-bottom:1px solid rgba(255,255,255,.14)}
+  .reelMedia{display:none}
+  .reelNum,.reelTitle,.reelMeta{position:static;background:none;padding:0;text-shadow:none}
+  .reelNum{color:#e8d9c8;width:48px}
+  .reelTitle{flex:1;font-size:clamp(56px,10vw,150px);line-height:.9;color:#f7f1e8}
+  .reelMeta{color:#e8d9c8;font-size:12px}
+  .reelList:hover .reelRow:not(:hover){opacity:.3}
+  .reelRow:hover{padding-left:24px}
+  .reelRow:hover .reelTitle{color:var(--gold)}
+}
+@media (prefers-reduced-motion: reduce){
+  .roll>span,.reelRow,.reelPreview{transition:none}
 }

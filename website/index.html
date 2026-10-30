@@ -529,7 +529,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  <div class="koSlash" aria-hidden="true"></div>
  <div class="koSpot" aria-hidden="true"></div>
  <div class="container koInner">
-  <p class="koKicker">Season 02 · Reloaded 2026–27</p>
+  <div class="koTop"><p class="koKicker">Season 02 — Reloaded 2026–27</p><span class="koCue" aria-hidden="true">Scroll ↓</span></div>
   <h1 class="koTitle" aria-label="Compete. Game up.">
    <span class="koLine" aria-hidden="true"><span>Compete.</span></span>
    <span class="koLine koOutline" aria-hidden="true"><span>Game up.</span></span>
@@ -594,6 +594,29 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
  <span>Early bird open · ₹1,600 / player</span><span>Registration 1–7 Nov 2026</span><span>Reloaded 2026–27</span><span>5-a-side · 20 min matches</span><span>Compete. Game up.</span>
 </div></div>
+
+<section class="section flat" id="reels">
+ <div class="container">
+  <div class="section-head reveal"><div><div class="eyebrow">Season 02 · Reels</div><h2>Watch the Game Up</h2></div></div>
+  <div class="reelList" id="reelList">
+   <div class="reelRow" data-src="assets/season2-video-hero.mp4"><div class="reelMedia"><video data-src="assets/season2-video-hero.mp4" muted loop playsinline preload="none" poster="assets/season2-mascot.jpg" aria-label="Season 2 Reloaded hero reel"></video></div><span class="reelNum">01</span><span class="reelTitle">Reloaded</span><span class="reelMeta">Season 02 · Hero reel</span></div>
+   <div class="reelRow" data-src="assets/season2-video-goal.mp4"><div class="reelMedia"><video data-src="assets/season2-video-goal.mp4" muted loop playsinline preload="none" aria-label="Season 2 goal reel"></video></div><span class="reelNum">02</span><span class="reelTitle">The goal</span><span class="reelMeta">Season 02 · Goal reel</span></div>
+   <div class="reelRow" data-src="assets/season2-video-teaser.mp4"><div class="reelMedia"><video data-src="assets/season2-video-teaser.mp4" muted loop playsinline preload="none" aria-label="Season 2 teaser reel"></video></div><span class="reelNum">03</span><span class="reelTitle">The teaser</span><span class="reelMeta">Season 02 · Teaser</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="journey" id="journey" aria-label="The league journey">
+ <div class="jhead"><span>The journey</span><span>Swipe or scroll →</span></div>
+ <div class="jtrack">
+  <article class="jpanel jdone"><span class="jnum">25–26</span><div class="jmeta"><b>Football Reimagined</b><span>Season 01 · Done</span><a class="btn outline" href="#season1">Relive it</a></div></article>
+  <article class="jpanel jnow"><span class="jnum">26–27</span><div class="jmeta"><b>Reloaded</b><span>Next up · Registration open</span><a class="btn gold" href="register.html">Register →</a></div></article>
+  <article class="jpanel jlate"><span class="jnum">27–28</span><div class="jmeta"><b>No Mercy</b><span>Coming soon</span></div></article>
+  <article class="jpanel jlate"><span class="jnum">28–29</span><div class="jmeta"><b>Unleashed</b><span>Coming soon</span></div></article>
+  <article class="jpanel jlate"><span class="jnum">29–30</span><div class="jmeta"><b>Warzone</b><span>Coming soon</span></div></article>
+ </div>
+ <div class="jbar" aria-hidden="true"><i></i></div>
+</section>
 
 <section class="section seasonSection" id="season2">
  <div class="container">
@@ -1372,6 +1395,7 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (function () {
   // Pure progressive enhancement: if the CDN is blocked or fails to load,
@@ -1415,7 +1439,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
         var h2 = head.querySelector('h2');
         var st = { trigger: head, start: 'top 88%', toggleActions: 'play none none none' };
         if (eb) gsap.from(eb, { x: -40, opacity: 0, duration: 0.5, ease: 'power3.out', scrollTrigger: st });
-        if (h2) gsap.from(h2, { clipPath: 'inset(0 100% 0 0)', x: -24, duration: 0.8, delay: 0.1, ease: 'power4.out', scrollTrigger: st, clearProps: 'clipPath' });
       });
       if (center) gsap.fromTo(center, { y: 30 }, { y: -30, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top bottom', end: 'bottom top', scrub: true } });
     }
@@ -1480,5 +1503,6 @@ fetch('content.json?v=' + Date.now(), { cache: 'no-store' })
 })();
 </script>
 <script src="assets/wolf-chat.js" defer></script>
+<script src="assets/league.js" defer></script>
 </body>
 </html>
