@@ -247,3 +247,66 @@ html.lenis,html.lenis body{height:auto}
 /* Registration pages: squared boxes everywhere inside the form card */
 .reg :where(div,section,label,span,a,details,summary,input,select,textarea,button):not(.leaderAvatar){border-radius:0!important}
 .reg .offerBadge{letter-spacing:.12em}
+
+/* =====================================================================
+   UPGRADE: cinematic hub, richer photo sections, premium registration
+   ===================================================================== */
+
+/* ---------- Hub: stadium light cones, pointer spotlight, bigger season names ---------- */
+#timeline{position:relative;isolation:isolate;overflow:hidden}
+#timeline:before{content:"";position:absolute;left:50%;top:-12%;width:min(1400px,170%);height:125%;translate:-50% 0;z-index:-1;pointer-events:none;
+  background:conic-gradient(from 180deg at 50% 0%,transparent 38%,rgba(255,201,60,.13) 44%,transparent 50%,transparent 55%,rgba(255,236,190,.09) 61%,transparent 67%,transparent 72%,rgba(255,201,60,.08) 77%,transparent 83%);
+  -webkit-mask-image:linear-gradient(#000 0,transparent 78%);mask-image:linear-gradient(#000 0,transparent 78%);transform-origin:50% 0}
+#timeline:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(520px circle at var(--mx,50%) var(--my,35%),rgba(255,201,60,.10),transparent 70%)}
+@media (prefers-reduced-motion: no-preference){#timeline:before{animation:coneSway 14s ease-in-out infinite alternate}}
+@keyframes coneSway{from{rotate:-2.5deg}to{rotate:2.5deg}}
+.tlName{font-size:clamp(28px,3.6vw,48px)}
+.tlCenter .shineLogo{translate:calc(var(--px,0) * 16px) calc(var(--py,0) * 10px);transition:translate .35s var(--ease)}
+.tlYear{font-size:16px}
+
+/* ---------- About: statements, not cards ---------- */
+#about .card h3{font-family:var(--font-stat);font-style:normal;font-weight:600;font-size:13px;letter-spacing:.2em;color:var(--gold);margin-bottom:16px}
+#about .card p{font-size:clamp(20px,2.6vw,28px);line-height:1.4;color:var(--ink);max-width:22ch}
+
+/* ---------- Trophy: spotlight and a slow float ---------- */
+.trophyGlowWrap:before{width:min(150%,820px);background:radial-gradient(circle,rgba(255,201,60,.28),rgba(200,32,44,.10) 45%,transparent 70%)}
+@media (prefers-reduced-motion: no-preference){.trophyGlowImg{animation:trophyFloat 7s ease-in-out infinite alternate}}
+@keyframes trophyFloat{from{translate:0 -8px}to{translate:0 8px}}
+
+/* ---------- Photos: tilt, sheen, hover polish ---------- */
+.tiltable{transition:rotate .2s ease-out,scale .2s ease-out}
+.holo{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;mix-blend-mode:overlay;z-index:2;background:radial-gradient(circle at var(--hx,50%) var(--hy,50%),rgba(255,255,255,.38),transparent 45%),linear-gradient(115deg,transparent 30%,rgba(255,201,60,.26) 46%,rgba(255,106,61,.14) 56%,transparent 70%)}
+.tiltable:hover>.holo{opacity:1}
+.leaderAvatar{transition:box-shadow .3s,translate .3s var(--ease)}
+.leaderCard:hover .leaderAvatar{box-shadow:0 0 0 3px var(--night),0 0 0 5px var(--gold);translate:0 -4px}
+.squadCard img,.momentChip img{transition:transform .6s var(--ease),filter .4s}
+.squadCard:hover img{transform:scale(1.05)}
+#gallery .reveal{overflow:hidden}
+@media (min-width:900px){
+  .championsGrid{gap:24px}
+  .flipCard{transition:translate .35s var(--ease)}
+  .flipCard:hover{translate:0 -8px}
+}
+
+/* ---------- Registration: two-column on desktop, bigger controls everywhere ---------- */
+.reg h1{font-size:clamp(52px,12vw,128px);line-height:.9;letter-spacing:-.02em;margin:28px 0 8px}
+.reg .wrap>.container>.sub:first-of-type,.regSide>.sub{font-family:var(--font-stat);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 28px}
+.reg .offerBox,.reg .feeBox{background:var(--surface);border:0;border-top:3px solid var(--gold);border-radius:0;box-shadow:none;padding:clamp(20px,3vw,32px)}
+.reg .offerBox .price{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(56px,10vw,92px);line-height:1;color:var(--gold)}
+.reg .offerBox .price small{font-family:var(--font-stat);font-size:15px;font-style:normal;letter-spacing:.14em;color:var(--muted)}
+.reg .notice{background:none;border:1px solid var(--line);border-radius:0;color:var(--muted)}
+.reg .sectionTitle{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(24px,4vw,34px);letter-spacing:0;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--line);padding-top:26px;margin:44px 0 20px}
+.reg .sectionTitle:first-child{border-top:0;margin-top:0;padding-top:0}
+.reg label{font-size:14px;color:var(--muted)}
+.reg input:not([type=checkbox]):not([type=radio]),.reg select,.reg textarea{min-height:54px;font-size:16px;padding:12px 16px;border:1px solid var(--line);border-radius:0;background:#0f0607;color:var(--ink)}
+.reg textarea{min-height:110px}
+.reg .checkRow,.reg .radioRow{border-radius:0;border:1px solid var(--line);background:none;min-height:54px}
+.reg .payBox{background:var(--surface);border:1px solid var(--line);border-radius:0}
+.reg form button{min-height:58px;font-size:17px}
+.regSide>*{max-width:none}
+@media (min-width:1000px){
+  .reg .wrap>.container{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:72px;align-items:start}
+  .regSide{position:sticky;top:96px;grid-column:1;grid-row:1 / span 3}
+  .reg .wrap>.container>.card{grid-column:2;grid-row:1}
+  .reg .wrap>.container>.sub:not(.regSide *),.reg .wrap>.container>.back{grid-column:2}
+}

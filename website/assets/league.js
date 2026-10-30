@@ -75,9 +75,20 @@
     });
 
     // Big photographs ease in as they arrive: a quick curtain, then a slow settle.
-    d.querySelectorAll('#gallery img,.trophyGlowImg').forEach(function (img) {
+    d.querySelectorAll('.trophyGlowImg').forEach(function (img) {
       gsap.from(img, { clipPath: 'inset(0 0 100% 0)', scale: 1.08, duration: 1.2, ease: 'power3.out',
         scrollTrigger: { trigger: img, start: 'top 88%', toggleActions: 'play none none none' }, clearProps: 'clipPath,scale' });
+    });
+    d.querySelectorAll('#gallery img').forEach(function (img) {
+      gsap.from(img, { clipPath: 'inset(0 0 100% 0)', duration: 1.2, ease: 'power3.out',
+        scrollTrigger: { trigger: img, start: 'top 88%', toggleActions: 'play none none none' }, clearProps: 'clipPath' });
+      gsap.fromTo(img, { scale: 1.14 }, { scale: 1, ease: 'none',
+        scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    // Headlines drift a little as you scroll past them.
+    d.querySelectorAll('main .section-head h2').forEach(function (h2) {
+      gsap.fromTo(h2, { x: -18 }, { x: 18, ease: 'none',
+        scrollTrigger: { trigger: h2, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
   }
 
@@ -97,6 +108,70 @@
         gsap.to(wipe, { clipPath: cover, duration: 0.55, ease: 'power3.inOut', onComplete: function () { window.location.href = a.href; } });
       });
     });
+  }
+
+  // 6. Hub: the logo and a gold spotlight follow the pointer (desktop only).
+  var hub = d.getElementById('timeline');
+  if (hub && hoverFine && !reduced) {
+    var hubRaf = 0;
+    hub.addEventListener('pointermove', function (e) {
+      if (hubRaf) return;
+      hubRaf = requestAnimationFrame(function () {
+        var r = hub.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
+        hub.style.setProperty('--px', ((nx - 0.5) * 2).toFixed(3));
+        hub.style.setProperty('--py', ((ny - 0.5) * 2).toFixed(3));
+        hub.style.setProperty('--mx', (nx * 100).toFixed(1) + '%');
+        hub.style.setProperty('--my', (ny * 100).toFixed(1) + '%');
+        hubRaf = 0;
+      });
+    }, { passive: true });
+  }
+
+  // 7. Photo and roster cards tilt in 3D with a foil sheen (desktop only). Uses the individual
+  //    rotate/scale properties so existing transform animations keep working.
+  var TILT = '.championChip,.leaderCard';
+  if (hoverFine && !reduced) {
+    var cur = null;
+    var reset = function (el) { el.style.rotate = ''; el.style.scale = ''; };
+    d.addEventListener('pointermove', function (e) {
+      var el = e.target.closest ? e.target.closest(TILT) : null;
+      if (cur && cur !== el) reset(cur);
+      cur = el;
+      if (!el) return;
+      if (!el.classList.contains('tiltable')) {
+        el.classList.add('tiltable');
+        if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+        if (el.parentElement) el.parentElement.style.perspective = '900px';
+        var h = d.createElement('span');
+        h.className = 'holo'; h.setAttribute('aria-hidden', 'true');
+        el.appendChild(h);
+      }
+      var r = el.getBoundingClientRect();
+      var nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      var ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+      var a = Math.min(1, Math.hypot(nx, ny)) * 8;
+      if (a > 0.05) el.style.rotate = (-ny).toFixed(3) + ' ' + nx.toFixed(3) + ' 0 ' + a.toFixed(2) + 'deg';
+      el.style.scale = '1.03';
+      el.style.setProperty('--hx', ((nx + 1) * 50).toFixed(1) + '%');
+      el.style.setProperty('--hy', ((ny + 1) * 50).toFixed(1) + '%');
+    }, { passive: true });
+    d.documentElement.addEventListener('mouseleave', function () { if (cur) reset(cur); cur = null; });
+  }
+
+  // 8. Registration pages: headline, price and notice move into a sticky side column on desktop.
+  var regC = d.querySelector('.reg .wrap > .container');
+  if (regC) {
+    var h1 = regC.querySelector('h1');
+    var box = regC.querySelector('.offerBox,.feeBox');
+    var notice = regC.querySelector('.notice');
+    if (h1 && box) {
+      var side = d.createElement('aside');
+      side.className = 'regSide';
+      regC.insertBefore(side, h1);
+      [h1, h1.nextElementSibling && h1.nextElementSibling.classList.contains('sub') ? h1.nextElementSibling : null, box, notice]
+        .forEach(function (el) { if (el) side.appendChild(el); });
+    }
   }
 
   if (hasGSAP) {
