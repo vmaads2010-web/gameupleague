@@ -111,17 +111,17 @@
     "_instructions": "photo is a filename inside website/assets/leadership/ (e.g. 'ansel.jpg'). Leave as null until Vishal provides photos - a placeholder with initials will show instead.",
     "_source": "Full names and confirmed roles from GUL's own typed WhatsApp message, 28 Oct 2026 - supersedes earlier first-names-only/unconfirmed list.",
     "members": [
-      { "role": "President", "name": "Ansel Arakal", "photo": null },
+      { "role": "President", "name": "Ansel Arakal", "photo": "ansel-arakal.jpg" },
       { "role": "Vice President", "name": "Abhay Arakal", "photo": "abhay-arakal.jpg" },
       { "role": "Chairperson", "name": "Vishal Mishra", "photo": "vishal-mishra.jpg" },
       { "role": "Treasurer", "name": "Anmol Arakal", "photo": "anmol-arakal.jpg" },
-      { "role": "Technical Director", "name": "Neil Lobo", "photo": null },
-      { "role": "League Commissioner", "name": "Snedden Dmello", "photo": null },
-      { "role": "Social Media", "name": "Harshal Kelaskar", "photo": null },
+      { "role": "Technical Director", "name": "Neil Lobo", "photo": "neil-lobo.jpg" },
+      { "role": "League Commissioner", "name": "Snedden Dmello", "photo": "snedden-dmello.jpg" },
+      { "role": "Social Media", "name": "Harshal Kelaskar", "photo": "harshal-kelaskar.jpg" },
       { "role": "Marketing and Public Relation", "name": "Sheryaans Gwade", "photo": "sheryaans-gwade.jpg" },
-      { "role": "League Marshal", "name": "Anslem Crasto", "photo": null },
+      { "role": "League Marshal", "name": "Anslem Crasto", "photo": "anslem-crasto.jpg" },
       { "role": "League Marshal", "name": "Clyde Devinaden", "photo": "clyde-devinaden.jpg" },
-      { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": null }
+      { "role": "League Co-ordinator", "name": "Ronnie Oberoi", "photo": "ronnie-oberoi.jpg" }
     ]
   },
 
