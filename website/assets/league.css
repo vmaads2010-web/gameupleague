@@ -362,3 +362,14 @@ html.lenis,html.lenis body{height:auto}
 @media (prefers-reduced-motion: no-preference){.trophyGlowWrap:after{animation:raysSpin 40s linear infinite}}
 @keyframes raysSpin{to{rotate:360deg}}
 @media (prefers-reduced-motion: reduce){.section.sec-in:before{animation:none;opacity:1;transform:scaleX(.12)}}
+
+/* Headline words fade and rise; they are never masked, so slanted letters are never cut off */
+.w{overflow:visible;padding:0;margin:0}
+
+/* Nothing may be cut off at any width: hub status labels sit under the name, and only the photo wrapper clips */
+.tlPanel,.comicPanel,.roboPanel{overflow:visible!important}
+.tlItem{display:grid!important;grid-template-columns:auto minmax(0,1fr);column-gap:16px;row-gap:8px;align-items:center}
+.tlItem .tlYear{grid-column:1;grid-row:1}
+.tlItem .tlName{grid-column:2;grid-row:1}
+.tlItem .tlStatus{grid-column:2;grid-row:2;justify-self:start;margin:0}
+#gallery .section-head.reveal,#gallery .sub.reveal{overflow:visible}

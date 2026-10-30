@@ -17,7 +17,7 @@
 
   // 2. Smooth, inertial scroll on desktop. Touch keeps the browser's own scrolling.
   var lenis = null;
-  if (!reduced && hasGSAP && window.Lenis && hoverFine) {
+  var startLenis = function () {
     lenis = new Lenis({ duration: 1.1, smoothWheel: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
@@ -30,6 +30,15 @@
       e.preventDefault();
       lenis.scrollTo(target, { offset: -70 });
     });
+  };
+  if (!reduced && hasGSAP && hoverFine) {
+    if (window.Lenis) startLenis();
+    else {
+      var ls = d.createElement('script');
+      ls.src = 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js';
+      ls.onload = startLenis;
+      d.head.appendChild(ls);
+    }
   }
 
   // 3. Text roll on links and buttons: the label slides up and a copy takes its place.
@@ -69,7 +78,7 @@
       });
       var words = h.querySelectorAll('.wi');
       if (words.length) {
-        gsap.from(words, { yPercent: 115, duration: 0.9, ease: 'power4.out', stagger: 0.07,
+        gsap.from(words, { yPercent: 45, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.06, clearProps: 'transform,opacity',
           scrollTrigger: { trigger: h, start: 'top 90%', toggleActions: 'play none none none' } });
       }
     });
@@ -82,7 +91,7 @@
     d.querySelectorAll('#gallery img').forEach(function (img) {
       gsap.from(img, { clipPath: 'inset(0 0 100% 0)', duration: 1.2, ease: 'power3.out',
         scrollTrigger: { trigger: img, start: 'top 88%', toggleActions: 'play none none none' }, clearProps: 'clipPath' });
-      gsap.fromTo(img, { scale: 1.14 }, { scale: 1, ease: 'none',
+      if (hoverFine) gsap.fromTo(img, { scale: 1.14 }, { scale: 1, ease: 'none',
         scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
     // Headlines drift a little as you scroll past them.
@@ -187,7 +196,7 @@
 
     // The hub logo drifts up and shrinks a touch as you scroll away from the first screen.
     var hubLogo = d.querySelector('.shineLogo');
-    if (hubLogo) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
+    if (hubLogo && hoverFine) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
 
     // Things the page draws itself (champions, cards, contact rows) arrive one after another.
     var staged = function (sel, from) {
@@ -210,7 +219,7 @@
 
       // The sponsor, award and player strips speed up when you scroll fast, then settle back.
       var tracks = d.querySelectorAll('.marqueeTrack');
-      if (tracks.length) {
+      if (tracks.length && hoverFine) {
         var rate = { v: 1 };
         var apply = function () {
           tracks.forEach(function (t) { t.getAnimations().forEach(function (a) { a.playbackRate = rate.v; }); });
@@ -232,7 +241,7 @@
   (function () {
     var conn = navigator.connection || {};
     var slow = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') || conn.effectiveType === '3g';
-    if (slow) return;
+    if (slow || !hoverFine) return;
     var queue = function (list) {
       var i = 0;
       (function next() {
