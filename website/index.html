@@ -19,10 +19,16 @@
 <meta name="twitter:title" content="The Game Up League — RELOADED">
 <meta name="twitter:description" content="Football leagues, teams, players, Game Up Turf and RELOADED. Register now.">
 <meta name="twitter:image" content="https://thegameupleague.com/assets/og-share.jpg">
-<link rel="icon" href="assets/gul-logo-hq.png">
+<link rel="icon" href="assets/favicon-64.png">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="image" href="assets/gul-logo-hq.webp" fetchpriority="high">
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap"></noscript>
 <style>
 :root{
   --navy:#1a0a0c; --navy2:#3d1216; --blue:#1459c7; --red:#e3262e;
@@ -450,7 +456,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  <div class="container navin">
   <a class="btn gold navRegister ctaMagnetic" href="register.html">Register</a>
   <div class="navCenter">
-   <a class="brand" href="#home"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"><span class="brandFull">THE GAME UP LEAGUE</span></a>
+   <a class="brand" href="#home"><img src="assets/gul-logo-nav.webp" width="40" height="40" alt="The Game Up League logo"><span class="brandFull">THE GAME UP LEAGUE</span></a>
   </div>
   <button class="hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
@@ -478,7 +484,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
    </div>
 
    <div class="tlCenter">
-    <a class="shineLogo" href="#season2" id="journeyLogoLink"><video autoplay loop muted playsinline poster="assets/gul-logo-hq.png" aria-label="The Game Up League logo" id="journeyLogoVideo"><source src="assets/gul-logo-anim.webm" type="video/webm"><img src="assets/gul-logo-hq.png" alt="The Game Up League logo"></video></a>
+    <a class="shineLogo" href="#season2" id="journeyLogoLink"><video loop muted playsinline preload="none" poster="assets/gul-logo-hq.webp" aria-label="The Game Up League logo" id="journeyLogoVideo"><source data-src="assets/gul-logo-anim.webm" type="video/webm"><img src="assets/gul-logo-hq.webp" alt="The Game Up League logo"></video></a>
     <script>
     (function(){
       // Safari/iOS does not composite WebM alpha transparency correctly (shows a solid box
@@ -490,7 +496,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
         var v = document.getElementById('journeyLogoVideo');
         if (v) {
           var img = document.createElement('img');
-          img.src = 'assets/gul-logo-hq.png';
+          img.src = 'assets/gul-logo-hq.webp';
           img.alt = 'The Game Up League logo';
           v.replaceWith(img);
         }
@@ -545,7 +551,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
      <summary>Read the full Rule Book</summary>
      <div class="ruleBookBody">
       <h4>1. Tournament Overview</h4>
-      <p>8 teams. All matches at Game Up Turf, Vasai (West). League runs ~8 weeks, matches every Sunday 5:00–9:00 PM. Each match is a 20-minute full game, all at a single venue.</p>
+      <p>9 teams. All matches at Game Up Turf, Vasai (West). League runs ~8 weeks, matches every Saturday 5:00–9:00 PM. Each match is a 20-minute full game, all at a single venue.</p>
 
       <h4>2. Match Reporting &amp; Walkover Rules</h4>
       <p>Teams must report at least 30 minutes before kick-off, match-ready with full kit. Late reporting results in a walkover.</p>
@@ -763,7 +769,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
  <div class="container">
   <div class="section-head reveal"><div><div class="eyebrow">What it's all for</div><h2>The Trophy We Play For</h2></div></div>
   <div class="reveal trophyGlowWrap">
-   <img src="assets/gul-trophy.jpg" alt="The Game Up League Champions Trophy" class="trophyGlowImg">
+   <img src="assets/gul-trophy.webp" alt="The Game Up League Champions Trophy" class="trophyGlowImg">
   </div>
  </div>
 </section>
@@ -908,7 +914,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 
 <footer class="footer">
  <div class="container footgrid">
-  <div><img class="footlogo" src="assets/gul-logo-hq.png" alt="The Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 The Game Up League. All rights reserved.</p></div>
+  <div><img class="footlogo" src="assets/gul-logo-hq.webp" alt="The Game Up League"><p>Play. Compete. Game Up.</p><p>© 2026 The Game Up League. All rights reserved.</p></div>
   <div><h3>Explore</h3><p><a href="#season2">RELOADED</a></p><p><a href="#season1">Football Reimagined</a></p><p><a href="#leadership">Leadership</a></p><p><a href="#gallery">Gallery</a></p><p><a href="#turf">Game Up Turf</a></p><p><a href="#about">About</a></p></div>
   <div><h3>Connect</h3><p><a href="#contact">Contact</a></p><p><a id="footerEmail" href="#"></a></p><p>Instagram: <a id="footerInstagram" href="#" target="_blank" rel="noopener"></a></p><p>YouTube: <a id="footerYoutube" href="#" target="_blank" rel="noopener"></a></p></div>
  </div>

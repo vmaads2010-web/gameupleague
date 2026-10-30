@@ -86,7 +86,7 @@
         scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
     // Headlines drift a little as you scroll past them.
-    d.querySelectorAll('main .section-head h2').forEach(function (h2) {
+    if (hoverFine) d.querySelectorAll('main .section-head h2').forEach(function (h2) {
       gsap.fromTo(h2, { x: -18 }, { x: 18, ease: 'none',
         scrollTrigger: { trigger: h2, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
@@ -173,6 +173,52 @@
         .forEach(function (el) { if (el) side.appendChild(el); });
     }
   }
+
+  // 9. Warm the images people are about to scroll to, plus the whole RELOADED section, in the
+  //    background once the page has settled. Skipped on data saver and slow connections, and for
+  //    the rarely opened Season 1 archive, so nobody pays for pictures they will not see.
+  d.querySelectorAll('img').forEach(function (img) { img.decoding = 'async'; });
+  (function () {
+    var conn = navigator.connection || {};
+    var slow = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') || conn.effectiveType === '3g';
+    if (slow) return;
+    var queue = function (list) {
+      var i = 0;
+      (function next() {
+        for (var n = 0; i < list.length && n < 4; n++) list[i++].loading = 'eager';
+        if (i < list.length) setTimeout(next, 200);
+      })();
+    };
+    var lazy = function () { return Array.prototype.filter.call(d.querySelectorAll('img[loading="lazy"]'), function (img) { return !img.closest('#season1'); }); };
+    // Stage 1: pictures on the homepage itself, once the page has finished loading and the browser is idle.
+    var warmHome = function () { queue(lazy().filter(function (img) { return !img.closest('#season2'); })); };
+    // Stage 2: the RELOADED posters, a few seconds later, so they are ready the moment someone opens it.
+    var warmReloaded = function () { queue(lazy().filter(function (img) { return img.closest('#season2'); })); };
+    var go = function () {
+      (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(warmHome, { timeout: 3000 });
+      setTimeout(warmHome, 4000);
+      setTimeout(warmReloaded, 5000);
+    };
+    if (d.readyState === 'complete') go(); else window.addEventListener('load', go);
+  })();
+
+  // 10. The logo animation starts after everything else has loaded; until then the sharp poster shows.
+  //     Not downloaded at all for reduced motion or data saver.
+  (function () {
+    var v = d.getElementById('journeyLogoVideo');
+    if (!v) return;
+    var conn = navigator.connection || {};
+    if (reduced || conn.saveData) return;
+    var start = function () {
+      var src = v.querySelector('source[data-src]');
+      if (!src) return;
+      src.src = src.getAttribute('data-src');
+      v.load();
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    };
+    if (d.readyState === 'complete') start(); else window.addEventListener('load', start);
+  })();
 
   if (hasGSAP) {
     ScrollTrigger.refresh();
