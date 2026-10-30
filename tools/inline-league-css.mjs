@@ -5,7 +5,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
+const here = new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+const root = path.resolve(path.dirname(here), '..');
 const cssPath = path.join(root, 'website', 'assets', 'league.css');
 const pages = ['index.html', 'register.html', 'register-team.html'].map(p => path.join(root, 'website', p));
 
@@ -16,18 +17,23 @@ if (css.includes('</style')) throw new Error('league.css must not contain a clos
 
 const START = '<!-- league-css:start -->';
 const END = '<!-- league-css:end -->';
-const block = `${START}\n<style id="league-css">\n${css}\n</style>\n${END}`;
 const LINK = '<link rel="stylesheet" href="assets/league.css">';
+const block = START + '\n<style id="league-css">\n' + css + '\n</style>\n' + END;
+const lastLine = css.split('\n').pop();
 
 for (const page of pages) {
-  let html = fs.readFileSync(page, 'utf8');
-  if (html.includes(START)) {
-    html = html.replace(new RegExp(`${START}[\s\S]*?${END}`), () => block);
+  const before = fs.readFileSync(page, 'utf8');
+  let html = before;
+  const i = html.indexOf(START);
+  const j = html.indexOf(END);
+  if (i >= 0 && j > i) {
+    html = html.slice(0, i) + block + html.slice(j + END.length);
   } else if (html.includes(LINK)) {
     html = html.replace(LINK, () => block);
   } else {
-    throw new Error(`${path.basename(page)}: no league-css markers or stylesheet link found`);
+    throw new Error(path.basename(page) + ': no league-css markers or stylesheet link found');
   }
+  if (!html.includes(lastLine)) throw new Error(path.basename(page) + ': the inlined CSS did not land');
   fs.writeFileSync(page, html);
-  console.log(`${path.basename(page)}: league.css inlined (${(css.length / 1024).toFixed(1)} KB)`);
+  console.log(path.basename(page) + ': ' + (html === before ? 'already up to date' : 'updated') + ' (' + (css.length / 1024).toFixed(1) + ' KB)');
 }

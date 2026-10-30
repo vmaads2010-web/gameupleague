@@ -91,7 +91,7 @@
     d.querySelectorAll('#gallery img').forEach(function (img) {
       gsap.from(img, { clipPath: 'inset(0 0 100% 0)', duration: 1.2, ease: 'power3.out',
         scrollTrigger: { trigger: img, start: 'top 88%', toggleActions: 'play none none none' }, clearProps: 'clipPath' });
-      if (hoverFine) gsap.fromTo(img, { scale: 1.14 }, { scale: 1, ease: 'none',
+      gsap.fromTo(img, { scale: 1.14 }, { scale: 1, ease: 'none',
         scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
     // Headlines drift a little as you scroll past them.
@@ -196,7 +196,7 @@
 
     // The hub logo drifts up and shrinks a touch as you scroll away from the first screen.
     var hubLogo = d.querySelector('.shineLogo');
-    if (hubLogo && hoverFine) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
+    if (hubLogo) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
 
     // Things the page draws itself (champions, cards, contact rows) arrive one after another.
     var staged = function (sel, from) {
@@ -217,21 +217,54 @@
       staged('.flipCard', { opacity: 0, y: 70, rotationY: -30, transformPerspective: 900 });
       staged('.contactRow', { opacity: 0, x: -30 });
 
-      // The sponsor, award and player strips speed up when you scroll fast, then settle back.
+      // The sponsor, award and player strips surge while you scroll and settle when you stop. Two cheap
+      // updates per scroll burst (start and stop), not one per frame, so phones stay smooth.
       var tracks = d.querySelectorAll('.marqueeTrack');
-      if (tracks.length && hoverFine) {
+      if (tracks.length) {
         var rate = { v: 1 };
         var apply = function () {
-          tracks.forEach(function (t) { t.getAnimations().forEach(function (a) { a.playbackRate = rate.v; }); });
+          tracks.forEach(function (t) { t.getAnimations().forEach(function (an) { an.playbackRate = rate.v; }); });
         };
-        ScrollTrigger.create({ onUpdate: function (self) {
-          var target = 1 + Math.min(4, Math.abs(self.getVelocity()) / 600);
-          gsap.to(rate, { v: target, duration: 0.25, overwrite: true, onUpdate: apply,
-            onComplete: function () { gsap.to(rate, { v: 1, duration: 1.4, ease: 'power2.out', onUpdate: apply }); } });
-        } });
+        var surging = false, stopTimer = 0;
+        window.addEventListener('scroll', function () {
+          if (!surging) {
+            surging = true;
+            gsap.to(rate, { v: 3, duration: 0.5, ease: 'power2.out', overwrite: true, onUpdate: apply });
+          }
+          clearTimeout(stopTimer);
+          stopTimer = setTimeout(function () {
+            surging = false;
+            gsap.to(rate, { v: 1, duration: 1.2, ease: 'power2.out', overwrite: true, onUpdate: apply });
+          }, 140);
+        }, { passive: true });
+      }
+
+      // Swipe rows keep the card in the middle in focus; the others step back.
+      var flipRow = d.getElementById('flipCardRow');
+      if (flipRow && 'IntersectionObserver' in window) {
+        var fo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { e.target.classList.toggle('inview', e.intersectionRatio > 0.6); });
+        }, { root: flipRow, threshold: [0, 0.6, 1] });
+        flipRow.querySelectorAll('.flipCard').forEach(function (c) { fo.observe(c); });
+        flipRow.classList.add('focusrow');
       }
       ScrollTrigger.refresh();
     })();
+  }
+
+  // 12. Touch feel: a ripple spreads from where you tap buttons and hub rows.
+  if (!reduced) {
+    d.addEventListener('pointerdown', function (e) {
+      var t = e.target.closest && e.target.closest('.btn,form button,a.tlItem');
+      if (!t) return;
+      var r = t.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2;
+      var rip = d.createElement('span');
+      rip.className = 'ripple';
+      rip.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
+      if (getComputedStyle(t).position === 'static') t.style.position = 'relative';
+      t.appendChild(rip);
+      setTimeout(function () { if (rip.parentNode) rip.parentNode.removeChild(rip); }, 700);
+    }, { passive: true });
   }
 
   // 9. Warm the images people are about to scroll to, plus the whole RELOADED section, in the
