@@ -701,7 +701,6 @@ background:conic-gradient(from 180deg at 50% 0%,transparent 38%,rgba(255,201,60,
 .awardsGrid,.ownersGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media (min-width:760px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
 @media (min-width:1100px){.awardsGrid,.ownersGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (hover:none){#timeline:before{animation:none}.trophyGlowImg{animation:none}}
 .js .section-head .eyebrow:before{transform:scaleX(0);transform-origin:0 50%;transition:transform .9s var(--ease) .15s}
 .js .section-head.in .eyebrow:before{transform:scaleX(1)}
 .section:not(#timeline):not(#season1):before{display:block;content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:0 50%;opacity:0;pointer-events:none}
@@ -710,7 +709,7 @@ background:conic-gradient(from 180deg at 50% 0%,transparent 38%,rgba(255,201,60,
 .btn:active,.reg form button:active{scale:.97}
 .sponsorChip,.momentChip,.squadCard{transition:translate .35s var(--ease)}
 @media (hover:hover){.sponsorChip:hover,.momentChip:hover,.squadCard:hover{translate:0 -6px}}
-@media (prefers-reduced-motion: no-preference) and (hover:hover){
+@media (prefers-reduced-motion: no-preference){
 .shineLogo video,.shineLogo img{animation:logoFloat 5s ease-in-out infinite alternate}
 }
 @keyframes logoFloat{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
@@ -727,6 +726,18 @@ background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,201,60,.16) 10% 12
 .tlItem .tlName{grid-column:2;grid-row:1}
 .tlItem .tlStatus{grid-column:2;grid-row:2;justify-self:start;margin:0}
 #gallery .section-head.reveal,#gallery .sub.reveal{overflow:visible}
+.tlCenter:after{content:"";position:absolute;left:50%;top:50%;width:min(78%,340px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:2px solid rgba(255,201,60,.5);pointer-events:none;opacity:0}
+@media (prefers-reduced-motion: no-preference){.tlCenter:after{animation:ringPulse 3.6s ease-out infinite}}
+@keyframes ringPulse{0%{transform:scale(.55);opacity:.55}100%{transform:scale(1.4);opacity:0}}
+a.tlItem{position:relative;overflow:hidden}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,201,60,.35);transform:scale(0);animation:rippleOut .65s ease-out forwards;pointer-events:none;z-index:0}
+.btn.gold .ripple,form button .ripple{background:rgba(255,255,255,.55)}
+@keyframes rippleOut{to{transform:scale(1);opacity:0}}
+@media (max-width:1099px){
+.focusrow .flipCard{scale:.92;opacity:.6;transition:scale .45s var(--ease),opacity .45s}
+.focusrow .flipCard.inview{scale:1;opacity:1}
+}
+@media (prefers-reduced-motion: reduce){.ripple,.tlCenter:after{display:none}.focusrow .flipCard{scale:1;opacity:1}}
 </style>
 <!-- league-css:end -->
 </head>
