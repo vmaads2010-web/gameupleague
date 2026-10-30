@@ -174,6 +174,57 @@
     }
   }
 
+  // 11. More motion. Transform and opacity only; waits for the content it animates; the page stays
+  //     fully visible if any of it fails.
+  if (!reduced && hasGSAP) {
+    // The navigation bar arrives with the page.
+    gsap.from('.navCenter,.hamburgerBtn', { y: -22, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1, delay: 0.1, clearProps: 'transform,opacity' });
+
+    // A gold line sweeps across the top edge of each section as it arrives.
+    d.querySelectorAll('.section').forEach(function (sec) {
+      ScrollTrigger.create({ trigger: sec, start: 'top 88%', once: true, onEnter: function () { sec.classList.add('sec-in'); } });
+    });
+
+    // The hub logo drifts up and shrinks a touch as you scroll away from the first screen.
+    var hubLogo = d.querySelector('.shineLogo');
+    if (hubLogo) gsap.to(hubLogo, { y: -50, scale: 0.9, ease: 'none', scrollTrigger: { trigger: '#timeline', start: 'top top', end: 'bottom top', scrub: true } });
+
+    // Things the page draws itself (champions, cards, contact rows) arrive one after another.
+    var staged = function (sel, from) {
+      var els = d.querySelectorAll(sel);
+      if (!els.length) return;
+      try {
+        gsap.set(els, from);
+        ScrollTrigger.batch(els, { start: 'top 92%', once: true, onEnter: function (batch) {
+          gsap.to(batch, { opacity: 1, y: 0, x: 0, scale: 1, rotationY: 0, duration: 0.9, ease: 'power3.out', stagger: 0.09, overwrite: true, clearProps: 'transform,opacity' });
+        } });
+      } catch (e) { gsap.set(els, { clearProps: 'all' }); }
+    };
+    var tries = 0;
+    (function stage() {
+      var ready = d.querySelector('.championChip') && d.querySelector('.flipCard') && d.querySelector('.contactRow');
+      if (!ready && ++tries < 40) { setTimeout(stage, 100); return; }
+      staged('.championsGrid .championChip', { opacity: 0, y: 60, scale: 0.94 });
+      staged('.flipCard', { opacity: 0, y: 70, rotationY: -30, transformPerspective: 900 });
+      staged('.contactRow', { opacity: 0, x: -30 });
+
+      // The sponsor, award and player strips speed up when you scroll fast, then settle back.
+      var tracks = d.querySelectorAll('.marqueeTrack');
+      if (tracks.length) {
+        var rate = { v: 1 };
+        var apply = function () {
+          tracks.forEach(function (t) { t.getAnimations().forEach(function (a) { a.playbackRate = rate.v; }); });
+        };
+        ScrollTrigger.create({ onUpdate: function (self) {
+          var target = 1 + Math.min(4, Math.abs(self.getVelocity()) / 600);
+          gsap.to(rate, { v: target, duration: 0.25, overwrite: true, onUpdate: apply,
+            onComplete: function () { gsap.to(rate, { v: 1, duration: 1.4, ease: 'power2.out', onUpdate: apply }); } });
+        } });
+      }
+      ScrollTrigger.refresh();
+    })();
+  }
+
   // 9. Warm the images people are about to scroll to, plus the whole RELOADED section, in the
   //    background once the page has settled. Skipped on data saver and slow connections, and for
   //    the rarely opened Season 1 archive, so nobody pays for pictures they will not see.
