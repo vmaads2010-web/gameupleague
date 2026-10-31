@@ -45,6 +45,10 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
 .stat:before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold)}
 .stat .num{font-size:30px;font-weight:900}
 .stat .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.dashTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px}
+.dashTabBtn{padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13.5px;font-weight:700;cursor:pointer}
+.dashTabBtn:hover{color:#fff}
+.dashTabBtn.active{background:#1459c7;border-color:#1459c7;color:#fff}
 .searchRow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .searchRow input,.searchRow select{width:auto;flex:1;min-width:160px}
 .exportBtn{background:rgba(22,134,92,.18);color:#6be3b3;padding:9px 13px;border:1px solid rgba(22,134,92,.35)}
@@ -95,6 +99,17 @@ td.wrap-cell{white-space:normal;max-width:180px}
   </header>
 
   <div class="wrap">
+    <div class="dashTabs" id="dashTabs">
+      <button class="dashTabBtn active" data-tab="players">👤 Players</button>
+      <button class="dashTabBtn" data-tab="owners">🏳 Owners</button>
+      <button class="dashTabBtn" data-tab="payments">💳 Payments</button>
+      <button class="dashTabBtn" data-tab="screenshots">📎 Screenshots</button>
+      <button class="dashTabBtn" data-tab="reflib">🗂 Team Library</button>
+    </div>
+
+    <div id="dashMsg" class="msg"></div>
+
+    <div class="tabPanel" id="tabPanel-players">
     <div class="stats" id="stats"></div>
 
     <div class="refreshRow">
@@ -104,8 +119,6 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <button class="secondaryBtn" id="refreshBtn">↻ Refresh</button>
       </div>
     </div>
-
-    <div id="dashMsg" class="msg"></div>
 
     <div class="searchRow">
       <input id="regSearch" placeholder="Search by name, mobile, email or code...">
@@ -134,9 +147,11 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="emptyNote" class="emptyNote" style="display:none">No registrations yet.</div>
     </div>
+    </div>
 
-    <div class="refreshRow" style="margin-top:34px">
-      <h2 style="margin:0;font-size:18px">Team Registrations</h2>
+    <div class="tabPanel" id="tabPanel-owners" style="display:none">
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Team / Owner Registrations</h2>
       <button class="exportBtn" id="exportTeamsBtn">⬇ Export CSV</button>
     </div>
     <div class="tableWrap">
@@ -150,8 +165,10 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="teamEmptyNote" class="emptyNote" style="display:none">No team registrations yet.</div>
     </div>
+    </div>
 
-    <div class="refreshRow" style="margin-top:34px">
+    <div class="tabPanel" id="tabPanel-payments" style="display:none">
+    <div class="refreshRow">
       <h2 style="margin:0;font-size:18px">Payments</h2>
       <button class="exportBtn" id="exportPaymentsBtn">⬇ Export CSV</button>
     </div>
@@ -162,8 +179,10 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="paymentEmptyNote" class="emptyNote" style="display:none">No payments recorded yet.</div>
     </div>
+    </div>
 
-    <div class="refreshRow" style="margin-top:34px">
+    <div class="tabPanel" id="tabPanel-screenshots" style="display:none">
+    <div class="refreshRow">
       <h2 style="margin:0;font-size:18px">Payment Screenshots</h2>
       <button class="exportBtn" id="exportShotsBtn">⬇ Export CSV (with photo links)</button>
     </div>
@@ -174,8 +193,10 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </table>
       <div id="shotEmptyNote" class="emptyNote" style="display:none">No payment screenshots uploaded yet.</div>
     </div>
+    </div>
 
-    <div class="refreshRow" style="margin-top:34px">
+    <div class="tabPanel" id="tabPanel-reflib" style="display:none">
+    <div class="refreshRow">
       <h2 style="margin:0;font-size:18px">Team Reference Library <span style="font-weight:400;font-size:13px;color:var(--muted)">(for Social Studio)</span></h2>
     </div>
     <div class="card" style="background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px;margin-bottom:16px">
@@ -194,6 +215,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <tbody id="refRows"></tbody>
       </table>
       <div id="refEmptyNote" class="emptyNote" style="display:none">No team references added yet.</div>
+    </div>
     </div>
   </div>
 </div>
@@ -466,7 +488,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${created}</td>
         <td><button class="photoLink" data-shot="${esc(s.image_path)}">View</button></td>
         <td><span class="pill ${s.reviewed ? 'approved' : 'pending'}">${s.reviewed ? 'Reviewed' : 'Pending'}</span></td>
-        <td class="actionsCell">${!s.reviewed ? `<button class="okBtn" data-action="review-shot">Mark Reviewed</button>` : ''}</td>
+        <td class="actionsCell">${!s.reviewed ? `<button class="okBtn" data-action="review-shot">Mark Reviewed</button>` : ''}<button class="dangerBtn" data-action="delete-shot">🗑 Delete</button></td>
       </tr>`;
     }).join('');
   }
@@ -740,16 +762,42 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       window.open(data.signedUrl, '_blank');
       return;
     }
-    const btn = e.target.closest('button[data-action="review-shot"]');
-    if (!btn) return;
-    const id = btn.closest('tr').dataset.id;
-    btn.disabled = true;
-    const { error } = await client.from('payment_screenshots').update({ reviewed: true }).eq('id', id);
-    if (error) { showMsg('dashMsg', 'err', 'Could not mark reviewed: ' + error.message); btn.disabled = false; return; }
-    await loadScreenshots();
+    const reviewBtn = e.target.closest('button[data-action="review-shot"]');
+    if (reviewBtn) {
+      const id = reviewBtn.closest('tr').dataset.id;
+      reviewBtn.disabled = true;
+      const { error } = await client.from('payment_screenshots').update({ reviewed: true }).eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Could not mark reviewed: ' + error.message); reviewBtn.disabled = false; return; }
+      await loadScreenshots();
+      return;
+    }
+    const deleteBtn = e.target.closest('button[data-action="delete-shot"]');
+    if (deleteBtn) {
+      const id = deleteBtn.closest('tr').dataset.id;
+      const shot = allShots.find(s => s.id === id);
+      const label = shot ? shot.registration_code : id;
+      if (!confirm('Permanently delete this payment screenshot?\n\n' + label + '\n\nThis cannot be undone.')) return;
+      deleteBtn.disabled = true;
+      const { error } = await client.from('payment_screenshots').delete().eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Delete failed: ' + error.message); deleteBtn.disabled = false; return; }
+      showMsg('dashMsg', 'ok', 'Deleted screenshot for ' + label + '.');
+      await loadScreenshots();
+    }
   });
 
   document.getElementById('refreshBtn').addEventListener('click', loadDashboard);
+
+  // Switches which section is visible - Players, Owners, Payments,
+  // Screenshots, Team Library - so whoever opens the dashboard sees one
+  // focused table instead of five stacked on top of each other.
+  document.getElementById('dashTabs').addEventListener('click', (e) => {
+    const tabBtn = e.target.closest('.dashTabBtn');
+    if (!tabBtn) return;
+    document.querySelectorAll('.dashTabBtn').forEach(b => b.classList.remove('active'));
+    tabBtn.classList.add('active');
+    document.querySelectorAll('.tabPanel').forEach(p => p.style.display = 'none');
+    document.getElementById('tabPanel-' + tabBtn.dataset.tab).style.display = 'block';
+  });
 
   // Player trading card - generated entirely client-side with Canvas, no
   // external API or storage write needed. Draws the player's own photo over
