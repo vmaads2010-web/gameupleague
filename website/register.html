@@ -92,8 +92,10 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .photoPickBtn:hover{border-color:var(--gold);color:#fff}
 .photoHint{font-size:11.5px;color:var(--muted);margin-top:6px}
 .photoNotice{background:rgba(255,201,60,.08);border:1px solid rgba(255,201,60,.3);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ffe8b8;margin-bottom:10px;line-height:1.5}
-.sizeGuide{margin-top:8px}
-.sizeGuide summary{cursor:pointer;font-size:11.5px;color:var(--gold);font-weight:700;list-style:none}
+.sizeHelp{font-size:13px;line-height:1.5;color:#ffe8b8;background:rgba(255,201,60,.08);border:1px solid rgba(255,201,60,.3);border-radius:8px;padding:8px 10px;margin-bottom:8px}
+#jerseySize,#shortsSize{font-size:15px;font-weight:700}
+.sizeGuide{margin-top:10px}
+.sizeGuide summary{cursor:pointer;font-size:13.5px;color:var(--gold);font-weight:800;list-style:none;padding:8px 10px;background:rgba(255,201,60,.1);border:1px solid rgba(255,201,60,.35);border-radius:8px}
 .sizeGuide summary::-webkit-details-marker{display:none}
 .sizeGuide img{width:100%;border-radius:8px;margin-top:8px;display:block}
 .payBox{margin-top:18px;background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid rgba(255,201,60,.3);border-radius:16px;padding:20px;text-align:center}
@@ -560,21 +562,41 @@ a.tlItem{position:relative;overflow:hidden}
     </div>
     <div class="row2">
      <div class="field"><label>Jersey size</label>
+      <div class="sizeHelp">👉 Not sure? Match it to your <b>chest size in inches</b> below — pick the closest one.</div>
       <select id="jerseySize">
-       <option value="">Select</option>
-       <option>20</option><option>22</option><option>24</option><option>26</option><option>28</option>
-       <option>30</option><option>32</option><option>34</option><option>36</option><option>38</option>
-       <option>42</option><option>44</option><option>46</option>
+       <option value="">Select your jersey size</option>
+       <option value="20">20 — Chest 20"</option>
+       <option value="22">22 — Chest 22"</option>
+       <option value="24">24 — Chest 24"</option>
+       <option value="26">26 — Chest 26"</option>
+       <option value="28">28 — Chest 28"</option>
+       <option value="30">30 — Chest 30"</option>
+       <option value="32">32 — Chest 32"</option>
+       <option value="34">34 — Chest 34"</option>
+       <option value="36">36 — Chest 36"</option>
+       <option value="38">38 — Chest 38"</option>
+       <option value="40">40 — Chest 40"</option>
+       <option value="42">42 — Chest 42"</option>
+       <option value="44">44 — Chest 44"</option>
+       <option value="46">46 — Chest 46"</option>
       </select>
-      <details class="sizeGuide"><summary>📏 Jersey size guide</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
+      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
      </div>
      <div class="field"><label>Shorts size</label>
+      <div class="sizeHelp">👉 Not sure? Match it to your <b>waist size in inches</b> below — pick the closest one.</div>
       <select id="shortsSize">
-       <option value="">Select</option>
-       <option>32</option><option>34</option><option>36</option><option>38</option><option>40</option>
-       <option>42</option><option>44</option><option>46</option><option>48</option>
+       <option value="">Select your shorts size</option>
+       <option value="32">32 — Waist 24"</option>
+       <option value="34">34 — Waist 26"</option>
+       <option value="36">36 — Waist 28"</option>
+       <option value="38">38 — Waist 30"</option>
+       <option value="40">40 — Waist 32"</option>
+       <option value="42">42 — Waist 34"</option>
+       <option value="44">44 — Waist 36"</option>
+       <option value="46">46 — Waist 38"</option>
+       <option value="48">48 — Waist 40"</option>
       </select>
-      <details class="sizeGuide"><summary>📏 Shorts size guide</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
+      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
      </div>
     </div>
     <div class="field"><label>Player Instagram link <span class="required-star">*</span></label><input id="instaId" required placeholder="@username or instagram.com/username"></div>
