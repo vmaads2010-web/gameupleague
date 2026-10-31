@@ -60,6 +60,10 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .status{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;display:none}
 .status.show{display:block}
 .status.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+.fieldInvalid input,.fieldInvalid select{border-color:#ff4d4d;box-shadow:0 0 0 3px rgba(255,77,77,.25)}
+.fieldInvalid{outline:2px solid #ff4d4d;outline-offset:6px;border-radius:12px;animation:fieldShake .4s ease}
+.fieldErrorMsg{display:flex;align-items:center;gap:6px;color:#ff9d9d;background:rgba(227,38,46,.15);border:1px solid rgba(227,38,46,.4);border-radius:8px;padding:7px 10px;font-size:12.5px;font-weight:700;margin-top:6px}
+@keyframes fieldShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 .status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
 .back{display:inline-block;margin-top:24px;color:var(--muted);font-size:13px}
 .back:hover{color:var(--gold)}
@@ -523,7 +527,7 @@ a.tlItem{position:relative;overflow:hidden}
     </div>
 
     <div class="sectionTitle">2 · Playing Position</div>
-    <div class="field">
+    <div class="field" id="positionField">
      <label>Position <span class="required-star">*</span> (select all that apply)</label>
      <label class="checkRow"><input type="checkbox" name="position" value="Goalkeeper (GK)"><span>Goalkeeper (GK)</span></label>
      <label class="checkRow"><input type="checkbox" name="position" value="Defence (DEF)"><span>Defence (DEF)</span></label>
@@ -549,7 +553,7 @@ a.tlItem{position:relative;overflow:hidden}
       <option>Other</option>
      </select>
     </div>
-    <div class="field">
+    <div class="field" id="photoField">
      <label>Player photograph <span class="required-star">*</span></label>
      <div class="photoNotice">📸 Upload a clear photo of <b>yourself</b> — this exact photo goes on the website, so make it a good one!</div>
      <div class="photoPicker">
@@ -599,7 +603,7 @@ a.tlItem{position:relative;overflow:hidden}
       <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
      </div>
     </div>
-    <div class="field"><label>Player Instagram link <span class="required-star">*</span></label><input id="instaId" required placeholder="@username or instagram.com/username"></div>
+    <div class="field" id="instaField"><label>Player Instagram link <span class="required-star">*</span></label><input id="instaId" required placeholder="@username or instagram.com/username"></div>
 
     <div class="sectionTitle">5 · Consent &amp; Declaration</div>
     <details class="terms">
@@ -623,7 +627,7 @@ a.tlItem{position:relative;overflow:hidden}
       I have read and understood the above terms and conditions. By signing this form, I agree to participate in the Football League under the stated rules and policies.
      </div>
     </details>
-    <div class="consentBox">
+    <div class="consentBox" id="consentField">
      <label class="checkRow"><input type="checkbox" id="declarationAccepted" required><span>I confirm that the information provided is accurate and agree to follow The Game Up League rules and regulations, including the full terms above. <span class="required-star">*</span></span></label>
      <label class="checkRow"><input type="checkbox" id="mediaConsentAccepted" required><span>I consent to The Game Up League using photographs and videos featuring me for league-related media and promotional purposes. <span class="required-star">*</span></span></label>
     </div>
@@ -638,7 +642,7 @@ a.tlItem{position:relative;overflow:hidden}
      <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
      <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
 
-     <div class="screenshotBox">
+     <div class="screenshotBox" id="shotField">
       <label>Upload your payment screenshot <span class="required-star">*</span></label>
       <div class="photoPicker">
        <img class="photoPreview" id="shotPreview" alt="" style="display:none">
@@ -666,6 +670,45 @@ a.tlItem{position:relative;overflow:hidden}
 document.addEventListener('DOMContentLoaded', () => {
 const statusEl = document.getElementById('status');
 function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
+
+// Clears every field-level error highlight + inline message left over from a
+// previous failed submit attempt, so only the current problem is shown.
+function clearFieldErrors() {
+  document.querySelectorAll('.fieldInvalid').forEach(el => el.classList.remove('fieldInvalid'));
+  document.querySelectorAll('.fieldErrorMsg').forEach(el => el.remove());
+}
+
+// Highlights the exact field that's wrong (red outline + shake), writes a
+// plain-language message directly under it, and scrolls/focuses it into
+// view - so a player doesn't have to hunt through the form to find what
+// they missed, they just see it right where the problem is.
+function flagField(inputId, msg) {
+  const input = document.getElementById(inputId);
+  if (!input) { showStatus('err', msg); return; }
+  const container = input.closest('.field, .screenshotBox, .consentBox') || input.parentElement;
+  container.classList.add('fieldInvalid');
+  const note = document.createElement('div');
+  note.className = 'fieldErrorMsg';
+  note.textContent = '⚠️ ' + msg;
+  container.appendChild(note);
+  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (typeof input.focus === 'function') input.focus({ preventScroll: true });
+  showStatus('err', msg);
+}
+
+// The instant a player interacts with a flagged field again (typing,
+// picking a checkbox, choosing a photo), its red highlight clears right
+// away - immediate proof they're fixing the right thing, no re-submit needed.
+document.getElementById('regForm').addEventListener('input', clearContainerError, true);
+document.getElementById('regForm').addEventListener('change', clearContainerError, true);
+document.getElementById('regForm').addEventListener('click', clearContainerError, true);
+function clearContainerError(e) {
+  const container = e.target.closest('.fieldInvalid');
+  if (!container) return;
+  container.classList.remove('fieldInvalid');
+  const note = container.querySelector('.fieldErrorMsg');
+  if (note) note.remove();
+}
 
 function regCode() {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -785,56 +828,57 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   document.getElementById('regForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
+    clearFieldErrors();
 
     const selectedPositionsCheck = Array.from(document.querySelectorAll('input[name="position"]:checked'));
     if (!selectedPositionsCheck.length) {
-      showStatus('err', 'Please select at least one playing position (Section 2).');
+      flagField('positionField', 'Select at least one playing position above.');
       return;
     }
     const dobMatch = document.getElementById('dob').value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     let dobIso = null;
     if (!dobMatch) {
-      showStatus('err', 'Please enter date of birth as DD/MM/YYYY in Section 1.');
+      flagField('dob', 'Enter your date of birth as DD/MM/YYYY (e.g. 05/03/2008).');
       return;
     } else {
       const [, dd, mm, yyyy] = dobMatch;
       const dobDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
       const cutoff = new Date(2009, 0, 16); // Players must be born on or before 16 Jan 2009
       if (dobDate.getDate() !== Number(dd) || dobDate.getMonth() !== Number(mm) - 1 || dobDate.getFullYear() !== Number(yyyy)) {
-        showStatus('err', 'That date of birth isn\'t valid - please check it in Section 1.');
+        flagField('dob', 'That date doesn\'t exist — please re-check it.');
         return;
       }
       if (dobDate > cutoff) {
-        showStatus('err', 'Players must be born on or before 16/01/2009 to register.');
+        flagField('dob', 'You must be born on or before 16/01/2009 to register.');
         return;
       }
       dobIso = yyyy + '-' + mm + '-' + dd;
     }
     const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
     if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
-      showStatus('err', 'Please enter a valid 10-digit Indian mobile number in Section 1.');
+      flagField('mobile', 'Enter a valid 10-digit Indian mobile number.');
       return;
     }
     const emailValue = document.getElementById('email').value.trim();
     if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-      showStatus('err', 'That email address doesn\'t look valid - please check it in Section 1 (or leave it blank).');
+      flagField('email', 'That email address doesn\'t look right — fix it or leave this blank.');
       return;
     }
     const instaValue = document.getElementById('instaId').value.trim();
     if (!/^@?[a-zA-Z0-9._]{1,30}$/.test(instaValue)) {
-      showStatus('err', 'Please enter a valid Instagram username in Section 4 (letters, numbers, dots and underscores only).');
+      flagField('instaId', 'Enter a valid Instagram username (letters, numbers, dots, underscores only).');
       return;
     }
     if (!selectedPhotoBlob) {
-      showStatus('err', 'Please upload your player photograph in Section 4 — it will be used on the website.');
+      flagField('photoPickLabel', 'Upload your player photograph above — it goes on the website.');
       return;
     }
     if (!selectedShotBlob) {
-      showStatus('err', 'Please attach your payment screenshot in Section 6 — your registration cannot be submitted without it.');
+      flagField('shotPickLabel', 'Attach your payment screenshot above — required to submit.');
       return;
     }
     if (!document.getElementById('declarationAccepted').checked || !document.getElementById('mediaConsentAccepted').checked) {
-      showStatus('err', 'Please accept both consent checkboxes in Section 5 to continue.');
+      flagField('declarationAccepted', 'Tick both boxes above to confirm and continue.');
       return;
     }
 
