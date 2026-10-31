@@ -48,6 +48,7 @@ h1{font-family:var(--font-display);font-weight:400;font-style:italic;font-size:c
 .notice{background:rgba(255,201,60,.08);border:1px solid rgba(255,201,60,.3);border-radius:14px;padding:16px 18px;font-size:14px;color:#ffe8b8;margin-bottom:28px;line-height:1.6}
 .card{background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
 .field{margin-bottom:16px}
+.fieldHint{display:block;font-size:12px;color:var(--muted,#9aa5b1);margin-top:4px}
 label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#cfd9ef}
 input,select{width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#260d10;color:#fff;font-size:14px;outline:none}
 input:focus,select:focus{border-color:var(--gold)}
@@ -512,7 +513,7 @@ a.tlItem{position:relative;overflow:hidden}
     <div class="sectionTitle">1 · Personal Information</div>
     <div class="field"><label>Full name <span class="required-star">*</span></label><input id="fullName" required></div>
     <div class="row2">
-     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required></div>
+     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required><span class="fieldHint">Must be born on or before 16/10/2009</span></div>
      <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
     </div>
     <div class="row2">
