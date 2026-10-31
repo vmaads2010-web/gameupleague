@@ -515,7 +515,7 @@ a.tlItem{position:relative;overflow:hidden}
     <div class="sectionTitle">1 · Personal Information</div>
     <div class="field"><label>Full name <span class="required-star">*</span></label><input id="fullName" required></div>
     <div class="row2">
-     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required><span class="fieldHint">Must be born on or before 16/10/2009</span></div>
+     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required><span class="fieldHint">Must be born on or before 16/01/2009</span></div>
      <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
     </div>
     <div class="row2">
@@ -799,13 +799,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     } else {
       const [, dd, mm, yyyy] = dobMatch;
       const dobDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-      const cutoff = new Date(2009, 9, 16); // Players must be born on or before 16 Oct 2009
+      const cutoff = new Date(2009, 0, 16); // Players must be born on or before 16 Jan 2009
       if (dobDate.getDate() !== Number(dd) || dobDate.getMonth() !== Number(mm) - 1 || dobDate.getFullYear() !== Number(yyyy)) {
         showStatus('err', 'That date of birth isn\'t valid - please check it in Section 1.');
         return;
       }
       if (dobDate > cutoff) {
-        showStatus('err', 'Players must be born on or before 16/10/2009 to register.');
+        showStatus('err', 'Players must be born on or before 16/01/2009 to register.');
         return;
       }
       dobIso = yyyy + '-' + mm + '-' + dd;
