@@ -603,6 +603,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
           ${!paid ? `<button class="secondaryBtn" data-action="markpaid">Mark Paid</button>` : ''}
           ${!paid ? `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(r.mobile, reminderMessage(r.full_name, r.registration_code, r.quoted_fee_paise != null ? (r.quoted_fee_paise / 100) : ''))}">💬 Remind</a>` : `<a class="waBtn" target="_blank" rel="noopener" href="${waLink(r.mobile, paidConfirmMessage(r.full_name, r.registration_code))}">✅ Confirm</a>`}
           <button class="secondaryBtn" data-action="card">🪪 Card</button>
+          <button class="dangerBtn" data-action="delete-reg">🗑 Delete</button>
         </td>
       </tr>`;
     }).join('');
@@ -655,6 +656,21 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         verified_via_webhook: false
       });
       if (error) { showMsg('dashMsg', 'err', 'Mark paid failed: ' + error.message); btn.disabled = false; return; }
+    } else if (btn.dataset.action === 'delete-reg') {
+      const reg = allRegs.find(r => r.id === id);
+      const label = reg ? (reg.full_name + ' (' + reg.registration_code + ')') : id;
+      if (!confirm('Permanently delete this registration?\n\n' + label + '\n\nThis also deletes its payment record and payment screenshot. This cannot be undone.')) {
+        btn.disabled = false;
+        return;
+      }
+      if (reg) {
+        await client.from('payment_screenshots').delete().eq('registration_code', reg.registration_code);
+      }
+      const { error: payErr } = await client.from('payments').delete().eq('player_registration_id', id);
+      if (payErr) { showMsg('dashMsg', 'err', 'Delete failed (payments): ' + payErr.message); btn.disabled = false; return; }
+      const { error: regErr } = await client.from('player_registrations').delete().eq('id', id);
+      if (regErr) { showMsg('dashMsg', 'err', 'Delete failed: ' + regErr.message); btn.disabled = false; return; }
+      showMsg('dashMsg', 'ok', 'Deleted ' + label + '.');
     }
     await loadDashboard();
   });
