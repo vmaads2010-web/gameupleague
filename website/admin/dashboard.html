@@ -45,6 +45,9 @@ button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px
 .stat:before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold)}
 .stat .num{font-size:30px;font-weight:900}
 .stat .label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.trackerCard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:20px}
+.trackerGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#260d10;color:#fff;font-size:14px;font-family:inherit;resize:vertical;min-height:64px}
 .dashTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px}
 .dashTabBtn{padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13.5px;font-weight:700;cursor:pointer}
 .dashTabBtn:hover{color:#fff}
@@ -105,6 +108,8 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <button class="dashTabBtn" data-tab="payments">💳 Payments</button>
       <button class="dashTabBtn" data-tab="screenshots">📎 Screenshots</button>
       <button class="dashTabBtn" data-tab="reflib">🗂 Team Library</button>
+      <button class="dashTabBtn" data-tab="sponsorship">💰 Sponsorship</button>
+      <button class="dashTabBtn" data-tab="expenses">🧾 Expenses</button>
     </div>
 
     <div id="dashMsg" class="msg"></div>
@@ -217,6 +222,158 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <div id="refEmptyNote" class="emptyNote" style="display:none">No team references added yet.</div>
     </div>
     </div>
+
+    <div class="tabPanel" id="tabPanel-sponsorship" style="display:none">
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Sponsorship Tracker</h2>
+      <button class="exportBtn" id="exportSponsorsBtn">⬇ Export CSV</button>
+    </div>
+    <div class="stats" id="sponsorStats"></div>
+
+    <div class="trackerCard">
+      <h3 style="margin:0 0 14px;font-size:15px" id="sponsorFormTitle">Add a sponsor</h3>
+      <div class="trackerGrid">
+        <div><label>Sponsor / company name *</label><input id="spName" placeholder="e.g. Vedit Enterprises"></div>
+        <div><label>Contact person</label><input id="spContactPerson" placeholder="Who you spoke to"></div>
+        <div><label>Contact number</label><input id="spContactNumber" placeholder="+91"></div>
+        <div><label>Contact email</label><input id="spContactEmail" type="email"></div>
+        <div><label>Category</label>
+          <select id="spCategory">
+            <option value="">Select</option>
+            <option>Title Sponsor</option><option>Kit Partner</option><option>Hydration Partner</option>
+            <option>Media Partner</option><option>Fitness Partner</option><option>Venue Partner</option>
+            <option>Cash Sponsor</option><option>In-Kind Sponsor</option><option>Other</option>
+          </select>
+        </div>
+        <div><label>What they're giving</label>
+          <select id="spKind">
+            <option value="cash">Cash</option><option value="in_kind">In-kind (goods)</option>
+            <option value="service">Free service</option><option value="discount">Discount</option>
+          </select>
+        </div>
+        <div><label>Details of what's given</label><input id="spValueDesc" placeholder="e.g. 20 jerseys, or free turf hours"></div>
+        <div><label>Estimated value (₹)</label><input id="spValueAmount" type="number" min="0" placeholder="0"></div>
+        <div><label>Purpose / season</label><input id="spPurpose" placeholder="e.g. RELOADED 2026-27"></div>
+        <div><label>Brought in by</label><input id="spBroughtBy" placeholder="Who at GUL brought this sponsor"></div>
+        <div><label>Status</label>
+          <select id="spStatus">
+            <option value="lead">Lead</option><option value="in_talks">In Talks</option>
+            <option value="confirmed">Confirmed</option><option value="received">Received</option>
+            <option value="fell_through">Fell Through</option>
+          </select>
+        </div>
+        <div><label>Agreement date</label><input id="spAgreementDate" type="date"></div>
+        <div><label>Payment status</label>
+          <select id="spPaymentStatus">
+            <option value="not_applicable">Not applicable</option><option value="pending">Pending</option>
+            <option value="partial">Partial</option><option value="received">Received</option>
+          </select>
+        </div>
+        <div><label>Payment received date</label><input id="spPaymentDate" type="date"></div>
+        <div><label>Agreement / proof document</label><input id="spDocFile" type="file" accept="image/*,.pdf"></div>
+        <div><label>Logged by</label><input id="spLoggedBy" placeholder="Your name"></div>
+      </div>
+      <div style="margin-top:12px"><label>Notes</label><textarea id="spNotes" placeholder="Anything else worth recording"></textarea></div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="primaryBtn" id="spSaveBtn">Save Sponsor</button>
+        <button class="secondaryBtn" id="spCancelEditBtn" style="display:none">Cancel Edit</button>
+      </div>
+      <div id="spFormMsg" class="msg" style="margin-top:12px"></div>
+    </div>
+
+    <div class="searchRow">
+      <input id="spSearch" placeholder="Search by sponsor, contact, brought-by...">
+      <select id="spStatusFilter">
+        <option value="">All statuses</option>
+        <option value="lead">Lead</option><option value="in_talks">In Talks</option>
+        <option value="confirmed">Confirmed</option><option value="received">Received</option>
+        <option value="fell_through">Fell Through</option>
+      </select>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead><tr>
+          <th>Sponsor</th><th>Contact</th><th>Category</th><th>Kind</th><th>Value</th>
+          <th>Purpose</th><th>Brought By</th><th>Status</th><th>Payment</th>
+          <th>Agreement Date</th><th>Document</th><th>Logged By</th><th>Notes</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="sponsorRows"></tbody>
+      </table>
+      <div id="sponsorEmptyNote" class="emptyNote" style="display:none">No sponsors logged yet.</div>
+    </div>
+    </div>
+
+    <div class="tabPanel" id="tabPanel-expenses" style="display:none">
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Expense Tracker</h2>
+      <button class="exportBtn" id="exportExpensesBtn">⬇ Export CSV</button>
+    </div>
+    <div class="stats" id="expenseStats"></div>
+
+    <div class="trackerCard">
+      <h3 style="margin:0 0 14px;font-size:15px" id="expenseFormTitle">Add an expense</h3>
+      <div class="trackerGrid">
+        <div><label>Title *</label><input id="exTitle" placeholder="e.g. Turf booking - trials weekend"></div>
+        <div><label>Category</label>
+          <select id="exCategory">
+            <option value="">Select</option>
+            <option>Turf Rent</option><option>Jerseys & Kit</option><option>Equipment</option>
+            <option>Referee Fees</option><option>Marketing & Ads</option><option>Food & Refreshments</option>
+            <option>Trophies & Medals</option><option>Transport</option><option>Printing</option>
+            <option>Photography & Videography</option><option>Software & Tools</option>
+            <option>Event Logistics</option><option>Other</option>
+          </select>
+        </div>
+        <div><label>Amount (₹) *</label><input id="exAmount" type="number" min="0" placeholder="0"></div>
+        <div><label>Paid to</label><input id="exPaidTo" placeholder="Vendor / person"></div>
+        <div><label>Paid by</label><input id="exPaidBy" placeholder="Who at GUL paid"></div>
+        <div><label>Payment method</label>
+          <select id="exMethod">
+            <option value="cash">Cash</option><option value="upi">UPI</option>
+            <option value="bank_transfer">Bank Transfer</option><option value="card">Card</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div><label>Expense date</label><input id="exDate" type="date"></div>
+        <div><label>Purpose</label><input id="exPurpose" placeholder="Which event / match day / season"></div>
+        <div><label>Filled by</label><input id="exFilledBy" placeholder="Who logged this entry"></div>
+        <div><label>Receipt / bill photo</label><input id="exReceiptFile" type="file" accept="image/*,.pdf"></div>
+        <div><label>Status</label>
+          <select id="exStatus">
+            <option value="paid">Paid</option><option value="pending">Pending</option>
+            <option value="reimbursement_needed">Reimbursement Needed</option>
+          </select>
+        </div>
+        <div><label>Approved by</label><input id="exApprovedBy" placeholder="Optional"></div>
+      </div>
+      <div style="margin-top:12px"><label>Notes</label><textarea id="exNotes" placeholder="Anything else worth recording"></textarea></div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="primaryBtn" id="exSaveBtn">Save Expense</button>
+        <button class="secondaryBtn" id="exCancelEditBtn" style="display:none">Cancel Edit</button>
+      </div>
+      <div id="exFormMsg" class="msg" style="margin-top:12px"></div>
+    </div>
+
+    <div class="searchRow">
+      <input id="exSearch" placeholder="Search by title, category, paid to...">
+      <select id="exStatusFilter">
+        <option value="">All statuses</option>
+        <option value="paid">Paid</option><option value="pending">Pending</option>
+        <option value="reimbursement_needed">Reimbursement Needed</option>
+      </select>
+    </div>
+    <div class="tableWrap">
+      <table>
+        <thead><tr>
+          <th>Title</th><th>Category</th><th>Amount</th><th>Paid To</th><th>Paid By</th>
+          <th>Method</th><th>Date</th><th>Purpose</th><th>Filled By</th><th>Receipt</th>
+          <th>Status</th><th>Approved By</th><th>Notes</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="expenseRows"></tbody>
+      </table>
+      <div id="expenseEmptyNote" class="emptyNote" style="display:none">No expenses logged yet.</div>
+    </div>
+    </div>
   </div>
 </div>
 
@@ -247,6 +404,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   let allRegs = [];
   let allTeams = [];
   let allShots = [];
+  let allSponsors = [];
+  let allExpenses = [];
+  let editingSponsorId = null;
+  let editingExpenseId = null;
 
   const money = (paise) => paise == null ? '—' : '₹' + (paise / 100).toLocaleString('en-IN');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -322,6 +483,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     renderPayments();
     await loadScreenshots();
     await loadTeamReferences();
+    await loadSponsors();
+    await loadExpenses();
   }
 
   function shotFor(registrationCode) {
@@ -437,6 +600,401 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const { error } = await client.from('team_references').delete().eq('id', id);
     if (error) { showMsg('dashMsg', 'err', 'Delete failed: ' + error.message); return; }
     await loadTeamReferences();
+  });
+
+  // ---------- SPONSORSHIP TRACKER ----------
+
+  function moneyOrDash(paise) { return paise == null ? '—' : money(paise); }
+
+  function renderSponsorStats() {
+    const confirmedValue = allSponsors
+      .filter(s => s.status === 'confirmed' || s.status === 'received')
+      .reduce((sum, s) => sum + (s.estimated_value_paise || 0), 0);
+    const received = allSponsors.filter(s => s.payment_status === 'received').length;
+    const inTalks = allSponsors.filter(s => s.status === 'lead' || s.status === 'in_talks').length;
+    document.getElementById('sponsorStats').innerHTML = [
+      ['Total Sponsors', allSponsors.length],
+      ['Confirmed Value', money(confirmedValue)],
+      ['Payment Received', received],
+      ['Leads / In Talks', inTalks]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+  }
+
+  function filteredSponsors() {
+    const q = document.getElementById('spSearch').value.trim().toLowerCase();
+    const statusF = document.getElementById('spStatusFilter').value;
+    return allSponsors.filter(s => {
+      if (statusF && s.status !== statusF) return false;
+      if (q) {
+        const hay = [s.sponsor_name, s.contact_person, s.brought_by, s.category].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  const STATUS_LABELS = { lead: 'Lead', in_talks: 'In Talks', confirmed: 'Confirmed', received: 'Received', fell_through: 'Fell Through' };
+  const PAY_STATUS_LABELS = { not_applicable: 'N/A', pending: 'Pending', partial: 'Partial', received: 'Received' };
+  const STATUS_PILL = { lead: 'pending', in_talks: 'pending', confirmed: 'approved', received: 'paid', fell_through: 'rejected' };
+
+  function renderSponsorRows(list) {
+    const tbody = document.getElementById('sponsorRows');
+    document.getElementById('sponsorEmptyNote').style.display = list.length ? 'none' : 'block';
+    tbody.innerHTML = list.map(s => `
+      <tr data-id="${s.id}">
+        <td class="wrap-cell">${esc(s.sponsor_name)}</td>
+        <td class="wrap-cell">${esc([s.contact_person, s.contact_number, s.contact_email].filter(Boolean).join(' · ') || '—')}</td>
+        <td>${esc(s.category || '—')}</td>
+        <td>${esc((s.sponsorship_kind || '').replace('_', ' ') || '—')}</td>
+        <td class="wrap-cell">${esc(s.value_description || '—')}${s.estimated_value_paise != null ? ' (' + moneyOrDash(s.estimated_value_paise) + ')' : ''}</td>
+        <td class="wrap-cell">${esc(s.purpose || '—')}</td>
+        <td class="wrap-cell">${esc(s.brought_by || '—')}</td>
+        <td><span class="pill ${STATUS_PILL[s.status] || 'pending'}">${esc(STATUS_LABELS[s.status] || s.status)}</span></td>
+        <td>${esc(PAY_STATUS_LABELS[s.payment_status] || s.payment_status || '—')}</td>
+        <td>${s.agreement_date ? new Date(s.agreement_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
+        <td>${s.document_path ? `<button class="photoLink" data-sponsor-doc="${esc(s.document_path)}">View</button>` : '—'}</td>
+        <td class="wrap-cell">${esc(s.logged_by || '—')}</td>
+        <td class="wrap-cell">${esc(s.notes || '—')}</td>
+        <td class="actionsCell">
+          <button class="secondaryBtn" data-action="edit-sponsor">Edit</button>
+          <button class="dangerBtn" data-action="delete-sponsor">🗑 Delete</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function loadSponsors() {
+    const { data, error } = await client.from('sponsorship_tracker').select('*').order('created_at', { ascending: false });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load sponsors: ' + error.message); return; }
+    allSponsors = data || [];
+    renderSponsorStats();
+    renderSponsorRows(filteredSponsors());
+  }
+
+  ['spSearch', 'spStatusFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => renderSponsorRows(filteredSponsors()));
+  });
+
+  function resetSponsorForm() {
+    ['spName', 'spContactPerson', 'spContactNumber', 'spContactEmail', 'spValueDesc', 'spValueAmount',
+     'spPurpose', 'spBroughtBy', 'spAgreementDate', 'spPaymentDate', 'spLoggedBy', 'spNotes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('spDocFile').value = '';
+    document.getElementById('spCategory').value = '';
+    document.getElementById('spKind').value = 'cash';
+    document.getElementById('spStatus').value = 'lead';
+    document.getElementById('spPaymentStatus').value = 'not_applicable';
+    editingSponsorId = null;
+    document.getElementById('sponsorFormTitle').textContent = 'Add a sponsor';
+    document.getElementById('spSaveBtn').textContent = 'Save Sponsor';
+    document.getElementById('spCancelEditBtn').style.display = 'none';
+  }
+
+  document.getElementById('spSaveBtn').addEventListener('click', async () => {
+    const msgEl = document.getElementById('spFormMsg');
+    const name = document.getElementById('spName').value.trim();
+    if (!name) { showMsg('spFormMsg', 'err', 'Sponsor / company name is required.'); return; }
+
+    const valueAmount = document.getElementById('spValueAmount').value;
+    const payload = {
+      sponsor_name: name,
+      contact_person: document.getElementById('spContactPerson').value.trim() || null,
+      contact_number: document.getElementById('spContactNumber').value.trim() || null,
+      contact_email: document.getElementById('spContactEmail').value.trim() || null,
+      category: document.getElementById('spCategory').value || null,
+      sponsorship_kind: document.getElementById('spKind').value,
+      value_description: document.getElementById('spValueDesc').value.trim() || null,
+      estimated_value_paise: valueAmount ? Math.round(Number(valueAmount) * 100) : null,
+      purpose: document.getElementById('spPurpose').value.trim() || null,
+      brought_by: document.getElementById('spBroughtBy').value.trim() || null,
+      status: document.getElementById('spStatus').value,
+      agreement_date: document.getElementById('spAgreementDate').value || null,
+      payment_status: document.getElementById('spPaymentStatus').value,
+      payment_received_date: document.getElementById('spPaymentDate').value || null,
+      logged_by: document.getElementById('spLoggedBy').value.trim() || null,
+      notes: document.getElementById('spNotes').value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    const docFile = document.getElementById('spDocFile').files[0];
+    if (docFile) {
+      showMsg('spFormMsg', 'info', 'Uploading document...');
+      const path = 'sponsor-' + Date.now() + '.' + docFile.name.split('.').pop();
+      const { error: upErr } = await client.storage.from('sponsorship-documents').upload(path, docFile);
+      if (upErr) { showMsg('spFormMsg', 'err', 'Document upload failed: ' + upErr.message); return; }
+      payload.document_path = path;
+    }
+
+    showMsg('spFormMsg', 'info', 'Saving...');
+    const { error } = editingSponsorId
+      ? await client.from('sponsorship_tracker').update(payload).eq('id', editingSponsorId)
+      : await client.from('sponsorship_tracker').insert(payload);
+    if (error) { showMsg('spFormMsg', 'err', 'Save failed: ' + error.message); return; }
+
+    showMsg('spFormMsg', 'ok', '✅ Saved.');
+    resetSponsorForm();
+    await loadSponsors();
+  });
+
+  document.getElementById('spCancelEditBtn').addEventListener('click', resetSponsorForm);
+
+  document.getElementById('sponsorRows').addEventListener('click', async (e) => {
+    const docBtn = e.target.closest('[data-sponsor-doc]');
+    if (docBtn) {
+      const { data, error } = await client.storage.from('sponsorship-documents').createSignedUrl(docBtn.dataset.sponsorDoc, 300);
+      if (error) { alert('Could not load document: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const row = e.target.closest('tr');
+    if (!row) return;
+    const id = row.dataset.id;
+
+    if (e.target.closest('[data-action="edit-sponsor"]')) {
+      const s = allSponsors.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('spName').value = s.sponsor_name || '';
+      document.getElementById('spContactPerson').value = s.contact_person || '';
+      document.getElementById('spContactNumber').value = s.contact_number || '';
+      document.getElementById('spContactEmail').value = s.contact_email || '';
+      document.getElementById('spCategory').value = s.category || '';
+      document.getElementById('spKind').value = s.sponsorship_kind || 'cash';
+      document.getElementById('spValueDesc').value = s.value_description || '';
+      document.getElementById('spValueAmount').value = s.estimated_value_paise != null ? (s.estimated_value_paise / 100) : '';
+      document.getElementById('spPurpose').value = s.purpose || '';
+      document.getElementById('spBroughtBy').value = s.brought_by || '';
+      document.getElementById('spStatus').value = s.status || 'lead';
+      document.getElementById('spAgreementDate').value = s.agreement_date || '';
+      document.getElementById('spPaymentStatus').value = s.payment_status || 'not_applicable';
+      document.getElementById('spPaymentDate').value = s.payment_received_date || '';
+      document.getElementById('spLoggedBy').value = s.logged_by || '';
+      document.getElementById('spNotes').value = s.notes || '';
+      editingSponsorId = id;
+      document.getElementById('sponsorFormTitle').textContent = 'Edit sponsor: ' + s.sponsor_name;
+      document.getElementById('spSaveBtn').textContent = 'Update Sponsor';
+      document.getElementById('spCancelEditBtn').style.display = 'inline-block';
+      document.getElementById('spName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (e.target.closest('[data-action="delete-sponsor"]')) {
+      const s = allSponsors.find(x => x.id === id);
+      if (!confirm('Permanently delete this sponsor entry?\n\n' + (s ? s.sponsor_name : id))) return;
+      const { error } = await client.from('sponsorship_tracker').delete().eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Delete failed: ' + error.message); return; }
+      if (editingSponsorId === id) resetSponsorForm();
+      await loadSponsors();
+    }
+  });
+
+  document.getElementById('exportSponsorsBtn').addEventListener('click', () => {
+    downloadCsv('gul-sponsorship-tracker.csv', allSponsors, [
+      { label: 'Sponsor', value: s => s.sponsor_name || '' },
+      { label: 'Contact Person', value: s => s.contact_person || '' },
+      { label: 'Contact Number', value: s => s.contact_number || '' },
+      { label: 'Contact Email', value: s => s.contact_email || '' },
+      { label: 'Category', value: s => s.category || '' },
+      { label: 'Kind', value: s => s.sponsorship_kind || '' },
+      { label: 'Value Description', value: s => s.value_description || '' },
+      { label: 'Estimated Value (INR)', value: s => s.estimated_value_paise != null ? (s.estimated_value_paise / 100) : '' },
+      { label: 'Purpose', value: s => s.purpose || '' },
+      { label: 'Brought By', value: s => s.brought_by || '' },
+      { label: 'Status', value: s => STATUS_LABELS[s.status] || s.status || '' },
+      { label: 'Agreement Date', value: s => s.agreement_date || '' },
+      { label: 'Payment Status', value: s => PAY_STATUS_LABELS[s.payment_status] || s.payment_status || '' },
+      { label: 'Payment Received Date', value: s => s.payment_received_date || '' },
+      { label: 'Logged By', value: s => s.logged_by || '' },
+      { label: 'Notes', value: s => s.notes || '' },
+      { label: 'Created At', value: s => new Date(s.created_at).toLocaleString('en-IN') }
+    ]);
+  });
+
+  // ---------- EXPENSE TRACKER ----------
+
+  function renderExpenseStats() {
+    const totalPaid = allExpenses.filter(x => x.status === 'paid').reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    const pendingCount = allExpenses.filter(x => x.status === 'pending' || x.status === 'reimbursement_needed').length;
+    const thisMonth = allExpenses.filter(x => {
+      if (!x.expense_date) return false;
+      const d = new Date(x.expense_date), now = new Date();
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    document.getElementById('expenseStats').innerHTML = [
+      ['Total Expenses', allExpenses.length],
+      ['Total Paid', money(totalPaid)],
+      ['This Month', money(thisMonth)],
+      ['Pending / Reimburse', pendingCount]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+  }
+
+  function filteredExpenses() {
+    const q = document.getElementById('exSearch').value.trim().toLowerCase();
+    const statusF = document.getElementById('exStatusFilter').value;
+    return allExpenses.filter(x => {
+      if (statusF && x.status !== statusF) return false;
+      if (q) {
+        const hay = [x.title, x.category, x.paid_to, x.paid_by].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  const EXP_STATUS_LABELS = { paid: 'Paid', pending: 'Pending', reimbursement_needed: 'Reimbursement Needed' };
+  const EXP_STATUS_PILL = { paid: 'paid', pending: 'pending', reimbursement_needed: 'rejected' };
+
+  function renderExpenseRows(list) {
+    const tbody = document.getElementById('expenseRows');
+    document.getElementById('expenseEmptyNote').style.display = list.length ? 'none' : 'block';
+    tbody.innerHTML = list.map(x => `
+      <tr data-id="${x.id}">
+        <td class="wrap-cell">${esc(x.title)}</td>
+        <td>${esc(x.category || '—')}</td>
+        <td>${money(x.amount_paise)}</td>
+        <td class="wrap-cell">${esc(x.paid_to || '—')}</td>
+        <td class="wrap-cell">${esc(x.paid_by || '—')}</td>
+        <td>${esc((x.payment_method || '').replace('_', ' ') || '—')}</td>
+        <td>${x.expense_date ? new Date(x.expense_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
+        <td class="wrap-cell">${esc(x.purpose || '—')}</td>
+        <td class="wrap-cell">${esc(x.filled_by || '—')}</td>
+        <td>${x.receipt_path ? `<button class="photoLink" data-expense-receipt="${esc(x.receipt_path)}">View</button>` : '—'}</td>
+        <td><span class="pill ${EXP_STATUS_PILL[x.status] || 'pending'}">${esc(EXP_STATUS_LABELS[x.status] || x.status)}</span></td>
+        <td class="wrap-cell">${esc(x.approved_by || '—')}</td>
+        <td class="wrap-cell">${esc(x.notes || '—')}</td>
+        <td class="actionsCell">
+          <button class="secondaryBtn" data-action="edit-expense">Edit</button>
+          <button class="dangerBtn" data-action="delete-expense">🗑 Delete</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function loadExpenses() {
+    const { data, error } = await client.from('expense_tracker').select('*').order('expense_date', { ascending: false });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load expenses: ' + error.message); return; }
+    allExpenses = data || [];
+    renderExpenseStats();
+    renderExpenseRows(filteredExpenses());
+  }
+
+  ['exSearch', 'exStatusFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => renderExpenseRows(filteredExpenses()));
+  });
+
+  function resetExpenseForm() {
+    ['exTitle', 'exAmount', 'exPaidTo', 'exPaidBy', 'exDate', 'exPurpose', 'exFilledBy', 'exApprovedBy', 'exNotes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('exReceiptFile').value = '';
+    document.getElementById('exCategory').value = '';
+    document.getElementById('exMethod').value = 'cash';
+    document.getElementById('exStatus').value = 'paid';
+    editingExpenseId = null;
+    document.getElementById('expenseFormTitle').textContent = 'Add an expense';
+    document.getElementById('exSaveBtn').textContent = 'Save Expense';
+    document.getElementById('exCancelEditBtn').style.display = 'none';
+  }
+
+  document.getElementById('exSaveBtn').addEventListener('click', async () => {
+    const title = document.getElementById('exTitle').value.trim();
+    const amount = document.getElementById('exAmount').value;
+    if (!title) { showMsg('exFormMsg', 'err', 'Title is required.'); return; }
+    if (!amount || Number(amount) <= 0) { showMsg('exFormMsg', 'err', 'Enter a valid amount.'); return; }
+
+    const payload = {
+      title,
+      category: document.getElementById('exCategory').value || null,
+      amount_paise: Math.round(Number(amount) * 100),
+      paid_to: document.getElementById('exPaidTo').value.trim() || null,
+      paid_by: document.getElementById('exPaidBy').value.trim() || null,
+      payment_method: document.getElementById('exMethod').value,
+      expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
+      purpose: document.getElementById('exPurpose').value.trim() || null,
+      filled_by: document.getElementById('exFilledBy').value.trim() || null,
+      status: document.getElementById('exStatus').value,
+      approved_by: document.getElementById('exApprovedBy').value.trim() || null,
+      notes: document.getElementById('exNotes').value.trim() || null,
+      updated_at: new Date().toISOString()
+    };
+
+    const receiptFile = document.getElementById('exReceiptFile').files[0];
+    if (receiptFile) {
+      showMsg('exFormMsg', 'info', 'Uploading receipt...');
+      const path = 'expense-' + Date.now() + '.' + receiptFile.name.split('.').pop();
+      const { error: upErr } = await client.storage.from('expense-receipts').upload(path, receiptFile);
+      if (upErr) { showMsg('exFormMsg', 'err', 'Receipt upload failed: ' + upErr.message); return; }
+      payload.receipt_path = path;
+    }
+
+    showMsg('exFormMsg', 'info', 'Saving...');
+    const { error } = editingExpenseId
+      ? await client.from('expense_tracker').update(payload).eq('id', editingExpenseId)
+      : await client.from('expense_tracker').insert(payload);
+    if (error) { showMsg('exFormMsg', 'err', 'Save failed: ' + error.message); return; }
+
+    showMsg('exFormMsg', 'ok', '✅ Saved.');
+    resetExpenseForm();
+    await loadExpenses();
+  });
+
+  document.getElementById('exCancelEditBtn').addEventListener('click', resetExpenseForm);
+
+  document.getElementById('expenseRows').addEventListener('click', async (e) => {
+    const receiptBtn = e.target.closest('[data-expense-receipt]');
+    if (receiptBtn) {
+      const { data, error } = await client.storage.from('expense-receipts').createSignedUrl(receiptBtn.dataset.expenseReceipt, 300);
+      if (error) { alert('Could not load receipt: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const row = e.target.closest('tr');
+    if (!row) return;
+    const id = row.dataset.id;
+
+    if (e.target.closest('[data-action="edit-expense"]')) {
+      const x = allExpenses.find(v => v.id === id);
+      if (!x) return;
+      document.getElementById('exTitle').value = x.title || '';
+      document.getElementById('exCategory').value = x.category || '';
+      document.getElementById('exAmount').value = x.amount_paise != null ? (x.amount_paise / 100) : '';
+      document.getElementById('exPaidTo').value = x.paid_to || '';
+      document.getElementById('exPaidBy').value = x.paid_by || '';
+      document.getElementById('exMethod').value = x.payment_method || 'cash';
+      document.getElementById('exDate').value = x.expense_date || '';
+      document.getElementById('exPurpose').value = x.purpose || '';
+      document.getElementById('exFilledBy').value = x.filled_by || '';
+      document.getElementById('exStatus').value = x.status || 'paid';
+      document.getElementById('exApprovedBy').value = x.approved_by || '';
+      document.getElementById('exNotes').value = x.notes || '';
+      editingExpenseId = id;
+      document.getElementById('expenseFormTitle').textContent = 'Edit expense: ' + x.title;
+      document.getElementById('exSaveBtn').textContent = 'Update Expense';
+      document.getElementById('exCancelEditBtn').style.display = 'inline-block';
+      document.getElementById('exTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (e.target.closest('[data-action="delete-expense"]')) {
+      const x = allExpenses.find(v => v.id === id);
+      if (!confirm('Permanently delete this expense entry?\n\n' + (x ? x.title : id))) return;
+      const { error } = await client.from('expense_tracker').delete().eq('id', id);
+      if (error) { showMsg('dashMsg', 'err', 'Delete failed: ' + error.message); return; }
+      if (editingExpenseId === id) resetExpenseForm();
+      await loadExpenses();
+    }
+  });
+
+  document.getElementById('exportExpensesBtn').addEventListener('click', () => {
+    downloadCsv('gul-expense-tracker.csv', allExpenses, [
+      { label: 'Title', value: x => x.title || '' },
+      { label: 'Category', value: x => x.category || '' },
+      { label: 'Amount (INR)', value: x => x.amount_paise != null ? (x.amount_paise / 100) : '' },
+      { label: 'Paid To', value: x => x.paid_to || '' },
+      { label: 'Paid By', value: x => x.paid_by || '' },
+      { label: 'Payment Method', value: x => x.payment_method || '' },
+      { label: 'Expense Date', value: x => x.expense_date || '' },
+      { label: 'Purpose', value: x => x.purpose || '' },
+      { label: 'Filled By', value: x => x.filled_by || '' },
+      { label: 'Status', value: x => EXP_STATUS_LABELS[x.status] || x.status || '' },
+      { label: 'Approved By', value: x => x.approved_by || '' },
+      { label: 'Notes', value: x => x.notes || '' },
+      { label: 'Created At', value: x => new Date(x.created_at).toLocaleString('en-IN') }
+    ]);
   });
 
   async function loadTeams() {
