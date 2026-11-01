@@ -110,6 +110,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <button class="dashTabBtn" data-tab="reflib">🗂 Team Library</button>
       <button class="dashTabBtn" data-tab="sponsorship">💰 Sponsorship</button>
       <button class="dashTabBtn" data-tab="expenses">🧾 Expenses</button>
+      <button class="dashTabBtn" data-tab="finance">📊 Finance / ROI</button>
     </div>
 
     <div id="dashMsg" class="msg"></div>
@@ -385,6 +386,12 @@ td.wrap-cell{white-space:normal;max-width:180px}
             <option value="other">Other</option>
           </select>
         </div>
+        <div><label>Paid from</label>
+          <select id="exPaidSource">
+            <option value="gul_account">Game Up League account</option>
+            <option value="personal">Personal (needs reimbursement)</option>
+          </select>
+        </div>
         <div><label>Expense date</label><input id="exDate" type="date"></div>
         <div><label>Purpose</label><input id="exPurpose" placeholder="Which event / match day / season"></div>
         <div><label>Filled by</label>
@@ -451,12 +458,54 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <table>
         <thead><tr>
           <th>Title</th><th>Category</th><th>Amount</th><th>Paid To</th><th>Paid By</th>
-          <th>Method</th><th>Date</th><th>Purpose</th><th>Filled By</th><th>Receipt</th>
+          <th>Method</th><th>Source</th><th>Date</th><th>Purpose</th><th>Filled By</th><th>Receipt</th>
           <th>Status</th><th>Approved By</th><th>Notes</th><th>Actions</th>
         </tr></thead>
         <tbody id="expenseRows"></tbody>
       </table>
       <div id="expenseEmptyNote" class="emptyNote" style="display:none">No expenses logged yet.</div>
+    </div>
+    </div>
+
+    <div class="tabPanel" id="tabPanel-finance" style="display:none">
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Finance / ROI Overview</h2>
+    </div>
+    <p class="mini" style="color:var(--muted);font-size:13px;margin:-8px 0 16px">
+      Real-money profit/loss view - combines player + owner registration payments, confirmed sponsorship, and every expense (regardless of who paid for it), so you can see exactly where GUL stands.
+    </p>
+
+    <div class="stats" id="financeNetStats"></div>
+
+    <div class="trackerCard">
+      <h3 style="margin:0 0 14px;font-size:15px">💰 Income</h3>
+      <div class="tableWrap" style="max-height:none">
+        <table>
+          <thead><tr><th>Source</th><th>Collected / Confirmed</th><th>Still Pending</th></tr></thead>
+          <tbody id="financeIncomeRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="trackerCard">
+      <h3 style="margin:0 0 14px;font-size:15px">🧾 Expenses</h3>
+      <div class="stats" id="financeExpenseStats" style="margin-bottom:16px"></div>
+      <div class="tableWrap" style="max-height:none">
+        <table>
+          <thead><tr><th>Category</th><th>Total Spent</th><th># Entries</th></tr></thead>
+          <tbody id="financeExpenseByCategory"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="trackerCard">
+      <h3 style="margin:0 0 14px;font-size:15px">⏳ Pending Tasks</h3>
+      <div class="tableWrap" style="max-height:none">
+        <table>
+          <thead><tr><th>Task</th><th>Count</th><th>Amount Involved</th></tr></thead>
+          <tbody id="financePendingRows"></tbody>
+        </table>
+      </div>
     </div>
     </div>
   </div>
@@ -599,6 +648,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     await loadTeamReferences();
     await loadSponsors();
     await loadExpenses();
+    renderFinance();
   }
 
   function shotFor(registrationCode) {
@@ -782,6 +832,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     allSponsors = data || [];
     renderSponsorStats();
     renderSponsorRows(filteredSponsors());
+    if (typeof renderFinance === 'function') renderFinance();
   }
 
   ['spSearch', 'spStatusFilter'].forEach(id => {
@@ -968,6 +1019,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td class="wrap-cell">${esc(x.paid_to || '—')}</td>
         <td class="wrap-cell">${esc(x.paid_by || '—')}</td>
         <td>${esc((x.payment_method || '').replace('_', ' ') || '—')}</td>
+        <td><span class="pill ${x.paid_source === 'personal' ? 'pending' : 'approved'}">${x.paid_source === 'personal' ? 'Personal' : 'GUL Account'}</span></td>
         <td>${x.expense_date ? new Date(x.expense_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}</td>
         <td class="wrap-cell">${esc(x.purpose || '—')}</td>
         <td class="wrap-cell">${esc(x.filled_by || '—')}</td>
@@ -988,6 +1040,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     allExpenses = data || [];
     renderExpenseStats();
     renderExpenseRows(filteredExpenses());
+    if (typeof renderFinance === 'function') renderFinance();
   }
 
   ['exSearch', 'exStatusFilter'].forEach(id => {
@@ -1002,6 +1055,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     document.getElementById('exReceiptFile').value = '';
     document.getElementById('exCategory').value = '';
     document.getElementById('exMethod').value = 'cash';
+    document.getElementById('exPaidSource').value = 'gul_account';
     document.getElementById('exStatus').value = 'paid';
     editingExpenseId = null;
     document.getElementById('expenseFormTitle').textContent = 'Add an expense';
@@ -1022,6 +1076,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       paid_to: document.getElementById('exPaidTo').value.trim() || null,
       paid_by: nameFieldValue('exPaidBy') || null,
       payment_method: document.getElementById('exMethod').value,
+      paid_source: document.getElementById('exPaidSource').value,
       expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
       purpose: document.getElementById('exPurpose').value.trim() || null,
       filled_by: nameFieldValue('exFilledBy') || null,
@@ -1074,6 +1129,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       document.getElementById('exPaidTo').value = x.paid_to || '';
       setNameField('exPaidBy', x.paid_by || '');
       document.getElementById('exMethod').value = x.payment_method || 'cash';
+      document.getElementById('exPaidSource').value = x.paid_source || 'gul_account';
       document.getElementById('exDate').value = x.expense_date || '';
       document.getElementById('exPurpose').value = x.purpose || '';
       setNameField('exFilledBy', x.filled_by || '');
@@ -1106,6 +1162,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Paid To', value: x => x.paid_to || '' },
       { label: 'Paid By', value: x => x.paid_by || '' },
       { label: 'Payment Method', value: x => x.payment_method || '' },
+      { label: 'Paid From', value: x => x.paid_source === 'personal' ? 'Personal' : 'GUL Account' },
       { label: 'Expense Date', value: x => x.expense_date || '' },
       { label: 'Purpose', value: x => x.purpose || '' },
       { label: 'Filled By', value: x => x.filled_by || '' },
@@ -1115,6 +1172,102 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Created At', value: x => new Date(x.created_at).toLocaleString('en-IN') }
     ]);
   });
+
+  // ---------- FINANCE / ROI ----------
+  // Pulls together everything already loaded (regs, teams, payments,
+  // sponsors, expenses) into one real-money profit/loss view - no extra
+  // queries needed, this is pure client-side aggregation.
+
+  const TEAM_FEE_PAISE = 1200000; // keep in sync with markpaid-team's hardcoded amount
+
+  function renderFinance() {
+    const statsEl = document.getElementById('financeNetStats');
+    if (!statsEl) return; // tab not in DOM yet (shouldn't happen, but safe)
+
+    // ---- Income ----
+    const playerIncomePaise = allPayments
+      .filter(p => p.status === 'paid' && p.player_registration_id)
+      .reduce((sum, p) => sum + (p.amount_paise || 0), 0);
+    const ownerIncomePaise = allPayments
+      .filter(p => p.status === 'paid' && p.team_registration_id)
+      .reduce((sum, p) => sum + (p.amount_paise || 0), 0);
+    const sponsorCashConfirmedPaise = allSponsors
+      .filter(s => s.sponsorship_kind === 'cash' && (s.status === 'confirmed' || s.status === 'received'))
+      .reduce((sum, s) => sum + (s.estimated_value_paise || 0), 0);
+    const sponsorNonCashConfirmedPaise = allSponsors
+      .filter(s => s.sponsorship_kind !== 'cash' && (s.status === 'confirmed' || s.status === 'received'))
+      .reduce((sum, s) => sum + (s.estimated_value_paise || 0), 0);
+
+    const playerUnpaid = allRegs.filter(r => !paymentFor(r.id));
+    const playerPendingPaise = playerUnpaid.reduce((sum, r) => sum + (r.quoted_fee_paise || 0), 0);
+    const ownerUnpaid = allTeams.filter(t => !paymentFor(t.id, 'team_registration_id'));
+    const ownerPendingPaise = ownerUnpaid.length * TEAM_FEE_PAISE;
+    const sponsorPotentialPaise = allSponsors
+      .filter(s => s.status === 'lead' || s.status === 'in_talks')
+      .reduce((sum, s) => sum + (s.estimated_value_paise || 0), 0);
+
+    const totalCashIncomePaise = playerIncomePaise + ownerIncomePaise + sponsorCashConfirmedPaise;
+
+    // ---- Expenses (every expense is a real cost, regardless of who paid it) ----
+    const totalExpensePaise = allExpenses.reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    const gulAccountExpensePaise = allExpenses.filter(x => x.paid_source !== 'personal').reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    const personalExpensePaise = allExpenses.filter(x => x.paid_source === 'personal').reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    const pendingReimbursementPaise = allExpenses
+      .filter(x => x.paid_source === 'personal' && x.status === 'reimbursement_needed')
+      .reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+
+    const netProfitPaise = totalCashIncomePaise - totalExpensePaise;
+    const gulAccountBalanceMovePaise = totalCashIncomePaise - gulAccountExpensePaise;
+
+    // ---- Top stat row ----
+    statsEl.innerHTML = [
+      ['Total Cash Income', money(totalCashIncomePaise)],
+      ['Total Expenses', money(totalExpensePaise)],
+      [netProfitPaise >= 0 ? 'Net Profit' : 'Net Loss', money(Math.abs(netProfitPaise))],
+      ['GUL Account Balance Change', (gulAccountBalanceMovePaise >= 0 ? '+' : '-') + money(Math.abs(gulAccountBalanceMovePaise))],
+      ['Pending Reimbursement', money(pendingReimbursementPaise)]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+
+    // ---- Income table ----
+    document.getElementById('financeIncomeRows').innerHTML = [
+      ['Player Registrations', money(playerIncomePaise), playerUnpaid.length + ' unpaid (' + money(playerPendingPaise) + ')'],
+      ['Owner / Team Registrations', money(ownerIncomePaise), ownerUnpaid.length + ' unpaid (' + money(ownerPendingPaise) + ')'],
+      ['Sponsorship - Cash', money(sponsorCashConfirmedPaise), allSponsors.filter(s => s.sponsorship_kind === 'cash' && (s.status === 'lead' || s.status === 'in_talks')).length + ' in talks (' + money(sponsorPotentialPaise) + ' potential across all kinds)'],
+      ['Sponsorship - Non-Cash (in-kind/service/discount, not counted in cash totals)', money(sponsorNonCashConfirmedPaise), '—']
+    ].map(([label, got, pending]) => `<tr><td>${label}</td><td>${got}</td><td class="wrap-cell">${pending}</td></tr>`).join('');
+
+    // ---- Expense stat row + by category ----
+    document.getElementById('financeExpenseStats').innerHTML = [
+      ['Paid from GUL Account', money(gulAccountExpensePaise)],
+      ['Paid Personally', money(personalExpensePaise)],
+      ['Awaiting Reimbursement', money(pendingReimbursementPaise)]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+
+    const byCategory = {};
+    allExpenses.forEach(x => {
+      const cat = x.category || 'Uncategorized';
+      if (!byCategory[cat]) byCategory[cat] = { total: 0, count: 0 };
+      byCategory[cat].total += (x.amount_paise || 0);
+      byCategory[cat].count += 1;
+    });
+    const catRows = Object.entries(byCategory).sort((a, b) => b[1].total - a[1].total);
+    document.getElementById('financeExpenseByCategory').innerHTML = catRows.length
+      ? catRows.map(([cat, v]) => `<tr><td>${esc(cat)}</td><td>${money(v.total)}</td><td>${v.count}</td></tr>`).join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--muted)">No expenses logged yet.</td></tr>';
+
+    // ---- Pending tasks ----
+    const expensesPending = allExpenses.filter(x => x.status === 'pending' || x.status === 'reimbursement_needed');
+    const expensesPendingPaise = expensesPending.reduce((sum, x) => sum + (x.amount_paise || 0), 0);
+    const pendingTaskRows = [
+      ['Unpaid player registrations', playerUnpaid.length, money(playerPendingPaise)],
+      ['Unpaid owner / team registrations', ownerUnpaid.length, money(ownerPendingPaise)],
+      ['Sponsors still a lead / in talks', allSponsors.filter(s => s.status === 'lead' || s.status === 'in_talks').length, money(sponsorPotentialPaise) + ' potential'],
+      ['Expenses pending / needing reimbursement', expensesPending.length, money(expensesPendingPaise)],
+      ['Payment screenshots not yet reviewed', allShots.filter(s => !s.reviewed).length, '—']
+    ];
+    document.getElementById('financePendingRows').innerHTML = pendingTaskRows
+      .map(([task, count, amount]) => `<tr><td>${task}</td><td>${count}</td><td>${amount}</td></tr>`).join('');
+  }
 
   async function loadTeams() {
     const { data: teams, error } = await client

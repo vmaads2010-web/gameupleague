@@ -94,13 +94,19 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
     </div>
    </div>
    <div class="row2">
-    <div class="field"><label>Expense date</label><input id="exDate" type="date"></div>
-    <div class="field"><label>Status</label>
-     <select id="exStatus">
-      <option value="pending">Pending</option><option value="paid">Paid</option>
-      <option value="reimbursement_needed">Reimbursement Needed</option>
+    <div class="field"><label>Paid from <span class="required-star">*</span></label>
+     <select id="exPaidSource">
+      <option value="gul_account">Game Up League account</option>
+      <option value="personal">My own money (personal)</option>
      </select>
     </div>
+    <div class="field"><label>Expense date</label><input id="exDate" type="date"></div>
+   </div>
+   <div class="field"><label>Status</label>
+    <select id="exStatus">
+     <option value="pending">Pending</option><option value="paid">Paid</option>
+     <option value="reimbursement_needed">Reimbursement Needed</option>
+    </select>
    </div>
    <div class="field"><label>Receipt / bill photo (optional)</label><input id="exReceiptFile" type="file" accept="image/*,.pdf"></div>
 
@@ -181,6 +187,10 @@ document.getElementById('exForm').addEventListener('input', (e) => {
   if (note) note.remove();
 }, true);
 
+document.getElementById('exPaidSource').addEventListener('change', (e) => {
+  if (e.target.value === 'personal') document.getElementById('exStatus').value = 'reimbursement_needed';
+});
+
 document.querySelectorAll('select.nameSelect').forEach(sel => {
   sel.addEventListener('change', () => {
     const other = document.getElementById(sel.id + 'Other');
@@ -225,6 +235,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       paid_to: document.getElementById('exPaidTo').value.trim() || null,
       paid_by: paidBy,
       payment_method: document.getElementById('exMethod').value,
+      paid_source: document.getElementById('exPaidSource').value,
       expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
       purpose: document.getElementById('exPurpose').value.trim() || null,
       filled_by: nameFieldValue('exFilledBy') || paidBy,
