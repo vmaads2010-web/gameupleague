@@ -831,6 +831,11 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   }
 
   function roundRectPath(ctx, x, y, w, h, r) {
+    // Clamp like CSS border-radius does - arcTo has no built-in clamping,
+    // so a large radius (e.g. 999 for a "fully pill-shaped" badge) on a
+    // small box sends the path outside the box entirely, producing a
+    // jagged shape instead of a rounded pill.
+    r = Math.min(r, w / 2, h / 2);
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + w, y, x + w, y + h, r);
