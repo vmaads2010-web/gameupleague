@@ -141,24 +141,6 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
     </select>
     <input id="exFilledByOther" placeholder="Type name" style="display:none;margin-top:8px">
    </div>
-   <div class="field"><label>Approved by</label>
-    <select id="exApprovedBy" class="nameSelect">
-     <option value="">Optional</option>
-     <option>Ansel Arakal — President</option>
-     <option>Abhay Arakal — Vice President</option>
-     <option>Vishal Mishra — Chairperson</option>
-     <option>Anmol Arakal — Treasurer</option>
-     <option>Neil Lobo — Technical Director</option>
-     <option>Snedden Dmello — League Commissioner</option>
-     <option>Harshal Kelaskar — Social Media</option>
-     <option>Sheryaans Gwade — Marketing and PR</option>
-     <option>Anslem Crasto — League Marshal</option>
-     <option>Clyde Devinaden — League Marshal</option>
-     <option>Ronnie Oberoi — League Co-ordinator</option>
-     <option value="__other__">Other</option>
-    </select>
-    <input id="exApprovedByOther" placeholder="Type name" style="display:none;margin-top:8px">
-   </div>
    <div class="field"><label>Notes</label><textarea id="exNotes" placeholder="Anything else worth recording"></textarea></div>
 
    <button type="submit" id="submitBtn">Log Expense</button>
@@ -247,7 +229,6 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       purpose: document.getElementById('exPurpose').value.trim() || null,
       filled_by: nameFieldValue('exFilledBy') || paidBy,
       status: document.getElementById('exStatus').value,
-      approved_by: nameFieldValue('exApprovedBy') || null,
       notes: document.getElementById('exNotes').value.trim() || null
     };
 
