@@ -254,7 +254,24 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <div><label>Details of what's given</label><input id="spValueDesc" placeholder="e.g. 20 jerseys, or free turf hours"></div>
         <div><label>Estimated value (₹)</label><input id="spValueAmount" type="number" min="0" placeholder="0"></div>
         <div><label>Purpose / season</label><input id="spPurpose" placeholder="e.g. RELOADED 2026-27"></div>
-        <div><label>Brought in by</label><input id="spBroughtBy" placeholder="Who at GUL brought this sponsor"></div>
+        <div><label>Brought in by</label>
+          <select id="spBroughtBy" class="nameSelect">
+            <option value="">Select</option>
+            <option>Ansel Arakal — President</option>
+            <option>Abhay Arakal — Vice President</option>
+            <option>Vishal Mishra — Chairperson</option>
+            <option>Anmol Arakal — Treasurer</option>
+            <option>Neil Lobo — Technical Director</option>
+            <option>Snedden Dmello — League Commissioner</option>
+            <option>Harshal Kelaskar — Social Media</option>
+            <option>Sheryaans Gwade — Marketing and PR</option>
+            <option>Anslem Crasto — League Marshal</option>
+            <option>Clyde Devinaden — League Marshal</option>
+            <option>Ronnie Oberoi — League Co-ordinator</option>
+            <option value="__other__">Other</option>
+          </select>
+          <input id="spBroughtByOther" placeholder="Type name" style="display:none;margin-top:8px">
+        </div>
         <div><label>Status</label>
           <select id="spStatus">
             <option value="lead">Lead</option><option value="in_talks">In Talks</option>
@@ -271,7 +288,24 @@ td.wrap-cell{white-space:normal;max-width:180px}
         </div>
         <div><label>Payment received date</label><input id="spPaymentDate" type="date"></div>
         <div><label>Agreement / proof document</label><input id="spDocFile" type="file" accept="image/*,.pdf"></div>
-        <div><label>Logged by</label><input id="spLoggedBy" placeholder="Your name"></div>
+        <div><label>Logged by</label>
+          <select id="spLoggedBy" class="nameSelect">
+            <option value="">Select</option>
+            <option>Ansel Arakal — President</option>
+            <option>Abhay Arakal — Vice President</option>
+            <option>Vishal Mishra — Chairperson</option>
+            <option>Anmol Arakal — Treasurer</option>
+            <option>Neil Lobo — Technical Director</option>
+            <option>Snedden Dmello — League Commissioner</option>
+            <option>Harshal Kelaskar — Social Media</option>
+            <option>Sheryaans Gwade — Marketing and PR</option>
+            <option>Anslem Crasto — League Marshal</option>
+            <option>Clyde Devinaden — League Marshal</option>
+            <option>Ronnie Oberoi — League Co-ordinator</option>
+            <option value="__other__">Other</option>
+          </select>
+          <input id="spLoggedByOther" placeholder="Type name" style="display:none;margin-top:8px">
+        </div>
       </div>
       <div style="margin-top:12px"><label>Notes</label><textarea id="spNotes" placeholder="Anything else worth recording"></textarea></div>
       <div style="display:flex;gap:10px;margin-top:14px">
@@ -326,7 +360,24 @@ td.wrap-cell{white-space:normal;max-width:180px}
         </div>
         <div><label>Amount (₹) *</label><input id="exAmount" type="number" min="0" placeholder="0"></div>
         <div><label>Paid to</label><input id="exPaidTo" placeholder="Vendor / person"></div>
-        <div><label>Paid by</label><input id="exPaidBy" placeholder="Who at GUL paid"></div>
+        <div><label>Paid by</label>
+          <select id="exPaidBy" class="nameSelect">
+            <option value="">Select</option>
+            <option>Ansel Arakal — President</option>
+            <option>Abhay Arakal — Vice President</option>
+            <option>Vishal Mishra — Chairperson</option>
+            <option>Anmol Arakal — Treasurer</option>
+            <option>Neil Lobo — Technical Director</option>
+            <option>Snedden Dmello — League Commissioner</option>
+            <option>Harshal Kelaskar — Social Media</option>
+            <option>Sheryaans Gwade — Marketing and PR</option>
+            <option>Anslem Crasto — League Marshal</option>
+            <option>Clyde Devinaden — League Marshal</option>
+            <option>Ronnie Oberoi — League Co-ordinator</option>
+            <option value="__other__">Other</option>
+          </select>
+          <input id="exPaidByOther" placeholder="Type name" style="display:none;margin-top:8px">
+        </div>
         <div><label>Payment method</label>
           <select id="exMethod">
             <option value="cash">Cash</option><option value="upi">UPI</option>
@@ -336,7 +387,24 @@ td.wrap-cell{white-space:normal;max-width:180px}
         </div>
         <div><label>Expense date</label><input id="exDate" type="date"></div>
         <div><label>Purpose</label><input id="exPurpose" placeholder="Which event / match day / season"></div>
-        <div><label>Filled by</label><input id="exFilledBy" placeholder="Who logged this entry"></div>
+        <div><label>Filled by</label>
+          <select id="exFilledBy" class="nameSelect">
+            <option value="">Select</option>
+            <option>Ansel Arakal — President</option>
+            <option>Abhay Arakal — Vice President</option>
+            <option>Vishal Mishra — Chairperson</option>
+            <option>Anmol Arakal — Treasurer</option>
+            <option>Neil Lobo — Technical Director</option>
+            <option>Snedden Dmello — League Commissioner</option>
+            <option>Harshal Kelaskar — Social Media</option>
+            <option>Sheryaans Gwade — Marketing and PR</option>
+            <option>Anslem Crasto — League Marshal</option>
+            <option>Clyde Devinaden — League Marshal</option>
+            <option>Ronnie Oberoi — League Co-ordinator</option>
+            <option value="__other__">Other</option>
+          </select>
+          <input id="exFilledByOther" placeholder="Type name" style="display:none;margin-top:8px">
+        </div>
         <div><label>Receipt / bill photo</label><input id="exReceiptFile" type="file" accept="image/*,.pdf"></div>
         <div><label>Status</label>
           <select id="exStatus">
@@ -344,7 +412,24 @@ td.wrap-cell{white-space:normal;max-width:180px}
             <option value="reimbursement_needed">Reimbursement Needed</option>
           </select>
         </div>
-        <div><label>Approved by</label><input id="exApprovedBy" placeholder="Optional"></div>
+        <div><label>Approved by</label>
+          <select id="exApprovedBy" class="nameSelect">
+            <option value="">Select</option>
+            <option>Ansel Arakal — President</option>
+            <option>Abhay Arakal — Vice President</option>
+            <option>Vishal Mishra — Chairperson</option>
+            <option>Anmol Arakal — Treasurer</option>
+            <option>Neil Lobo — Technical Director</option>
+            <option>Snedden Dmello — League Commissioner</option>
+            <option>Harshal Kelaskar — Social Media</option>
+            <option>Sheryaans Gwade — Marketing and PR</option>
+            <option>Anslem Crasto — League Marshal</option>
+            <option>Clyde Devinaden — League Marshal</option>
+            <option>Ronnie Oberoi — League Co-ordinator</option>
+            <option value="__other__">Other</option>
+          </select>
+          <input id="exApprovedByOther" placeholder="Type name" style="display:none;margin-top:8px">
+        </div>
       </div>
       <div style="margin-top:12px"><label>Notes</label><textarea id="exNotes" placeholder="Anything else worth recording"></textarea></div>
       <div style="display:flex;gap:10px;margin-top:14px">
@@ -411,6 +496,35 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
   const money = (paise) => paise == null ? '—' : '₹' + (paise / 100).toLocaleString('en-IN');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // Name-picker helpers - "who did this" fields use a dropdown of the
+  // actual GUL leadership roster instead of free text, so entries stay
+  // consistent (no typos, no "Ansel" vs "ansel arakal" splitting records).
+  // Picking "Other" reveals a plain text fallback for anyone not listed.
+  document.querySelectorAll('select.nameSelect').forEach(sel => {
+    sel.addEventListener('change', () => {
+      const other = document.getElementById(sel.id + 'Other');
+      if (other) other.style.display = sel.value === '__other__' ? 'block' : 'none';
+    });
+  });
+  function nameFieldValue(id) {
+    const sel = document.getElementById(id);
+    if (!sel) return '';
+    if (sel.value === '__other__') {
+      const other = document.getElementById(id + 'Other');
+      return other ? other.value.trim() : '';
+    }
+    return sel.value;
+  }
+  function setNameField(id, value) {
+    const sel = document.getElementById(id);
+    const other = document.getElementById(id + 'Other');
+    if (!sel) return;
+    const matches = Array.from(sel.options).some(o => o.value === value);
+    if (!value) { sel.value = ''; if (other) { other.style.display = 'none'; other.value = ''; } return; }
+    if (matches) { sel.value = value; if (other) { other.style.display = 'none'; other.value = ''; } }
+    else { sel.value = '__other__'; if (other) { other.style.display = 'block'; other.value = value; } }
+  }
 
   // Builds a wa.me link with a pre-filled message - opens WhatsApp with the
   // text already typed in, admin just has to review and hit send. No
@@ -676,7 +790,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
   function resetSponsorForm() {
     ['spName', 'spContactPerson', 'spContactNumber', 'spContactEmail', 'spValueDesc', 'spValueAmount',
-     'spPurpose', 'spBroughtBy', 'spAgreementDate', 'spPaymentDate', 'spLoggedBy', 'spNotes'].forEach(id => document.getElementById(id).value = '');
+     'spPurpose', 'spAgreementDate', 'spPaymentDate', 'spNotes'].forEach(id => document.getElementById(id).value = '');
+    setNameField('spBroughtBy', '');
+    setNameField('spLoggedBy', '');
     document.getElementById('spDocFile').value = '';
     document.getElementById('spCategory').value = '';
     document.getElementById('spKind').value = 'cash';
@@ -704,12 +820,12 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       value_description: document.getElementById('spValueDesc').value.trim() || null,
       estimated_value_paise: valueAmount ? Math.round(Number(valueAmount) * 100) : null,
       purpose: document.getElementById('spPurpose').value.trim() || null,
-      brought_by: document.getElementById('spBroughtBy').value.trim() || null,
+      brought_by: nameFieldValue('spBroughtBy') || null,
       status: document.getElementById('spStatus').value,
       agreement_date: document.getElementById('spAgreementDate').value || null,
       payment_status: document.getElementById('spPaymentStatus').value,
       payment_received_date: document.getElementById('spPaymentDate').value || null,
-      logged_by: document.getElementById('spLoggedBy').value.trim() || null,
+      logged_by: nameFieldValue('spLoggedBy') || null,
       notes: document.getElementById('spNotes').value.trim() || null,
       updated_at: new Date().toISOString()
     };
@@ -760,12 +876,12 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       document.getElementById('spValueDesc').value = s.value_description || '';
       document.getElementById('spValueAmount').value = s.estimated_value_paise != null ? (s.estimated_value_paise / 100) : '';
       document.getElementById('spPurpose').value = s.purpose || '';
-      document.getElementById('spBroughtBy').value = s.brought_by || '';
+      setNameField('spBroughtBy', s.brought_by || '');
       document.getElementById('spStatus').value = s.status || 'lead';
       document.getElementById('spAgreementDate').value = s.agreement_date || '';
       document.getElementById('spPaymentStatus').value = s.payment_status || 'not_applicable';
       document.getElementById('spPaymentDate').value = s.payment_received_date || '';
-      document.getElementById('spLoggedBy').value = s.logged_by || '';
+      setNameField('spLoggedBy', s.logged_by || '');
       document.getElementById('spNotes').value = s.notes || '';
       editingSponsorId = id;
       document.getElementById('sponsorFormTitle').textContent = 'Edit sponsor: ' + s.sponsor_name;
@@ -879,7 +995,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   });
 
   function resetExpenseForm() {
-    ['exTitle', 'exAmount', 'exPaidTo', 'exPaidBy', 'exDate', 'exPurpose', 'exFilledBy', 'exApprovedBy', 'exNotes'].forEach(id => document.getElementById(id).value = '');
+    ['exTitle', 'exAmount', 'exPaidTo', 'exDate', 'exPurpose', 'exNotes'].forEach(id => document.getElementById(id).value = '');
+    setNameField('exPaidBy', '');
+    setNameField('exFilledBy', '');
+    setNameField('exApprovedBy', '');
     document.getElementById('exReceiptFile').value = '';
     document.getElementById('exCategory').value = '';
     document.getElementById('exMethod').value = 'cash';
@@ -901,13 +1020,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       category: document.getElementById('exCategory').value || null,
       amount_paise: Math.round(Number(amount) * 100),
       paid_to: document.getElementById('exPaidTo').value.trim() || null,
-      paid_by: document.getElementById('exPaidBy').value.trim() || null,
+      paid_by: nameFieldValue('exPaidBy') || null,
       payment_method: document.getElementById('exMethod').value,
       expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
       purpose: document.getElementById('exPurpose').value.trim() || null,
-      filled_by: document.getElementById('exFilledBy').value.trim() || null,
+      filled_by: nameFieldValue('exFilledBy') || null,
       status: document.getElementById('exStatus').value,
-      approved_by: document.getElementById('exApprovedBy').value.trim() || null,
+      approved_by: nameFieldValue('exApprovedBy') || null,
       notes: document.getElementById('exNotes').value.trim() || null,
       updated_at: new Date().toISOString()
     };
@@ -953,13 +1072,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       document.getElementById('exCategory').value = x.category || '';
       document.getElementById('exAmount').value = x.amount_paise != null ? (x.amount_paise / 100) : '';
       document.getElementById('exPaidTo').value = x.paid_to || '';
-      document.getElementById('exPaidBy').value = x.paid_by || '';
+      setNameField('exPaidBy', x.paid_by || '');
       document.getElementById('exMethod').value = x.payment_method || 'cash';
       document.getElementById('exDate').value = x.expense_date || '';
       document.getElementById('exPurpose').value = x.purpose || '';
-      document.getElementById('exFilledBy').value = x.filled_by || '';
+      setNameField('exFilledBy', x.filled_by || '');
       document.getElementById('exStatus').value = x.status || 'paid';
-      document.getElementById('exApprovedBy').value = x.approved_by || '';
+      setNameField('exApprovedBy', x.approved_by || '');
       document.getElementById('exNotes').value = x.notes || '';
       editingExpenseId = id;
       document.getElementById('expenseFormTitle').textContent = 'Edit expense: ' + x.title;

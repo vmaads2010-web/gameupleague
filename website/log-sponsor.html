@@ -117,8 +117,42 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
    <div class="field"><label>Agreement / proof document (optional)</label><input id="spDocFile" type="file" accept="image/*,.pdf"></div>
 
    <div class="sectionTitle">Who's Logging This</div>
-   <div class="field"><label>Brought in by <span class="required-star">*</span></label><input id="spBroughtBy" required placeholder="Your name — who at GUL brought this sponsor"></div>
-   <div class="field"><label>Logged by</label><input id="spLoggedBy" placeholder="Leave blank if same as above"></div>
+   <div class="field"><label>Brought in by <span class="required-star">*</span></label>
+    <select id="spBroughtBy" class="nameSelect">
+     <option value="">Select your name</option>
+     <option>Ansel Arakal — President</option>
+     <option>Abhay Arakal — Vice President</option>
+     <option>Vishal Mishra — Chairperson</option>
+     <option>Anmol Arakal — Treasurer</option>
+     <option>Neil Lobo — Technical Director</option>
+     <option>Snedden Dmello — League Commissioner</option>
+     <option>Harshal Kelaskar — Social Media</option>
+     <option>Sheryaans Gwade — Marketing and PR</option>
+     <option>Anslem Crasto — League Marshal</option>
+     <option>Clyde Devinaden — League Marshal</option>
+     <option>Ronnie Oberoi — League Co-ordinator</option>
+     <option value="__other__">Other</option>
+    </select>
+    <input id="spBroughtByOther" placeholder="Type your name" style="display:none;margin-top:8px">
+   </div>
+   <div class="field"><label>Logged by</label>
+    <select id="spLoggedBy" class="nameSelect">
+     <option value="">Leave blank if same as above</option>
+     <option>Ansel Arakal — President</option>
+     <option>Abhay Arakal — Vice President</option>
+     <option>Vishal Mishra — Chairperson</option>
+     <option>Anmol Arakal — Treasurer</option>
+     <option>Neil Lobo — Technical Director</option>
+     <option>Snedden Dmello — League Commissioner</option>
+     <option>Harshal Kelaskar — Social Media</option>
+     <option>Sheryaans Gwade — Marketing and PR</option>
+     <option>Anslem Crasto — League Marshal</option>
+     <option>Clyde Devinaden — League Marshal</option>
+     <option>Ronnie Oberoi — League Co-ordinator</option>
+     <option value="__other__">Other</option>
+    </select>
+    <input id="spLoggedByOther" placeholder="Type name" style="display:none;margin-top:8px">
+   </div>
    <div class="field"><label>Notes</label><textarea id="spNotes" placeholder="Anything else worth recording"></textarea></div>
 
    <button type="submit" id="submitBtn">Log Sponsor</button>
@@ -159,6 +193,22 @@ document.getElementById('spForm').addEventListener('input', (e) => {
   if (note) note.remove();
 }, true);
 
+document.querySelectorAll('select.nameSelect').forEach(sel => {
+  sel.addEventListener('change', () => {
+    const other = document.getElementById(sel.id + 'Other');
+    if (other) other.style.display = sel.value === '__other__' ? 'block' : 'none';
+  });
+});
+function nameFieldValue(id) {
+  const sel = document.getElementById(id);
+  if (!sel) return '';
+  if (sel.value === '__other__') {
+    const other = document.getElementById(id + 'Other');
+    return other ? other.value.trim() : '';
+  }
+  return sel.value;
+}
+
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Not connected to the database yet. Please contact GUL directly for now.');
   document.getElementById('submitBtn').disabled = true;
@@ -172,8 +222,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     const name = document.getElementById('spName').value.trim();
     if (!name) { flagField('spName', 'Sponsor / company name is required.'); return; }
-    const broughtBy = document.getElementById('spBroughtBy').value.trim();
-    if (!broughtBy) { flagField('spBroughtBy', 'Enter your name - who brought this sponsor in.'); return; }
+    const broughtBy = nameFieldValue('spBroughtBy');
+    if (!broughtBy) { flagField('spBroughtBy', 'Select or type your name - who brought this sponsor in.'); return; }
 
     btn.disabled = true;
     showStatus('ok', 'Saving...');
@@ -193,7 +243,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       agreement_date: document.getElementById('spAgreementDate').value || null,
       payment_status: document.getElementById('spPaymentStatus').value,
       payment_received_date: document.getElementById('spPaymentDate').value || null,
-      logged_by: document.getElementById('spLoggedBy').value.trim() || broughtBy,
+      logged_by: nameFieldValue('spLoggedBy') || broughtBy,
       notes: document.getElementById('spNotes').value.trim() || null
     };
 

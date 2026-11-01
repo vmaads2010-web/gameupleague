@@ -105,9 +105,60 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
    <div class="field"><label>Receipt / bill photo (optional)</label><input id="exReceiptFile" type="file" accept="image/*,.pdf"></div>
 
    <div class="sectionTitle">Who's Logging This</div>
-   <div class="field"><label>Paid by <span class="required-star">*</span></label><input id="exPaidBy" required placeholder="Your name - who actually paid"></div>
-   <div class="field"><label>Filled by</label><input id="exFilledBy" placeholder="Leave blank if same as above"></div>
-   <div class="field"><label>Approved by</label><input id="exApprovedBy" placeholder="Optional"></div>
+   <div class="field"><label>Paid by <span class="required-star">*</span></label>
+    <select id="exPaidBy" class="nameSelect">
+     <option value="">Select your name</option>
+     <option>Ansel Arakal — President</option>
+     <option>Abhay Arakal — Vice President</option>
+     <option>Vishal Mishra — Chairperson</option>
+     <option>Anmol Arakal — Treasurer</option>
+     <option>Neil Lobo — Technical Director</option>
+     <option>Snedden Dmello — League Commissioner</option>
+     <option>Harshal Kelaskar — Social Media</option>
+     <option>Sheryaans Gwade — Marketing and PR</option>
+     <option>Anslem Crasto — League Marshal</option>
+     <option>Clyde Devinaden — League Marshal</option>
+     <option>Ronnie Oberoi — League Co-ordinator</option>
+     <option value="__other__">Other</option>
+    </select>
+    <input id="exPaidByOther" placeholder="Type your name" style="display:none;margin-top:8px">
+   </div>
+   <div class="field"><label>Filled by</label>
+    <select id="exFilledBy" class="nameSelect">
+     <option value="">Leave blank if same as above</option>
+     <option>Ansel Arakal — President</option>
+     <option>Abhay Arakal — Vice President</option>
+     <option>Vishal Mishra — Chairperson</option>
+     <option>Anmol Arakal — Treasurer</option>
+     <option>Neil Lobo — Technical Director</option>
+     <option>Snedden Dmello — League Commissioner</option>
+     <option>Harshal Kelaskar — Social Media</option>
+     <option>Sheryaans Gwade — Marketing and PR</option>
+     <option>Anslem Crasto — League Marshal</option>
+     <option>Clyde Devinaden — League Marshal</option>
+     <option>Ronnie Oberoi — League Co-ordinator</option>
+     <option value="__other__">Other</option>
+    </select>
+    <input id="exFilledByOther" placeholder="Type name" style="display:none;margin-top:8px">
+   </div>
+   <div class="field"><label>Approved by</label>
+    <select id="exApprovedBy" class="nameSelect">
+     <option value="">Optional</option>
+     <option>Ansel Arakal — President</option>
+     <option>Abhay Arakal — Vice President</option>
+     <option>Vishal Mishra — Chairperson</option>
+     <option>Anmol Arakal — Treasurer</option>
+     <option>Neil Lobo — Technical Director</option>
+     <option>Snedden Dmello — League Commissioner</option>
+     <option>Harshal Kelaskar — Social Media</option>
+     <option>Sheryaans Gwade — Marketing and PR</option>
+     <option>Anslem Crasto — League Marshal</option>
+     <option>Clyde Devinaden — League Marshal</option>
+     <option>Ronnie Oberoi — League Co-ordinator</option>
+     <option value="__other__">Other</option>
+    </select>
+    <input id="exApprovedByOther" placeholder="Type name" style="display:none;margin-top:8px">
+   </div>
    <div class="field"><label>Notes</label><textarea id="exNotes" placeholder="Anything else worth recording"></textarea></div>
 
    <button type="submit" id="submitBtn">Log Expense</button>
@@ -148,6 +199,22 @@ document.getElementById('exForm').addEventListener('input', (e) => {
   if (note) note.remove();
 }, true);
 
+document.querySelectorAll('select.nameSelect').forEach(sel => {
+  sel.addEventListener('change', () => {
+    const other = document.getElementById(sel.id + 'Other');
+    if (other) other.style.display = sel.value === '__other__' ? 'block' : 'none';
+  });
+});
+function nameFieldValue(id) {
+  const sel = document.getElementById(id);
+  if (!sel) return '';
+  if (sel.value === '__other__') {
+    const other = document.getElementById(id + 'Other');
+    return other ? other.value.trim() : '';
+  }
+  return sel.value;
+}
+
 if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   showStatus('err', 'Not connected to the database yet. Please contact GUL directly for now.');
   document.getElementById('submitBtn').disabled = true;
@@ -163,8 +230,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     if (!title) { flagField('exTitle', 'Title is required.'); return; }
     const amount = document.getElementById('exAmount').value;
     if (!amount || Number(amount) <= 0) { flagField('exAmount', 'Enter a valid amount.'); return; }
-    const paidBy = document.getElementById('exPaidBy').value.trim();
-    if (!paidBy) { flagField('exPaidBy', 'Enter your name - who actually paid.'); return; }
+    const paidBy = nameFieldValue('exPaidBy');
+    if (!paidBy) { flagField('exPaidBy', 'Select or type your name - who actually paid.'); return; }
 
     btn.disabled = true;
     showStatus('ok', 'Saving...');
@@ -178,9 +245,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       payment_method: document.getElementById('exMethod').value,
       expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
       purpose: document.getElementById('exPurpose').value.trim() || null,
-      filled_by: document.getElementById('exFilledBy').value.trim() || paidBy,
+      filled_by: nameFieldValue('exFilledBy') || paidBy,
       status: document.getElementById('exStatus').value,
-      approved_by: document.getElementById('exApprovedBy').value.trim() || null,
+      approved_by: nameFieldValue('exApprovedBy') || null,
       notes: document.getElementById('exNotes').value.trim() || null
     };
 
