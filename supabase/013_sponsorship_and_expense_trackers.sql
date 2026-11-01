@@ -2,9 +2,10 @@
 -- GAME UP LEAGUE — Sponsorship Tracker + Expense Tracker
 -- Run in Supabase SQL Editor after 001-012.
 --
--- Both are internal record-keeping tools used only from the admin
--- dashboard (nobody outside GUL ever sees or writes to these), so
--- every operation is admin-only, same pattern as team_references.
+-- Anyone on the GUL leadership team can submit a new entry from a
+-- plain link (no login needed - log-sponsor.html / log-expense.html),
+-- same pattern as player_registrations/payment_screenshots: public
+-- INSERT, admin-only SELECT/UPDATE/DELETE from the dashboard.
 -- No cost beyond existing free-tier Supabase usage: two plain tables
 -- plus two small private storage buckets for optional receipt/
 -- agreement photos.
@@ -70,20 +71,46 @@ create table if not exists sponsorship_tracker (
 
 alter table sponsorship_tracker enable row level security;
 
-drop policy if exists "sponsorship_tracker_admin_all" on sponsorship_tracker;
-create policy "sponsorship_tracker_admin_all"
-on sponsorship_tracker for all
+-- Anyone with the link (leadership, no login) can log a new sponsor.
+drop policy if exists "sponsorship_tracker_public_insert" on sponsorship_tracker;
+create policy "sponsorship_tracker_public_insert"
+on sponsorship_tracker for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "sponsorship_tracker_admin_select" on sponsorship_tracker;
+create policy "sponsorship_tracker_admin_select"
+on sponsorship_tracker for select
+to authenticated
+using (is_admin());
+
+drop policy if exists "sponsorship_tracker_admin_update" on sponsorship_tracker;
+create policy "sponsorship_tracker_admin_update"
+on sponsorship_tracker for update
 to authenticated
 using (is_admin()) with check (is_admin());
 
-grant select, insert, update, delete on sponsorship_tracker to authenticated;
+drop policy if exists "sponsorship_tracker_admin_delete" on sponsorship_tracker;
+create policy "sponsorship_tracker_admin_delete"
+on sponsorship_tracker for delete
+to authenticated
+using (is_admin());
+
+grant insert on sponsorship_tracker to anon, authenticated;
+grant select, update, delete on sponsorship_tracker to authenticated;
 
 insert into storage.buckets (id, name, public)
 values ('sponsorship-documents', 'sponsorship-documents', false)
 on conflict (id) do nothing;
 
-drop policy if exists "sponsorship_documents_admin_all" on storage.objects;
-create policy "sponsorship_documents_admin_all"
+drop policy if exists "sponsorship_documents_public_upload" on storage.objects;
+create policy "sponsorship_documents_public_upload"
+on storage.objects for insert
+to anon, authenticated
+with check (bucket_id = 'sponsorship-documents');
+
+drop policy if exists "sponsorship_documents_admin_manage" on storage.objects;
+create policy "sponsorship_documents_admin_manage"
 on storage.objects for all
 to authenticated
 using (bucket_id = 'sponsorship-documents' and is_admin())
@@ -134,20 +161,46 @@ create table if not exists expense_tracker (
 
 alter table expense_tracker enable row level security;
 
-drop policy if exists "expense_tracker_admin_all" on expense_tracker;
-create policy "expense_tracker_admin_all"
-on expense_tracker for all
+-- Anyone with the link (leadership, no login) can log a new expense.
+drop policy if exists "expense_tracker_public_insert" on expense_tracker;
+create policy "expense_tracker_public_insert"
+on expense_tracker for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "expense_tracker_admin_select" on expense_tracker;
+create policy "expense_tracker_admin_select"
+on expense_tracker for select
+to authenticated
+using (is_admin());
+
+drop policy if exists "expense_tracker_admin_update" on expense_tracker;
+create policy "expense_tracker_admin_update"
+on expense_tracker for update
 to authenticated
 using (is_admin()) with check (is_admin());
 
-grant select, insert, update, delete on expense_tracker to authenticated;
+drop policy if exists "expense_tracker_admin_delete" on expense_tracker;
+create policy "expense_tracker_admin_delete"
+on expense_tracker for delete
+to authenticated
+using (is_admin());
+
+grant insert on expense_tracker to anon, authenticated;
+grant select, update, delete on expense_tracker to authenticated;
 
 insert into storage.buckets (id, name, public)
 values ('expense-receipts', 'expense-receipts', false)
 on conflict (id) do nothing;
 
-drop policy if exists "expense_receipts_admin_all" on storage.objects;
-create policy "expense_receipts_admin_all"
+drop policy if exists "expense_receipts_public_upload" on storage.objects;
+create policy "expense_receipts_public_upload"
+on storage.objects for insert
+to anon, authenticated
+with check (bucket_id = 'expense-receipts');
+
+drop policy if exists "expense_receipts_admin_manage" on storage.objects;
+create policy "expense_receipts_admin_manage"
 on storage.objects for all
 to authenticated
 using (bucket_id = 'expense-receipts' and is_admin())

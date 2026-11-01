@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log an Expense — GUL Internal</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1a0a0c">
+<link rel="icon" href="assets/favicon-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap"></noscript>
+<style>
+:root{
+  --navy:#1a0a0c; --blue:#1459c7; --gold:#ffc93c; --trophy:#f5b51b; --glow2:#ff6a3d; --white:#f7f9ff; --muted:#c9b3ac;
+  --line:rgba(255,255,255,.11); --shadow:0 18px 50px rgba(0,0,0,.28);
+  --font-ui:Archivo,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --font-display:'Anton',var(--font-ui);
+  --font-stat:'Barlow Condensed',var(--font-ui);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-ui);background:
+linear-gradient(165deg,#220d10 0%,#3d1216 45%,#1a0a0c 100%);color:var(--white);line-height:1.5;min-height:100vh;position:relative}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse 60% 45% at 85% 0%,rgba(255,201,60,.2),transparent 70%),
+  radial-gradient(ellipse 55% 45% at 10% 100%,rgba(227,38,46,.24),transparent 70%)}
+a{color:inherit;text-decoration:none}.container{width:min(640px,92%);margin:auto;position:relative;z-index:1}
+.wrap{padding:36px 0 80px;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;margin-bottom:22px}
+.brand img{width:44px;height:50px;object-fit:contain}
+.eyebrow{color:#2a1206;background:var(--gold);font-family:var(--font-stat);font-weight:700;letter-spacing:.5px;font-size:13px;text-transform:uppercase;display:inline-flex;align-items:center;padding:3px 11px 4px;border-radius:3px 3px 3px 0}
+h1{font-family:var(--font-display);font-weight:400;font-style:italic;font-size:clamp(26px,5vw,36px);margin:10px 0 10px;letter-spacing:-.8px;text-transform:uppercase}
+.sub{color:var(--muted);margin:0 0 24px;font-size:14px}
+.card{background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.sectionTitle{font-family:var(--font-stat);font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-size:13px;color:var(--gold);margin:22px 0 10px}
+.sectionTitle:first-child{margin-top:0}
+.field{margin-bottom:16px}
+label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#cfd9ef}
+.required-star{color:#ff6a3d}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#260d10;color:#fff;font-size:14px;outline:none;font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+button{width:100%;margin-top:6px;padding:14px;border-radius:12px;border:0;background:var(--gold);color:#2a1206;font-weight:800;font-size:15px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(255,201,60,.3)}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.status{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;display:none}
+.status.show{display:block}
+.status.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+.status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+.fieldInvalid input,.fieldInvalid select{border-color:#ff4d4d;box-shadow:0 0 0 3px rgba(255,77,77,.25)}
+.fieldInvalid{outline:2px solid #ff4d4d;outline-offset:6px;border-radius:12px}
+.fieldErrorMsg{display:flex;align-items:center;gap:6px;color:#ff9d9d;background:rgba(227,38,46,.15);border:1px solid rgba(227,38,46,.4);border-radius:8px;padding:7px 10px;font-size:12.5px;font-weight:700;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container wrap">
+ <div class="brand"><img src="assets/gul-logo-hq.png" alt="GUL"><span>THE GAME UP LEAGUE</span></div>
+ <span class="eyebrow">Internal · GUL Leadership Only</span>
+ <h1>Log an Expense</h1>
+ <p class="sub">Spent money for GUL? Log it here right away — what, how much, why, and who paid. No login needed.</p>
+
+ <div class="card">
+  <form id="exForm">
+
+   <div class="sectionTitle">What Was It For</div>
+   <div class="field"><label>Title <span class="required-star">*</span></label><input id="exTitle" required placeholder="e.g. Turf booking - trials weekend"></div>
+   <div class="row2">
+    <div class="field"><label>Category</label>
+     <select id="exCategory">
+      <option value="">Select</option>
+      <option>Turf Rent</option><option>Jerseys & Kit</option><option>Equipment</option>
+      <option>Referee Fees</option><option>Marketing & Ads</option><option>Food & Refreshments</option>
+      <option>Trophies & Medals</option><option>Transport</option><option>Printing</option>
+      <option>Photography & Videography</option><option>Software & Tools</option>
+      <option>Event Logistics</option><option>Other</option>
+     </select>
+    </div>
+    <div class="field"><label>Amount (₹) <span class="required-star">*</span></label><input id="exAmount" type="number" min="0" inputmode="numeric" required placeholder="0"></div>
+   </div>
+   <div class="field"><label>Purpose</label><input id="exPurpose" placeholder="Which event / match day / season"></div>
+
+   <div class="sectionTitle">Payment Details</div>
+   <div class="row2">
+    <div class="field"><label>Paid to</label><input id="exPaidTo" placeholder="Vendor / person"></div>
+    <div class="field"><label>Payment method</label>
+     <select id="exMethod">
+      <option value="cash">Cash</option><option value="upi">UPI</option>
+      <option value="bank_transfer">Bank Transfer</option><option value="card">Card</option>
+      <option value="other">Other</option>
+     </select>
+    </div>
+   </div>
+   <div class="row2">
+    <div class="field"><label>Expense date</label><input id="exDate" type="date"></div>
+    <div class="field"><label>Status</label>
+     <select id="exStatus">
+      <option value="pending">Pending</option><option value="paid">Paid</option>
+      <option value="reimbursement_needed">Reimbursement Needed</option>
+     </select>
+    </div>
+   </div>
+   <div class="field"><label>Receipt / bill photo (optional)</label><input id="exReceiptFile" type="file" accept="image/*,.pdf"></div>
+
+   <div class="sectionTitle">Who's Logging This</div>
+   <div class="field"><label>Paid by <span class="required-star">*</span></label><input id="exPaidBy" required placeholder="Your name - who actually paid"></div>
+   <div class="field"><label>Filled by</label><input id="exFilledBy" placeholder="Leave blank if same as above"></div>
+   <div class="field"><label>Approved by</label><input id="exApprovedBy" placeholder="Optional"></div>
+   <div class="field"><label>Notes</label><textarea id="exNotes" placeholder="Anything else worth recording"></textarea></div>
+
+   <button type="submit" id="submitBtn">Log Expense</button>
+  </form>
+  <div id="status" class="status"></div>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="admin/supabase-config.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const statusEl = document.getElementById('status');
+function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
+
+function clearFieldErrors() {
+  document.querySelectorAll('.fieldInvalid').forEach(el => el.classList.remove('fieldInvalid'));
+  document.querySelectorAll('.fieldErrorMsg').forEach(el => el.remove());
+}
+function flagField(inputId, msg) {
+  const input = document.getElementById(inputId);
+  if (!input) { showStatus('err', msg); return; }
+  const container = input.closest('.field') || input.parentElement;
+  container.classList.add('fieldInvalid');
+  const note = document.createElement('div');
+  note.className = 'fieldErrorMsg';
+  note.textContent = '⚠️ ' + msg;
+  container.appendChild(note);
+  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (typeof input.focus === 'function') input.focus({ preventScroll: true });
+  showStatus('err', msg);
+}
+document.getElementById('exForm').addEventListener('input', (e) => {
+  const container = e.target.closest('.fieldInvalid');
+  if (!container) return;
+  container.classList.remove('fieldInvalid');
+  const note = container.querySelector('.fieldErrorMsg');
+  if (note) note.remove();
+}, true);
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showStatus('err', 'Not connected to the database yet. Please contact GUL directly for now.');
+  document.getElementById('submitBtn').disabled = true;
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+
+  document.getElementById('exForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    clearFieldErrors();
+
+    const title = document.getElementById('exTitle').value.trim();
+    if (!title) { flagField('exTitle', 'Title is required.'); return; }
+    const amount = document.getElementById('exAmount').value;
+    if (!amount || Number(amount) <= 0) { flagField('exAmount', 'Enter a valid amount.'); return; }
+    const paidBy = document.getElementById('exPaidBy').value.trim();
+    if (!paidBy) { flagField('exPaidBy', 'Enter your name - who actually paid.'); return; }
+
+    btn.disabled = true;
+    showStatus('ok', 'Saving...');
+
+    const payload = {
+      title,
+      category: document.getElementById('exCategory').value || null,
+      amount_paise: Math.round(Number(amount) * 100),
+      paid_to: document.getElementById('exPaidTo').value.trim() || null,
+      paid_by: paidBy,
+      payment_method: document.getElementById('exMethod').value,
+      expense_date: document.getElementById('exDate').value || new Date().toISOString().slice(0, 10),
+      purpose: document.getElementById('exPurpose').value.trim() || null,
+      filled_by: document.getElementById('exFilledBy').value.trim() || paidBy,
+      status: document.getElementById('exStatus').value,
+      approved_by: document.getElementById('exApprovedBy').value.trim() || null,
+      notes: document.getElementById('exNotes').value.trim() || null
+    };
+
+    const receiptFile = document.getElementById('exReceiptFile').files[0];
+    if (receiptFile) {
+      showStatus('ok', 'Uploading receipt...');
+      const path = 'expense-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + receiptFile.name.split('.').pop();
+      const { error: upErr } = await client.storage.from('expense-receipts').upload(path, receiptFile);
+      if (upErr) { showStatus('err', 'Receipt upload failed: ' + upErr.message); btn.disabled = false; return; }
+      payload.receipt_path = path;
+    }
+
+    showStatus('ok', 'Saving...');
+    const { error } = await client.from('expense_tracker').insert(payload);
+    if (error) { showStatus('err', 'Could not save: ' + error.message); btn.disabled = false; return; }
+
+    showStatus('ok', '✅ Expense logged! Thank you — GUL admin will review from here.');
+    document.getElementById('exForm').reset();
+    btn.disabled = false;
+  });
+}
+});
+</script>
+</body>
+</html>

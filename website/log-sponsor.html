@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log a Sponsor — GUL Internal</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1a0a0c">
+<link rel="icon" href="assets/favicon-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&display=swap"></noscript>
+<style>
+:root{
+  --navy:#1a0a0c; --blue:#1459c7; --gold:#ffc93c; --trophy:#f5b51b; --glow2:#ff6a3d; --white:#f7f9ff; --muted:#c9b3ac;
+  --line:rgba(255,255,255,.11); --shadow:0 18px 50px rgba(0,0,0,.28);
+  --font-ui:Archivo,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  --font-display:'Anton',var(--font-ui);
+  --font-stat:'Barlow Condensed',var(--font-ui);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-ui);background:
+linear-gradient(165deg,#220d10 0%,#3d1216 45%,#1a0a0c 100%);color:var(--white);line-height:1.5;min-height:100vh;position:relative}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse 60% 45% at 85% 0%,rgba(255,201,60,.2),transparent 70%),
+  radial-gradient(ellipse 55% 45% at 10% 100%,rgba(227,38,46,.24),transparent 70%)}
+a{color:inherit;text-decoration:none}.container{width:min(640px,92%);margin:auto;position:relative;z-index:1}
+.wrap{padding:36px 0 80px;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;margin-bottom:22px}
+.brand img{width:44px;height:50px;object-fit:contain}
+.eyebrow{color:#2a1206;background:var(--gold);font-family:var(--font-stat);font-weight:700;letter-spacing:.5px;font-size:13px;text-transform:uppercase;display:inline-flex;align-items:center;padding:3px 11px 4px;border-radius:3px 3px 3px 0}
+h1{font-family:var(--font-display);font-weight:400;font-style:italic;font-size:clamp(26px,5vw,36px);margin:10px 0 10px;letter-spacing:-.8px;text-transform:uppercase}
+.sub{color:var(--muted);margin:0 0 24px;font-size:14px}
+.card{background:linear-gradient(145deg,rgba(58,20,26,.95),rgba(20,8,10,.95));border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.sectionTitle{font-family:var(--font-stat);font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-size:13px;color:var(--gold);margin:22px 0 10px}
+.sectionTitle:first-child{margin-top:0}
+.field{margin-bottom:16px}
+label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#cfd9ef}
+.required-star{color:#ff6a3d}
+input,select,textarea{width:100%;padding:12px 13px;border-radius:10px;border:1px solid var(--line);background:#260d10;color:#fff;font-size:14px;outline:none;font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
+button{width:100%;margin-top:6px;padding:14px;border-radius:12px;border:0;background:var(--gold);color:#2a1206;font-weight:800;font-size:15px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+button:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(255,201,60,.3)}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.status{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap;display:none}
+.status.show{display:block}
+.status.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+.status.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+.fieldInvalid input,.fieldInvalid select{border-color:#ff4d4d;box-shadow:0 0 0 3px rgba(255,77,77,.25)}
+.fieldInvalid{outline:2px solid #ff4d4d;outline-offset:6px;border-radius:12px}
+.fieldErrorMsg{display:flex;align-items:center;gap:6px;color:#ff9d9d;background:rgba(227,38,46,.15);border:1px solid rgba(227,38,46,.4);border-radius:8px;padding:7px 10px;font-size:12.5px;font-weight:700;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="container wrap">
+ <div class="brand"><img src="assets/gul-logo-hq.png" alt="GUL"><span>THE GAME UP LEAGUE</span></div>
+ <span class="eyebrow">Internal · GUL Leadership Only</span>
+ <h1>Log a Sponsor</h1>
+ <p class="sub">Met a sponsor? Log it here right away — name, what they're offering, and who brought them in. No login needed.</p>
+
+ <div class="card">
+  <form id="spForm">
+
+   <div class="sectionTitle">Sponsor Details</div>
+   <div class="field"><label>Sponsor / company name <span class="required-star">*</span></label><input id="spName" required placeholder="e.g. Vedit Enterprises"></div>
+   <div class="row2">
+    <div class="field"><label>Contact person</label><input id="spContactPerson" placeholder="Who you spoke to"></div>
+    <div class="field"><label>Contact number</label><input id="spContactNumber" placeholder="+91" inputmode="tel"></div>
+   </div>
+   <div class="field"><label>Contact email</label><input id="spContactEmail" type="email"></div>
+
+   <div class="sectionTitle">What They're Offering</div>
+   <div class="row2">
+    <div class="field"><label>Category</label>
+     <select id="spCategory">
+      <option value="">Select</option>
+      <option>Title Sponsor</option><option>Kit Partner</option><option>Hydration Partner</option>
+      <option>Media Partner</option><option>Fitness Partner</option><option>Venue Partner</option>
+      <option>Cash Sponsor</option><option>In-Kind Sponsor</option><option>Other</option>
+     </select>
+    </div>
+    <div class="field"><label>Kind</label>
+     <select id="spKind">
+      <option value="cash">Cash</option><option value="in_kind">In-kind (goods)</option>
+      <option value="service">Free service</option><option value="discount">Discount</option>
+     </select>
+    </div>
+   </div>
+   <div class="field"><label>Details of what's given</label><input id="spValueDesc" placeholder="e.g. 20 jerseys, or free turf hours for trials"></div>
+   <div class="field"><label>Estimated value (₹)</label><input id="spValueAmount" type="number" min="0" inputmode="numeric" placeholder="0"></div>
+   <div class="field"><label>Purpose / season</label><input id="spPurpose" placeholder="e.g. RELOADED 2026-27"></div>
+
+   <div class="sectionTitle">Status</div>
+   <div class="row2">
+    <div class="field"><label>Status</label>
+     <select id="spStatus">
+      <option value="lead">Lead</option><option value="in_talks">In Talks</option>
+      <option value="confirmed">Confirmed</option><option value="received">Received</option>
+      <option value="fell_through">Fell Through</option>
+     </select>
+    </div>
+    <div class="field"><label>Agreement date</label><input id="spAgreementDate" type="date"></div>
+   </div>
+   <div class="row2">
+    <div class="field"><label>Payment status</label>
+     <select id="spPaymentStatus">
+      <option value="not_applicable">Not applicable</option><option value="pending">Pending</option>
+      <option value="partial">Partial</option><option value="received">Received</option>
+     </select>
+    </div>
+    <div class="field"><label>Payment received date</label><input id="spPaymentDate" type="date"></div>
+   </div>
+   <div class="field"><label>Agreement / proof document (optional)</label><input id="spDocFile" type="file" accept="image/*,.pdf"></div>
+
+   <div class="sectionTitle">Who's Logging This</div>
+   <div class="field"><label>Brought in by <span class="required-star">*</span></label><input id="spBroughtBy" required placeholder="Your name — who at GUL brought this sponsor"></div>
+   <div class="field"><label>Logged by</label><input id="spLoggedBy" placeholder="Leave blank if same as above"></div>
+   <div class="field"><label>Notes</label><textarea id="spNotes" placeholder="Anything else worth recording"></textarea></div>
+
+   <button type="submit" id="submitBtn">Log Sponsor</button>
+  </form>
+  <div id="status" class="status"></div>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+<script src="admin/supabase-config.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+const statusEl = document.getElementById('status');
+function showStatus(kind, msg) { statusEl.className = 'status show ' + kind; statusEl.textContent = msg; }
+
+function clearFieldErrors() {
+  document.querySelectorAll('.fieldInvalid').forEach(el => el.classList.remove('fieldInvalid'));
+  document.querySelectorAll('.fieldErrorMsg').forEach(el => el.remove());
+}
+function flagField(inputId, msg) {
+  const input = document.getElementById(inputId);
+  if (!input) { showStatus('err', msg); return; }
+  const container = input.closest('.field') || input.parentElement;
+  container.classList.add('fieldInvalid');
+  const note = document.createElement('div');
+  note.className = 'fieldErrorMsg';
+  note.textContent = '⚠️ ' + msg;
+  container.appendChild(note);
+  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (typeof input.focus === 'function') input.focus({ preventScroll: true });
+  showStatus('err', msg);
+}
+document.getElementById('spForm').addEventListener('input', (e) => {
+  const container = e.target.closest('.fieldInvalid');
+  if (!container) return;
+  container.classList.remove('fieldInvalid');
+  const note = container.querySelector('.fieldErrorMsg');
+  if (note) note.remove();
+}, true);
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showStatus('err', 'Not connected to the database yet. Please contact GUL directly for now.');
+  document.getElementById('submitBtn').disabled = true;
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+
+  document.getElementById('spForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    clearFieldErrors();
+
+    const name = document.getElementById('spName').value.trim();
+    if (!name) { flagField('spName', 'Sponsor / company name is required.'); return; }
+    const broughtBy = document.getElementById('spBroughtBy').value.trim();
+    if (!broughtBy) { flagField('spBroughtBy', 'Enter your name - who brought this sponsor in.'); return; }
+
+    btn.disabled = true;
+    showStatus('ok', 'Saving...');
+
+    const payload = {
+      sponsor_name: name,
+      contact_person: document.getElementById('spContactPerson').value.trim() || null,
+      contact_number: document.getElementById('spContactNumber').value.trim() || null,
+      contact_email: document.getElementById('spContactEmail').value.trim() || null,
+      category: document.getElementById('spCategory').value || null,
+      sponsorship_kind: document.getElementById('spKind').value,
+      value_description: document.getElementById('spValueDesc').value.trim() || null,
+      estimated_value_paise: document.getElementById('spValueAmount').value ? Math.round(Number(document.getElementById('spValueAmount').value) * 100) : null,
+      purpose: document.getElementById('spPurpose').value.trim() || null,
+      brought_by: broughtBy,
+      status: document.getElementById('spStatus').value,
+      agreement_date: document.getElementById('spAgreementDate').value || null,
+      payment_status: document.getElementById('spPaymentStatus').value,
+      payment_received_date: document.getElementById('spPaymentDate').value || null,
+      logged_by: document.getElementById('spLoggedBy').value.trim() || broughtBy,
+      notes: document.getElementById('spNotes').value.trim() || null
+    };
+
+    const docFile = document.getElementById('spDocFile').files[0];
+    if (docFile) {
+      showStatus('ok', 'Uploading document...');
+      const path = 'sponsor-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + docFile.name.split('.').pop();
+      const { error: upErr } = await client.storage.from('sponsorship-documents').upload(path, docFile);
+      if (upErr) { showStatus('err', 'Document upload failed: ' + upErr.message); btn.disabled = false; return; }
+      payload.document_path = path;
+    }
+
+    showStatus('ok', 'Saving...');
+    const { error } = await client.from('sponsorship_tracker').insert(payload);
+    if (error) { showStatus('err', 'Could not save: ' + error.message); btn.disabled = false; return; }
+
+    showStatus('ok', '✅ Sponsor logged! Thank you — GUL admin will follow up from here.');
+    document.getElementById('spForm').reset();
+    btn.disabled = false;
+  });
+}
+});
+</script>
+</body>
+</html>
