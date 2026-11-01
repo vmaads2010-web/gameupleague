@@ -710,6 +710,22 @@ function clearContainerError(e) {
   if (note) note.remove();
 }
 
+// Phones with inputmode="numeric" show a digit-only keypad with no "/" key,
+// so a player can type "15121990" but can never produce "15/12/1990" - every
+// mobile submission was failing DOB validation for this reason. Auto-inserts
+// the slashes as they type digits, so the field always ends up in the right
+// format no matter what keypad the phone shows.
+const dobInput = document.getElementById('dob');
+if (dobInput) {
+  dobInput.addEventListener('input', () => {
+    let digits = dobInput.value.replace(/\D/g, '').slice(0, 8);
+    let out = digits.slice(0, 2);
+    if (digits.length > 2) out += '/' + digits.slice(2, 4);
+    if (digits.length > 4) out += '/' + digits.slice(4, 8);
+    dobInput.value = out;
+  });
+}
+
 function regCode() {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
   return 'GUL-PLY-' + Date.now().toString(36).toUpperCase() + rand;
