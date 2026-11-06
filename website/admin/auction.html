@@ -90,6 +90,7 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.5px
     <div style="display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)">
       <span id="whoami"></span>
       <a href="dashboard.html" class="secondaryBtn" style="padding:9px 13px;text-decoration:none;display:inline-block">Main Dashboard</a>
+      <a href="../auction-live.html" target="_blank" rel="noopener" class="secondaryBtn" style="padding:9px 13px;text-decoration:none;display:inline-block">📺 Open Live View</a>
       <button class="secondaryBtn" id="signOutBtn">Sign Out</button>
     </div>
   </header>
@@ -470,8 +471,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     loadPlayerToBlock(next);
   });
 
+  async function broadcastBlockPlayer(playerId) {
+    await client.from('auction_state').update({ current_block_player_id: playerId, updated_at: new Date().toISOString() }).eq('id', 1);
+  }
+
   function loadPlayerToBlock(player) {
     currentBlockPlayer = player;
+    broadcastBlockPlayer(player.id);
     const area = document.getElementById('blockArea');
     const teamCards = allTeams.map(t => {
       const canBuy = t.squad_count < t.squad_target && canAfford(t, player.base_price);
@@ -523,6 +529,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     showMsg('dashMsg', 'ok', '✅ ' + currentBlockPlayer.full_name + ' sold to ' + team.team_name + ' for ' + money(price) + '.');
     document.getElementById('blockArea').innerHTML = '';
     currentBlockPlayer = null;
+    await broadcastBlockPlayer(null);
     await loadAll();
   }
 
@@ -532,6 +539,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     showMsg('dashMsg', 'ok', currentBlockPlayer.full_name + ' marked unsold.');
     document.getElementById('blockArea').innerHTML = '';
     currentBlockPlayer = null;
+    await broadcastBlockPlayer(null);
     await loadAll();
   }
 
