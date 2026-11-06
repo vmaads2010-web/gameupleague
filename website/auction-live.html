@@ -47,14 +47,29 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;position:sticky;top
 .blockPhoto{width:150px;height:150px;border-radius:18px;object-fit:cover;border:3px solid var(--gold);margin:0 auto 14px;display:block;background:#2a0e12}
 .leadBanner{margin-top:14px;padding:12px 16px;background:rgba(255,201,60,.15);border:2px solid var(--gold);border-radius:12px;font-size:22px;font-weight:900;color:#fff;animation:leadPulse .5s ease}
 @keyframes leadPulse{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
-.soldOverlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(10,4,5,.88);backdrop-filter:blur(4px)}
-.soldCard{text-align:center;animation:soldPop .5s cubic-bezier(.2,1.4,.4,1)}
+.soldOverlay{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,4,5,.92);backdrop-filter:blur(6px);overflow:hidden}
+.soldOverlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,201,60,.35),transparent 55%);animation:burstPulse 1.6s ease-in-out infinite}
+@keyframes burstPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+.flashHit{position:fixed;inset:0;z-index:52;background:#fff;animation:flashOut .5s ease-out forwards;pointer-events:none}
+@keyframes flashOut{0%{opacity:.9}100%{opacity:0}}
+.soldMascot{width:120px;height:auto;margin-bottom:6px;filter:drop-shadow(0 14px 24px rgba(0,0,0,.5));animation:mascotBounce 1s cubic-bezier(.3,1.6,.4,1)}
+@keyframes mascotBounce{0%{transform:translateY(-140px) scale(.5) rotate(-15deg);opacity:0}55%{transform:translateY(10px) scale(1.12) rotate(6deg);opacity:1}75%{transform:translateY(-14px) scale(1)}100%{transform:translateY(0) scale(1) rotate(0)}}
+.soldCard{text-align:center;position:relative;z-index:1;animation:soldPop .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes soldPop{0%{transform:scale(.4) rotate(-6deg);opacity:0}70%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0)}}
-.soldCard .soldTag{font-family:var(--font-display);font-style:italic;font-size:clamp(50px,12vw,100px);color:#6be3b3;text-shadow:0 0 30px rgba(107,227,179,.6);letter-spacing:-2px}
-.soldCard .soldName{font-size:clamp(22px,5vw,32px);font-weight:900;margin-top:6px}
-.soldCard .soldInfo{font-size:18px;color:var(--gold);margin-top:8px;font-weight:800}
+.soldCard .soldTag{font-family:var(--font-display);font-style:italic;font-size:clamp(60px,14vw,120px);color:#6be3b3;text-shadow:0 0 40px rgba(107,227,179,.7),0 0 80px rgba(255,201,60,.3);letter-spacing:-3px;-webkit-text-stroke:2px rgba(255,255,255,.15)}
+.soldCard .soldName{font-family:var(--font-display);font-style:italic;font-size:clamp(26px,6vw,40px);font-weight:400;margin-top:6px;text-transform:uppercase}
+.soldCard .soldInfo{font-size:20px;color:var(--gold);margin-top:10px;font-weight:800;letter-spacing:.5px}
 .confetti{position:fixed;top:-20px;width:10px;height:16px;z-index:51;animation:confettiFall linear forwards}
 @keyframes confettiFall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
+
+.introBurst{position:fixed;inset:0;z-index:40;pointer-events:none;background:radial-gradient(circle at 50% 10%,rgba(255,201,60,.25),transparent 60%);animation:introFade 1.3s ease forwards}
+@keyframes introFade{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+.introMascot{position:fixed;top:18px;right:18px;z-index:41;width:70px;animation:introMascotIn .7s cubic-bezier(.3,1.5,.4,1);pointer-events:none}
+@keyframes introMascotIn{0%{transform:translateX(120px) rotate(20deg) scale(.6);opacity:0}100%{transform:translateX(0) rotate(0) scale(1);opacity:1}}
+.introTag{position:fixed;top:30px;right:98px;z-index:41;background:var(--gold);color:#2a1206;font-family:var(--font-stat);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.6px;padding:6px 12px;border-radius:999px 999px 0 999px;animation:introTagIn .5s ease .15s both;pointer-events:none}
+@keyframes introTagIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.blockCard.reveal{animation:blockReveal .6s cubic-bezier(.2,1.3,.3,1)}
+@keyframes blockReveal{0%{transform:scale(.85) translateY(30px);opacity:0;filter:blur(6px)}100%{transform:scale(1) translateY(0);opacity:1;filter:blur(0)}}
 </style>
 </head>
 <body>
@@ -70,6 +85,7 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;position:sticky;top
 
   <div id="blockArea"></div>
   <div id="soldOverlayArea"></div>
+  <div id="introOverlayArea"></div>
 
   <div class="sectionTitle">Teams &amp; Purse Remaining</div>
   <div id="teamsGrid" class="teamsGrid"></div>
@@ -90,26 +106,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = (n) => n == null ? '—' : '₹' + Number(n).toLocaleString('en-IN');
   let lastCelebratedSoldAt = null;
+  let lastIntroducedPlayerId = null;
 
   function showSoldCelebration(playerName, teamName, price) {
     const area = document.getElementById('soldOverlayArea');
     const colors = ['#ffc93c', '#6be3b3', '#ff6a3d', '#f7f9ff', '#e3262e'];
-    const confetti = Array.from({ length: 60 }, () => {
+    const confetti = Array.from({ length: 90 }, () => {
       const left = Math.random() * 100;
-      const delay = Math.random() * 0.5;
-      const duration = 2.2 + Math.random() * 1.6;
+      const delay = Math.random() * 0.6;
+      const duration = 2.2 + Math.random() * 1.8;
       const color = colors[Math.floor(Math.random() * colors.length)];
       return `<div class="confetti" style="left:${left}vw;background:${color};animation-duration:${duration}s;animation-delay:${delay}s"></div>`;
     }).join('');
-    area.innerHTML = `<div class="soldOverlay">
+    area.innerHTML = `<div class="flashHit"></div><div class="soldOverlay">
       ${confetti}
+      <img class="soldMascot" src="assets/season2-mascot.jpg" alt="GUL Mascot">
       <div class="soldCard">
         <div class="soldTag">SOLD!</div>
         <div class="soldName">${esc(playerName || '')}</div>
         <div class="soldInfo">${esc(teamName || '')} · ${money(price)}</div>
       </div>
     </div>`;
-    setTimeout(() => { area.innerHTML = ''; }, 4200);
+    setTimeout(() => { area.innerHTML = ''; }, 4800);
+  }
+
+  function showPlayerIntro(playerName) {
+    const area = document.getElementById('introOverlayArea');
+    area.innerHTML = `
+      <div class="introBurst"></div>
+      <div class="introTag">🎙️ Now Introducing</div>
+      <img class="introMascot" src="assets/season2-mascot.jpg" alt="GUL Mascot">
+    `;
+    setTimeout(() => { area.innerHTML = ''; }, 1600);
   }
 
   async function tick() {
@@ -124,12 +152,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const blockEl = document.getElementById('blockArea');
     const current = state && state.current_block_player_id ? players.find(p => p.id === state.current_block_player_id) : null;
     if (current) {
+      const isNewPlayer = current.id !== lastIntroducedPlayerId;
+      if (isNewPlayer) { lastIntroducedPlayerId = current.id; showPlayerIntro(current.full_name); }
       const leadingTeam = state.current_leading_team_id ? teams.find(t => t.id === state.current_leading_team_id) : null;
       const bidAmount = state.current_bid != null ? state.current_bid : current.base_price;
       const upcoming = players
         .filter(p => p.pool === current.pool && p.set_number === current.set_number && p.id !== current.id && (p.status === 'available' || p.status === 'recalled'))
         .slice(0, 3);
-      blockEl.innerHTML = `<div class="blockCard">
+      blockEl.innerHTML = `<div class="blockCard${isNewPlayer ? ' reveal' : ''}">
         <div class="tag">${esc(current.pool)} · Set ${current.set_number}</div>
         ${current.photo_url ? `<img class="blockPhoto" src="${esc(current.photo_url)}" alt="${esc(current.full_name)}">` : ''}
         <div class="pname">${esc(current.full_name)}</div>
@@ -151,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>` : ''}
       </div>`;
     } else {
+      lastIntroducedPlayerId = null;
       blockEl.innerHTML = `<div class="blockCard idle"><div class="sub">⏳ No player on the block right now — check back shortly.</div></div>`;
     }
 
