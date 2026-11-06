@@ -153,6 +153,8 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.5px
             </select>
           </div>
           <div><label>Set</label><select id="plSet"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+          <div><label>Photo URL (optional, relative to site root)</label><input id="plPhoto" placeholder="assets/squad-thumb/xxx.jpg"></div>
+          <div style="display:flex;align-items:flex-end;padding-bottom:4px"><label style="display:flex;gap:8px;align-items:center;margin:0"><input type="checkbox" id="plFlexible" style="width:auto"> Flexible (plays multiple positions)</label></div>
         </div>
         <button class="primaryBtn" id="addPlayerBtn" style="margin-top:14px">Add Player</button>
         <div id="plMsg" class="msg" style="margin-top:10px"></div>
@@ -423,7 +425,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       const team = allTeams.find(t => t.id === p.sold_to_team_id);
       return `<tr>
         <td>${esc(p.full_name)}</td>
-        <td>${esc(p.position || '—')}</td>
+        <td>${esc(p.position || '—')}${p.is_flexible ? ' <span style="color:var(--gold)">(Flex)</span>' : ''}</td>
         <td>${esc(p.pool)}</td>
         <td>${p.set_number ?? '—'}</td>
         <td>${money(p.base_price)}</td>
@@ -444,12 +446,16 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const { error } = await client.from('auction_players').insert({
       full_name: name,
       position: document.getElementById('plPosition').value.trim() || null,
+      photo_url: document.getElementById('plPhoto').value.trim() || null,
+      is_flexible: document.getElementById('plFlexible').checked,
       pool, set_number: setNumber, base_price: BASE_PRICE[pool]
     });
     if (error) { showMsg('plMsg', 'err', 'Failed: ' + error.message); return; }
     showMsg('plMsg', 'ok', '✅ Added ' + name + ' to ' + pool + ' set ' + setNumber + '.');
     document.getElementById('plName').value = '';
     document.getElementById('plPosition').value = '';
+    document.getElementById('plPhoto').value = '';
+    document.getElementById('plFlexible').checked = false;
     await loadAll();
   });
 
@@ -471,54 +477,110 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     loadPlayerToBlock(next);
   });
 
-  async function broadcastBlockPlayer(playerId) {
-    await client.from('auction_state').update({ current_block_player_id: playerId, updated_at: new Date().toISOString() }).eq('id', 1);
+  let currentBid = null;
+  let currentLeadingTeamId = null;
+  const BID_INCREMENT = 100000; // flat Rs 1L per the locked rules
+
+  async function broadcastBlockState() {
+    await client.from('auction_state').update({
+      current_block_player_id: currentBlockPlayer ? currentBlockPlayer.id : null,
+      current_bid: currentBid,
+      current_leading_team_id: currentLeadingTeamId,
+      updated_at: new Date().toISOString()
+    }).eq('id', 1);
+  }
+
+  function upcomingPlayers(player) {
+    return allPlayers
+      .filter(p => p.pool === player.pool && p.set_number === player.set_number && p.id !== player.id && (p.status === 'available' || p.status === 'recalled'))
+      .slice(0, 3);
   }
 
   function loadPlayerToBlock(player) {
     currentBlockPlayer = player;
-    broadcastBlockPlayer(player.id);
+    currentBid = player.base_price;
+    currentLeadingTeamId = null;
+    broadcastBlockState();
+    renderBlock();
+  }
+
+  function renderBlock() {
+    const player = currentBlockPlayer;
     const area = document.getElementById('blockArea');
+    if (!player) { area.innerHTML = ''; return; }
+    const nextBid = currentBid + BID_INCREMENT;
+    const leadingTeam = currentLeadingTeamId ? allTeams.find(t => t.id === currentLeadingTeamId) : null;
+
     const teamCards = allTeams.map(t => {
-      const canBuy = t.squad_count < t.squad_target && canAfford(t, player.base_price);
-      return `<div class="bidTeamCard">
-        <div class="tname">${esc(t.team_name)}</div>
+      const isLeading = t.id === currentLeadingTeamId;
+      const squadFull = t.squad_count >= t.squad_target;
+      const canRaise = !squadFull && !isLeading && canAfford(t, nextBid);
+      return `<div class="bidTeamCard" style="${isLeading ? 'border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,60,.3)' : ''}">
+        <div class="tname">${esc(t.team_name)} ${isLeading ? '👑' : ''}</div>
         <div class="tpurse">${money(t.remaining_purse)} left · ${t.squad_count}/${t.squad_target} squad</div>
-        <button class="primaryBtn" data-sell-to="${t.id}" ${canBuy ? '' : 'disabled'}>Sold to this team</button>
+        <button class="${isLeading ? 'okBtn' : 'primaryBtn'}" data-bid="${t.id}" ${canRaise ? '' : 'disabled'}>${isLeading ? 'Leading' : squadFull ? 'Squad full' : 'Bid ' + money(nextBid)}</button>
       </div>`;
     }).join('');
+
+    const upcoming = upcomingPlayers(player);
+    const upcomingHtml = upcoming.length ? `
+      <div class="trackerCard" style="margin-top:14px">
+        <h3 style="margin:0 0 10px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Up Next</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          ${upcoming.map(p => `<div style="text-align:center;width:90px">
+            ${p.photo_url ? `<img src="../${esc(p.photo_url)}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;border:1px solid var(--line)">` : '<div style="width:64px;height:64px;border-radius:10px;background:#1a0a0c;border:1px solid var(--line);margin:auto"></div>'}
+            <div style="font-size:11px;margin-top:4px">${esc(p.full_name)}</div>
+            <div style="font-size:10px;color:var(--muted)">${money(p.base_price)}</div>
+          </div>`).join('')}
+        </div>
+      </div>` : '';
+
     area.innerHTML = `
       <div class="blockCard">
         <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">${esc(player.pool)} · Set ${player.set_number}</div>
-        ${player.photo_url ? `<img src="../${esc(player.photo_url)}" alt="${esc(player.full_name)}" style="width:120px;height:120px;border-radius:14px;object-fit:cover;border:3px solid var(--gold);margin:8px auto;display:block">` : ''}
+        ${player.photo_url ? `<img src="../${esc(player.photo_url)}" alt="${esc(player.full_name)}" style="width:130px;height:130px;border-radius:14px;object-fit:cover;border:3px solid var(--gold);margin:8px auto;display:block">` : ''}
         <div class="pname">${esc(player.full_name)}</div>
-        <div class="pbase">Base price: ${money(player.base_price)}${player.position ? ' · ' + esc(player.position) : ''}</div>
-        <label style="margin-top:16px">Final sold price (Rs)</label>
-        <input id="soldPriceInput" type="number" min="${player.base_price}" step="100000" value="${player.base_price}">
+        <div class="pbase">${esc(player.position || 'Position not set')} ${player.is_flexible ? '· <span style="color:var(--gold)">Flexible</span>' : ''} · Base price: ${money(player.base_price)}</div>
+        <div style="margin-top:18px;padding:16px;background:rgba(0,0,0,.25);border-radius:12px">
+          <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Current Bid</div>
+          <div style="font-family:Anton;font-size:40px;color:var(--gold)">${money(currentBid)}</div>
+          <div style="font-size:14px;color:var(--muted)">${leadingTeam ? 'Leading: ' + esc(leadingTeam.team_name) + ' 👑' : 'No bids yet — base price only'}</div>
+        </div>
       </div>
       <div class="bidGrid">${teamCards}</div>
       <div class="actionRow">
+        <button class="okBtn" id="confirmSoldBtn" ${leadingTeam ? '' : 'disabled'} style="padding:12px 20px;font-size:14px">✅ SOLD to ${leadingTeam ? esc(leadingTeam.team_name) : '...'} at ${money(currentBid)}</button>
         <button class="dangerBtn" id="markUnsoldBtn">Mark UNSOLD</button>
       </div>
+      ${upcomingHtml}
       <div id="blockMsg" class="msg" style="margin-top:12px"></div>
     `;
-    area.querySelectorAll('[data-sell-to]').forEach(btn => {
-      btn.addEventListener('click', () => sellToTeam(btn.dataset.sellTo));
+    area.querySelectorAll('[data-bid]').forEach(btn => {
+      btn.addEventListener('click', () => placeBid(btn.dataset.bid));
     });
+    document.getElementById('confirmSoldBtn').addEventListener('click', confirmSold);
     document.getElementById('markUnsoldBtn').addEventListener('click', markUnsold);
   }
 
-  async function sellToTeam(teamId) {
+  async function placeBid(teamId) {
     const team = allTeams.find(t => t.id === teamId);
-    const price = Number(document.getElementById('soldPriceInput').value);
-    if (!price || price < currentBlockPlayer.base_price) { showMsg('blockMsg', 'err', 'Sold price must be at least the base price.'); return; }
-    if (!canAfford(team, price)) {
-      showMsg('blockMsg', 'err', '⛔ Blocked by reserve-purse rule: ' + team.team_name + ' would not have enough left to complete their 8-player squad at this price.');
+    const nextBid = currentBid + BID_INCREMENT;
+    if (!canAfford(team, nextBid)) {
+      showMsg('blockMsg', 'err', '⛔ Blocked by reserve-purse rule: ' + team.team_name + ' would not have enough left to complete their squad at ' + money(nextBid) + '.');
       return;
     }
+    currentBid = nextBid;
+    currentLeadingTeamId = teamId;
+    await client.from('auction_bid_log').insert({ player_id: currentBlockPlayer.id, team_id: teamId, bid_amount: nextBid });
+    await broadcastBlockState();
+    renderBlock();
+  }
+
+  async function confirmSold() {
+    const teamId = currentLeadingTeamId;
+    const team = allTeams.find(t => t.id === teamId);
+    const price = currentBid;
     showMsg('blockMsg', 'info', 'Recording sale...');
-    const { error: logErr } = await client.from('auction_bid_log').insert({ player_id: currentBlockPlayer.id, team_id: teamId, bid_amount: price });
-    if (logErr) { showMsg('blockMsg', 'err', 'Failed to log bid: ' + logErr.message); return; }
     const { error: pErr } = await client.from('auction_players').update({
       status: 'sold', sold_to_team_id: teamId, sold_price: price, sold_at: new Date().toISOString(), updated_at: new Date().toISOString()
     }).eq('id', currentBlockPlayer.id);
@@ -528,9 +590,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     }).eq('id', teamId);
     if (tErr) { showMsg('blockMsg', 'err', 'Failed: ' + tErr.message); return; }
     showMsg('dashMsg', 'ok', '✅ ' + currentBlockPlayer.full_name + ' sold to ' + team.team_name + ' for ' + money(price) + '.');
+    currentBlockPlayer = null; currentBid = null; currentLeadingTeamId = null;
+    await broadcastBlockState();
     document.getElementById('blockArea').innerHTML = '';
-    currentBlockPlayer = null;
-    await broadcastBlockPlayer(null);
     await loadAll();
   }
 
@@ -538,9 +600,9 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const { error } = await client.from('auction_players').update({ status: 'unsold', updated_at: new Date().toISOString() }).eq('id', currentBlockPlayer.id);
     if (error) { showMsg('blockMsg', 'err', 'Failed: ' + error.message); return; }
     showMsg('dashMsg', 'ok', currentBlockPlayer.full_name + ' marked unsold.');
+    currentBlockPlayer = null; currentBid = null; currentLeadingTeamId = null;
+    await broadcastBlockState();
     document.getElementById('blockArea').innerHTML = '';
-    currentBlockPlayer = null;
-    await broadcastBlockPlayer(null);
     await loadAll();
   }
 

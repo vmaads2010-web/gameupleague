@@ -91,11 +91,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const blockEl = document.getElementById('blockArea');
     const current = state && state.current_block_player_id ? players.find(p => p.id === state.current_block_player_id) : null;
     if (current) {
+      const leadingTeam = state.current_leading_team_id ? teams.find(t => t.id === state.current_leading_team_id) : null;
+      const bidAmount = state.current_bid != null ? state.current_bid : current.base_price;
+      const upcoming = players
+        .filter(p => p.pool === current.pool && p.set_number === current.set_number && p.id !== current.id && (p.status === 'available' || p.status === 'recalled'))
+        .slice(0, 3);
       blockEl.innerHTML = `<div class="blockCard">
         <div class="tag">${esc(current.pool)} · Set ${current.set_number}</div>
         ${current.photo_url ? `<img class="blockPhoto" src="${esc(current.photo_url)}" alt="${esc(current.full_name)}">` : ''}
         <div class="pname">${esc(current.full_name)}</div>
-        <div class="pbase">Base price: ${money(current.base_price)}${current.position ? ' · ' + esc(current.position) : ''}</div>
+        <div class="pbase">${esc(current.position || 'Position not set')}${current.is_flexible ? ' · <span style="color:var(--gold)">Flexible</span>' : ''} · Base price: ${money(current.base_price)}</div>
+        <div style="margin-top:16px;padding:14px;background:rgba(0,0,0,.25);border-radius:12px">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Current Bid</div>
+          <div style="font-family:var(--font-display);font-style:italic;font-size:36px;color:var(--gold)">${money(bidAmount)}</div>
+          <div style="font-size:13px;color:var(--muted)">${leadingTeam ? '👑 Leading: ' + esc(leadingTeam.team_name) : 'No bids yet'}</div>
+        </div>
+        ${upcoming.length ? `<div style="margin-top:18px;text-align:left">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Up Next</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+            ${upcoming.map(p => `<div style="text-align:center;width:70px">
+              ${p.photo_url ? `<img src="${esc(p.photo_url)}" style="width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid var(--line)">` : ''}
+              <div style="font-size:10.5px;margin-top:4px">${esc(p.full_name)}</div>
+            </div>`).join('')}
+          </div>
+        </div>` : ''}
       </div>`;
     } else {
       blockEl.innerHTML = `<div class="blockCard idle"><div class="sub">⏳ No player on the block right now — check back shortly.</div></div>`;
