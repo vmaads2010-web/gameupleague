@@ -116,7 +116,8 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.5px
           <div><label>Pool</label><select id="livePool"><option value="flagship">Flagship</option><option value="blockbuster">Blockbuster</option></select></div>
           <div><label>Set</label><select id="liveSet"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
         </div>
-        <button class="secondaryBtn" id="loadBlockBtn" style="margin-top:14px">Load next available player from this set</button>
+        <div id="poolSetSummary" style="margin-top:12px;font-size:12.5px;color:var(--muted)"></div>
+        <button class="secondaryBtn" id="loadBlockBtn" style="margin-top:10px">Load next available player from this set</button>
       </div>
 
       <div id="blockArea"></div>
@@ -367,7 +368,30 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     renderForcedAssignPriority();
     renderSquads();
     renderReplacements();
+    renderPoolSetSummary();
   }
+
+  // Shows exactly how many players are still available in every
+  // pool/set at a glance, with the currently-selected one bolded -
+  // so "no players left here" is never a surprise when you click Load.
+  function renderPoolSetSummary() {
+    const el = document.getElementById('poolSetSummary');
+    if (!el) return;
+    const pool = document.getElementById('livePool').value;
+    const setNumber = Number(document.getElementById('liveSet').value);
+    const parts = [];
+    ['flagship', 'blockbuster'].forEach(p => {
+      for (let s = 1; s <= 6; s++) {
+        const count = allPlayers.filter(pl => pl.pool === p && pl.set_number === s && (pl.status === 'available' || pl.status === 'recalled')).length;
+        if (count === 0 && !(p === pool && s === setNumber)) continue; // hide empty sets beyond the current selection to keep it short
+        const isCurrent = p === pool && s === setNumber;
+        parts.push(`<span style="${isCurrent ? 'color:var(--gold);font-weight:800' : ''}">${p} Set ${s}: ${count} left</span>`);
+      }
+    });
+    el.innerHTML = parts.join(' · ');
+  }
+  document.getElementById('livePool').addEventListener('change', renderPoolSetSummary);
+  document.getElementById('liveSet').addEventListener('change', renderPoolSetSummary);
 
   // ---------- RESERVE-PURSE RULE (the zero-loophole check) ----------
   // Two guards, not one: (1) a hard per-player price cap so no single
@@ -480,7 +504,14 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const pool = document.getElementById('livePool').value;
     const setNumber = Number(document.getElementById('liveSet').value);
     const next = allPlayers.find(p => p.pool === pool && p.set_number === setNumber && (p.status === 'available' || p.status === 'recalled'));
-    if (!next) { showMsg('dashMsg', 'err', 'No available players left in ' + pool + ' Set ' + setNumber + '.'); return; }
+    if (!next) {
+      // Find where players actually remain, so the admin isn't left guessing
+      const anywhere = allPlayers.find(p => (p.status === 'available' || p.status === 'recalled'));
+      const hint = anywhere ? ` Try ${anywhere.pool} Set ${anywhere.set_number} instead (has players left).` : ' No players left anywhere - the auction pool is empty.';
+      alert('⚠️ No available players left in ' + pool + ' Set ' + setNumber + '.' + hint);
+      showMsg('dashMsg', 'err', 'No available players left in ' + pool + ' Set ' + setNumber + '.' + hint);
+      return;
+    }
     loadPlayerToBlock(next);
   });
 
