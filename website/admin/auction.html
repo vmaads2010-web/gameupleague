@@ -279,7 +279,9 @@ function hideMsg(id) { document.getElementById(id).className = 'msg'; }
 const money = (n) => n == null ? '—' : 'Rs ' + Number(n).toLocaleString('en-IN');
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-const MIN_BASE = 100000;       // Blockbuster base price - the floor used by the reserve-purse rule
+const MIN_BASE = 100000;       // Blockbuster base price
+const RESERVE_PER_SLOT = 200000; // real buffer per remaining slot, not just rock-bottom base price
+const MAX_BID_PER_PLAYER = 1500000; // hard cap - no single player can eat the whole purse
 const BASE_PRICE = { flagship: 500000, blockbuster: 100000 };
 const PRESIGN_COST = 3500000;
 const SQUAD_TARGET = 8;
@@ -368,12 +370,17 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   }
 
   // ---------- RESERVE-PURSE RULE (the zero-loophole check) ----------
-  // After this purchase, the team must still be able to afford every
-  // remaining mandatory slot at the lowest possible base price.
+  // Two guards, not one: (1) a hard per-player price cap so no single
+  // player can swallow almost the whole purse, and (2) a real buffer
+  // per remaining slot (not just the rock-bottom base price) so a
+  // team can't spend down to a number that only works if every
+  // remaining player goes for the absolute minimum with zero
+  // competition - which never happens in a real auction.
   function canAfford(team, price) {
+    if (price > MAX_BID_PER_PLAYER) return false;
     const afterPurse = team.remaining_purse - price;
     const slotsAfter = team.squad_target - team.squad_count - 1; // this purchase fills one slot
-    const reserveNeeded = Math.max(0, slotsAfter) * MIN_BASE;
+    const reserveNeeded = Math.max(0, slotsAfter) * RESERVE_PER_SLOT;
     return afterPurse >= reserveNeeded;
   }
 
@@ -514,11 +521,17 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const teamCards = allTeams.map(t => {
       const isLeading = t.id === currentLeadingTeamId;
       const squadFull = t.squad_count >= t.squad_target;
+      const atCap = nextBid > MAX_BID_PER_PLAYER;
       const canRaise = !squadFull && !isLeading && canAfford(t, nextBid);
+      let label = 'Bid ' + money(nextBid);
+      if (isLeading) label = 'Leading';
+      else if (squadFull) label = 'Squad full';
+      else if (atCap) label = 'Max cap reached';
+      else if (!canRaise) label = 'Can\'t afford rest of squad';
       return `<div class="bidTeamCard" style="${isLeading ? 'border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,201,60,.3)' : ''}">
         <div class="tname">${esc(t.team_name)} ${isLeading ? '👑' : ''}</div>
         <div class="tpurse">${money(t.remaining_purse)} left · ${t.squad_count}/${t.squad_target} squad</div>
-        <button class="${isLeading ? 'okBtn' : 'primaryBtn'}" data-bid="${t.id}" ${canRaise ? '' : 'disabled'}>${isLeading ? 'Leading' : squadFull ? 'Squad full' : 'Bid ' + money(nextBid)}</button>
+        <button class="${isLeading ? 'okBtn' : 'primaryBtn'}" data-bid="${t.id}" ${canRaise ? '' : 'disabled'}>${label}</button>
       </div>`;
     }).join('');
 
