@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GUL Auction Dashboard</title>
+<link rel="icon" href="../assets/gul-logo-hq.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1a0a0c;--blue:#1459c7;--gold:#ffc93c;--trophy:#f5b51b;--white:#f7f9ff;--muted:#c9b3ac;--line:rgba(255,255,255,.12);--card:#2a0e12;--green:#16a34a;--red:#e3262e;--font-stat:'Barlow Condensed',Archivo,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font-family:Archivo,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(165deg,#220d10,#3d1216);color:var(--white);min-height:100vh}
+a{color:inherit}
+.loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.loginBox{width:min(420px,92vw);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px}
+.loginBox h1{font-size:20px;margin:0 0 20px}
+label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px;color:#cfd9ef}
+input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#260d10;color:#fff;font-size:14px;font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+button{border:0;border-radius:10px;cursor:pointer;font-weight:800;font-size:13px}
+.primaryBtn{background:var(--gold);color:#101c31;padding:12px 16px}
+.primaryBtn:disabled{opacity:.4;cursor:not-allowed}
+.secondaryBtn{background:rgba(255,255,255,.08);color:#fff;padding:9px 13px}
+.dangerBtn{background:rgba(227,38,46,.15);color:#ff9d9d;padding:7px 11px}
+.okBtn{background:rgba(22,134,92,.2);color:#6be3b3;padding:7px 11px}
+.msg{margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.5;white-space:pre-wrap;display:none}
+.msg.show{display:block}
+.msg.ok{background:rgba(22,134,92,.18);color:#6be3b3;border:1px solid rgba(22,134,92,.4)}
+.msg.err{background:rgba(227,38,46,.15);color:#ff9d9d;border:1px solid rgba(227,38,46,.4)}
+.msg.info{background:rgba(20,89,199,.18);color:#a9c6ff;border:1px solid rgba(20,89,199,.4)}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(20,8,10,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.topbar img{width:36px;height:40px;object-fit:contain}
+.wrap{max-width:1300px;margin:auto;padding:24px}
+.dashTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:14px}
+.dashTabBtn{padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13.5px;font-weight:700;cursor:pointer}
+.dashTabBtn.active{background:#1459c7;border-color:#1459c7;color:#fff}
+.tabPanel{display:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:linear-gradient(160deg,rgba(20,89,199,.12),var(--card));border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.stat:before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--gold)}
+.stat .num{font-size:26px;font-weight:900}
+.stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.tableWrap{max-height:560px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+thead th{position:sticky;top:0;background:#0d1f40;z-index:1}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.pill.available{background:rgba(255,255,255,.08);color:var(--muted)}
+.pill.sold{background:rgba(22,134,92,.2);color:#6be3b3}
+.pill.unsold{background:rgba(227,38,46,.15);color:#ff9d9d}
+.pill.recalled{background:rgba(245,181,27,.15);color:var(--gold)}
+.pill.presigned{background:rgba(20,89,199,.2);color:#a9c6ff}
+.trackerCard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:20px}
+.trackerGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.blockCard{background:linear-gradient(145deg,rgba(255,201,60,.08),var(--card));border:2px solid var(--gold);border-radius:18px;padding:26px;text-align:center;margin-bottom:20px}
+.blockCard .pname{font-family:Anton;font-size:34px;margin:6px 0}
+.blockCard .pbase{font-size:16px;color:var(--muted)}
+.bidGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:18px}
+.bidTeamCard{background:#1a0a0c;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left}
+.bidTeamCard .tname{font-weight:800;font-size:13px}
+.bidTeamCard .tpurse{font-size:11px;color:var(--muted);margin:4px 0 8px}
+.bidTeamCard button{width:100%;padding:8px}
+.actionRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;justify-content:center}
+.emptyNote{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="loginWrap">
+  <div class="loginBox">
+    <h1>GUL Auction Dashboard</h1>
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" required autocomplete="username">
+      <label>Password</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit" id="signInBtn" class="primaryBtn" style="width:100%;margin-top:18px">Sign In</button>
+    </form>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+</div>
+
+<div id="dashView" style="display:none">
+  <header class="topbar">
+    <div class="brand"><img src="../assets/gul-logo-hq.png" alt="GUL"><span>GUL AUCTION</span></div>
+    <div style="display:flex;align-items:center;gap:14px;font-size:13px;color:var(--muted)">
+      <span id="whoami"></span>
+      <a href="dashboard.html" class="secondaryBtn" style="padding:9px 13px;text-decoration:none;display:inline-block">Main Dashboard</a>
+      <button class="secondaryBtn" id="signOutBtn">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="dashTabs" id="dashTabs">
+      <button class="dashTabBtn active" data-tab="live">🔥 Live Auction</button>
+      <button class="dashTabBtn" data-tab="teams">🏆 Teams &amp; Purse</button>
+      <button class="dashTabBtn" data-tab="players">👥 Player Pool</button>
+      <button class="dashTabBtn" data-tab="presign">✍️ Presigns</button>
+      <button class="dashTabBtn" data-tab="unsold">♻️ Unsold / Forced Assign</button>
+      <button class="dashTabBtn" data-tab="squads">📋 Final Squads</button>
+      <button class="dashTabBtn" data-tab="replacements">🔁 Replacements</button>
+    </div>
+
+    <div id="dashMsg" class="msg"></div>
+
+    <!-- ========== LIVE AUCTION ========== -->
+    <div class="tabPanel" id="tabPanel-live" style="display:block">
+      <div class="trackerCard">
+        <h3 style="margin:0 0 10px;font-size:15px">Auction order: Flagship Set 1→4, then Blockbuster Set 1→4</h3>
+        <div class="trackerGrid">
+          <div><label>Pool</label><select id="livePool"><option value="flagship">Flagship</option><option value="blockbuster">Blockbuster</option></select></div>
+          <div><label>Set</label><select id="liveSet"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        </div>
+        <button class="secondaryBtn" id="loadBlockBtn" style="margin-top:14px">Load next available player from this set</button>
+      </div>
+
+      <div id="blockArea"></div>
+    </div>
+
+    <!-- ========== TEAMS ========== -->
+    <div class="tabPanel" id="tabPanel-teams">
+      <div class="stats" id="teamSetupStats"></div>
+      <div class="trackerCard">
+        <h3 style="margin:0 0 14px;font-size:15px">Add / Reset Teams</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 12px">One click sets up all 9 teams with the full Rs 1.30 Cr purse and 8-player squad target. Safe to click once at the start - existing teams with the same name are left untouched.</p>
+        <button class="primaryBtn" id="seedTeamsBtn">Create the 9 standard teams</button>
+        <div id="teamSetupMsg" class="msg" style="margin-top:12px"></div>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>Team</th><th>Owner</th><th>Total Purse</th><th>Remaining</th><th>Squad</th><th>Presigns</th><th>Status</th></tr></thead>
+          <tbody id="teamRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== PLAYER POOL ========== -->
+    <div class="tabPanel" id="tabPanel-players">
+      <div class="trackerCard">
+        <h3 style="margin:0 0 14px;font-size:15px">Add player to pool</h3>
+        <div class="trackerGrid">
+          <div><label>Player name</label><input id="plName"></div>
+          <div><label>Position</label><input id="plPosition" placeholder="e.g. Midfielder"></div>
+          <div><label>Pool</label>
+            <select id="plPool">
+              <option value="flagship">Flagship (base Rs 5L)</option>
+              <option value="blockbuster">Blockbuster (base Rs 1L)</option>
+            </select>
+          </div>
+          <div><label>Set</label><select id="plSet"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        </div>
+        <button class="primaryBtn" id="addPlayerBtn" style="margin-top:14px">Add Player</button>
+        <div id="plMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+      <div class="searchRow" style="display:flex;gap:10px;margin-bottom:14px">
+        <select id="plFilterPool" style="max-width:220px">
+          <option value="">All pools</option>
+          <option value="flagship">Flagship</option>
+          <option value="blockbuster">Blockbuster</option>
+          <option value="presign">Presign</option>
+        </select>
+        <select id="plFilterStatus" style="max-width:220px">
+          <option value="">All statuses</option>
+          <option value="available">Available</option>
+          <option value="sold">Sold</option>
+          <option value="unsold">Unsold</option>
+          <option value="recalled">Recalled (pending re-offer)</option>
+        </select>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>Name</th><th>Position</th><th>Pool</th><th>Set</th><th>Base</th><th>Status</th><th>Sold To</th><th>Sold Price</th><th>Actions</th></tr></thead>
+          <tbody id="playerRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== PRESIGN ========== -->
+    <div class="tabPanel" id="tabPanel-presign">
+      <div class="trackerCard">
+        <h3 style="margin:0 0 10px;font-size:15px">Assign a presign player (Rs 35L fixed, max 2 per team)</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Any player, any quality - owner's own choice, no tier restriction. Each presign costs a flat Rs 35,00,000, deducted immediately from that team's auction purse.</p>
+        <div class="trackerGrid">
+          <div><label>Team</label><select id="psTeam"></select></div>
+          <div><label>Player name</label><input id="psName"></div>
+          <div><label>Position</label><input id="psPosition"></div>
+        </div>
+        <button class="primaryBtn" id="presignBtn" style="margin-top:14px">Confirm Presign (Rs 35L)</button>
+        <div id="psMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>Player</th><th>Position</th><th>Team</th><th>Cost</th><th>Date</th></tr></thead>
+          <tbody id="presignRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== UNSOLD / FORCED ASSIGN ========== -->
+    <div class="tabPanel" id="tabPanel-unsold">
+      <div class="trackerCard">
+        <h3 style="margin:0 0 10px;font-size:15px">Recall round</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Run this once a pool+set finishes. It re-offers every "Unsold" player from that exact set one more time (marks them "Recalled") so they can be bid on again before moving to the next set.</p>
+        <div class="trackerGrid">
+          <div><label>Pool</label><select id="recallPool"><option value="flagship">Flagship</option><option value="blockbuster">Blockbuster</option></select></div>
+          <div><label>Set</label><select id="recallSet"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        </div>
+        <button class="secondaryBtn" id="runRecallBtn" style="margin-top:14px">Run recall round for this set</button>
+        <div id="recallMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+
+      <div class="trackerCard">
+        <h3 style="margin:0 0 10px;font-size:15px">Forced assignment (final step, only if a team can't complete 8 players)</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Priority order below is fewest-players-first, then lowest-purse-first - pick from it top to bottom. Price is the player's base price; purse is allowed to hit Rs 0 but never goes negative.</p>
+        <div id="forcedAssignPriority" class="tableWrap" style="margin-bottom:14px"></div>
+        <div class="trackerGrid">
+          <div><label>Team</label><select id="faTeam"></select></div>
+          <div><label>Unsold player</label><select id="faPlayer"></select></div>
+        </div>
+        <button class="primaryBtn" id="forcedAssignBtn" style="margin-top:14px">Force-Assign Player to Team</button>
+        <div id="faMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <!-- ========== FINAL SQUADS ========== -->
+    <div class="tabPanel" id="tabPanel-squads">
+      <button class="secondaryBtn" id="exportSquadsBtn" style="margin-bottom:14px">⬇ Export Full Squads CSV</button>
+      <div id="squadsArea"></div>
+    </div>
+
+    <!-- ========== REPLACEMENTS ========== -->
+    <div class="tabPanel" id="tabPanel-replacements">
+      <div class="trackerCard">
+        <h3 style="margin:0 0 10px;font-size:15px">Log a replacement</h3>
+        <p style="color:var(--muted);font-size:13px;margin:0 0 12px">Presigned player injured -&gt; owner's own pick. Auctioned player injured -&gt; Unsold Pool first, else management-approved external player.</p>
+        <div class="trackerGrid">
+          <div><label>Team</label><select id="rpTeam"></select></div>
+          <div><label>Original player (injured/unavailable)</label><input id="rpOriginal"></div>
+          <div><label>Replacement player name</label><input id="rpReplacement"></div>
+          <div><label>Source</label>
+            <select id="rpSource">
+              <option value="own_pick">Owner's own pick (presigned player was injured)</option>
+              <option value="unsold_pool">From Unsold Pool</option>
+              <option value="external_approved">External player, management-approved</option>
+            </select>
+          </div>
+          <div><label>Approved by</label><input id="rpApprovedBy" placeholder="Management name"></div>
+        </div>
+        <div style="margin-top:12px"><label>Reason</label><textarea id="rpReason" placeholder="e.g. injury proof submitted"></textarea></div>
+        <button class="primaryBtn" id="rpSaveBtn" style="margin-top:14px">Log Replacement</button>
+        <div id="rpMsg" class="msg" style="margin-top:10px"></div>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>Team</th><th>Original</th><th>Replacement</th><th>Source</th><th>Approved By</th><th>Reason</th><th>Date</th></tr></thead>
+          <tbody id="replacementRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+function showMsg(id, kind, text) {
+  const el = document.getElementById(id);
+  el.className = 'msg show ' + kind;
+  el.textContent = text;
+}
+function hideMsg(id) { document.getElementById(id).className = 'msg'; }
+const money = (n) => n == null ? '—' : 'Rs ' + Number(n).toLocaleString('en-IN');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const MIN_BASE = 100000;       // Blockbuster base price - the floor used by the reserve-purse rule
+const BASE_PRICE = { flagship: 500000, blockbuster: 100000 };
+const PRESIGN_COST = 3500000;
+const SQUAD_TARGET = 8;
+const PRESIGN_MAX = 2;
+const TOTAL_PURSE = 13000000;
+const STANDARD_TEAMS = [
+  'Team 1','Team 2','Team 3','Team 4','Team 5','Team 6','Team 7','Team 8','Team 9'
+];
+
+if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
+  showMsg('loginMsg', 'err', 'supabase-config.js is not configured yet.');
+} else {
+  const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
+  let allTeams = [], allPlayers = [], allPresigns = [], allReplacements = [];
+  let currentBlockPlayer = null;
+
+  // ---------- AUTH (same pattern as the main dashboard) ----------
+  async function refreshAuthState() {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session) {
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('dashView').style.display = 'none';
+      return;
+    }
+    const { data: isAdmin } = await client.rpc('is_admin');
+    if (!isAdmin) {
+      showMsg('loginMsg', 'err', 'Signed in as ' + session.user.email + ', but this account is not an admin.');
+      await client.auth.signOut();
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('dashView').style.display = 'none';
+      return;
+    }
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('dashView').style.display = 'block';
+    document.getElementById('whoami').textContent = session.user.email;
+    await loadAll();
+  }
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('signInBtn');
+    btn.disabled = true;
+    hideMsg('loginMsg');
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const { error } = await client.auth.signInWithPassword({ email, password });
+    btn.disabled = false;
+    if (error) { showMsg('loginMsg', 'err', 'Sign in failed: ' + error.message); return; }
+    await refreshAuthState();
+  });
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await client.auth.signOut();
+    await refreshAuthState();
+  });
+
+  // ---------- TABS ----------
+  document.getElementById('dashTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.dashTabBtn');
+    if (!btn) return;
+    document.querySelectorAll('.dashTabBtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tabPanel').forEach(p => p.style.display = 'none');
+    document.getElementById('tabPanel-' + btn.dataset.tab).style.display = 'block';
+  });
+
+  // ---------- CORE LOAD ----------
+  async function loadAll() {
+    hideMsg('dashMsg');
+    const [{ data: teams, error: tErr }, { data: players, error: pErr }, { data: presigns, error: psErr }, { data: reps, error: rErr }] = await Promise.all([
+      client.from('auction_teams').select('*').order('team_name'),
+      client.from('auction_players').select('*').order('pool').order('set_number').order('full_name'),
+      client.from('auction_replacements').select('*').order('created_at', { ascending: false }),
+      client.from('auction_replacements').select('*').order('created_at', { ascending: false })
+    ]);
+    if (tErr) { showMsg('dashMsg', 'err', 'Could not load teams: ' + tErr.message); return; }
+    if (pErr) { showMsg('dashMsg', 'err', 'Could not load players: ' + pErr.message); return; }
+    allTeams = teams || [];
+    allPlayers = players || [];
+    allReplacements = reps || [];
+
+    renderTeams();
+    renderPlayers();
+    renderTeamSelects();
+    renderForcedAssignPriority();
+    renderSquads();
+    renderReplacements();
+  }
+
+  // ---------- RESERVE-PURSE RULE (the zero-loophole check) ----------
+  // After this purchase, the team must still be able to afford every
+  // remaining mandatory slot at the lowest possible base price.
+  function canAfford(team, price) {
+    const afterPurse = team.remaining_purse - price;
+    const slotsAfter = team.squad_target - team.squad_count - 1; // this purchase fills one slot
+    const reserveNeeded = Math.max(0, slotsAfter) * MIN_BASE;
+    return afterPurse >= reserveNeeded;
+  }
+
+  // ---------- TEAMS ----------
+  function renderTeams() {
+    document.getElementById('teamSetupStats').innerHTML = [
+      ['Teams', allTeams.length],
+      ['Total Purse Pool', money(allTeams.reduce((s, t) => s + Number(t.total_purse), 0))],
+      ['Spent So Far', money(allTeams.reduce((s, t) => s + (Number(t.total_purse) - Number(t.remaining_purse)), 0))],
+      ['Squads Complete', allTeams.filter(t => t.squad_count >= t.squad_target).length + ' / ' + allTeams.length]
+    ].map(([l, n]) => `<div class="stat"><div class="num">${n}</div><div class="label">${l}</div></div>`).join('');
+
+    document.getElementById('teamRows').innerHTML = allTeams.map(t => `
+      <tr>
+        <td>${esc(t.team_name)}</td>
+        <td>${esc(t.owner_name || '—')}</td>
+        <td>${money(t.total_purse)}</td>
+        <td>${money(t.remaining_purse)}</td>
+        <td>${t.squad_count} / ${t.squad_target}</td>
+        <td>${t.presign_count} / ${PRESIGN_MAX}</td>
+        <td><span class="pill ${t.squad_count >= t.squad_target ? 'sold' : 'available'}">${t.squad_count >= t.squad_target ? 'Complete' : 'Building'}</span></td>
+      </tr>`).join('') || '<tr><td colspan="7" class="emptyNote">No teams yet - click "Create the 9 standard teams" above.</td></tr>';
+  }
+
+  document.getElementById('seedTeamsBtn').addEventListener('click', async () => {
+    showMsg('teamSetupMsg', 'info', 'Creating teams...');
+    const existingNames = new Set(allTeams.map(t => t.team_name));
+    const toInsert = STANDARD_TEAMS.filter(n => !existingNames.has(n)).map(n => ({
+      team_name: n, total_purse: TOTAL_PURSE, remaining_purse: TOTAL_PURSE, squad_target: SQUAD_TARGET
+    }));
+    if (!toInsert.length) { showMsg('teamSetupMsg', 'ok', 'All 9 teams already exist.'); return; }
+    const { error } = await client.from('auction_teams').insert(toInsert);
+    if (error) { showMsg('teamSetupMsg', 'err', 'Failed: ' + error.message); return; }
+    showMsg('teamSetupMsg', 'ok', '✅ Created ' + toInsert.length + ' team(s).');
+    await loadAll();
+  });
+
+  function renderTeamSelects() {
+    const opts = '<option value="">Select team</option>' + allTeams.map(t => `<option value="${t.id}">${esc(t.team_name)} (${money(t.remaining_purse)} left, ${t.squad_count}/${t.squad_target})</option>`).join('');
+    ['psTeam', 'faTeam', 'rpTeam'].forEach(id => { document.getElementById(id).innerHTML = opts; });
+  }
+
+  // ---------- PLAYER POOL ----------
+  function renderPlayers() {
+    const poolF = document.getElementById('plFilterPool').value;
+    const statusF = document.getElementById('plFilterStatus').value;
+    const list = allPlayers.filter(p => (!poolF || p.pool === poolF) && (!statusF || p.status === statusF));
+    document.getElementById('playerRows').innerHTML = list.map(p => {
+      const team = allTeams.find(t => t.id === p.sold_to_team_id);
+      return `<tr>
+        <td>${esc(p.full_name)}</td>
+        <td>${esc(p.position || '—')}</td>
+        <td>${esc(p.pool)}</td>
+        <td>${p.set_number ?? '—'}</td>
+        <td>${money(p.base_price)}</td>
+        <td><span class="pill ${p.status}">${esc(p.status)}</span></td>
+        <td>${team ? esc(team.team_name) : '—'}</td>
+        <td>${p.sold_price != null ? money(p.sold_price) : '—'}</td>
+        <td>${p.status === 'available' || p.status === 'recalled' ? `<button class="secondaryBtn" data-load-block="${p.id}" style="padding:6px 10px;font-size:11px">Load to block</button>` : ''}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="9" class="emptyNote">No players match this filter.</td></tr>';
+  }
+  ['plFilterPool', 'plFilterStatus'].forEach(id => document.getElementById(id).addEventListener('change', renderPlayers));
+
+  document.getElementById('addPlayerBtn').addEventListener('click', async () => {
+    const name = document.getElementById('plName').value.trim();
+    if (!name) { showMsg('plMsg', 'err', 'Player name is required.'); return; }
+    const pool = document.getElementById('plPool').value;
+    const setNumber = Number(document.getElementById('plSet').value);
+    const { error } = await client.from('auction_players').insert({
+      full_name: name,
+      position: document.getElementById('plPosition').value.trim() || null,
+      pool, set_number: setNumber, base_price: BASE_PRICE[pool]
+    });
+    if (error) { showMsg('plMsg', 'err', 'Failed: ' + error.message); return; }
+    showMsg('plMsg', 'ok', '✅ Added ' + name + ' to ' + pool + ' set ' + setNumber + '.');
+    document.getElementById('plName').value = '';
+    document.getElementById('plPosition').value = '';
+    await loadAll();
+  });
+
+  document.getElementById('playerRows').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-load-block]');
+    if (!btn) return;
+    const p = allPlayers.find(x => x.id === btn.dataset.loadBlock);
+    if (!p) return;
+    document.querySelector('[data-tab="live"]').click();
+    loadPlayerToBlock(p);
+  });
+
+  // ---------- LIVE AUCTION BLOCK ----------
+  document.getElementById('loadBlockBtn').addEventListener('click', () => {
+    const pool = document.getElementById('livePool').value;
+    const setNumber = Number(document.getElementById('liveSet').value);
+    const next = allPlayers.find(p => p.pool === pool && p.set_number === setNumber && (p.status === 'available' || p.status === 'recalled'));
+    if (!next) { showMsg('dashMsg', 'err', 'No available players left in ' + pool + ' Set ' + setNumber + '.'); return; }
+    loadPlayerToBlock(next);
+  });
+
+  function loadPlayerToBlock(player) {
+    currentBlockPlayer = player;
+    const area = document.getElementById('blockArea');
+    const teamCards = allTeams.map(t => {
+      const canBuy = t.squad_count < t.squad_target && canAfford(t, player.base_price);
+      return `<div class="bidTeamCard">
+        <div class="tname">${esc(t.team_name)}</div>
+        <div class="tpurse">${money(t.remaining_purse)} left · ${t.squad_count}/${t.squad_target} squad</div>
+        <button class="primaryBtn" data-sell-to="${t.id}" ${canBuy ? '' : 'disabled'}>Sold to this team</button>
+      </div>`;
+    }).join('');
+    area.innerHTML = `
+      <div class="blockCard">
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">${esc(player.pool)} · Set ${player.set_number}</div>
+        <div class="pname">${esc(player.full_name)}</div>
+        <div class="pbase">Base price: ${money(player.base_price)}${player.position ? ' · ' + esc(player.position) : ''}</div>
+        <label style="margin-top:16px">Final sold price (Rs)</label>
+        <input id="soldPriceInput" type="number" min="${player.base_price}" step="100000" value="${player.base_price}">
+      </div>
+      <div class="bidGrid">${teamCards}</div>
+      <div class="actionRow">
+        <button class="dangerBtn" id="markUnsoldBtn">Mark UNSOLD</button>
+      </div>
+      <div id="blockMsg" class="msg" style="margin-top:12px"></div>
+    `;
+    area.querySelectorAll('[data-sell-to]').forEach(btn => {
+      btn.addEventListener('click', () => sellToTeam(btn.dataset.sellTo));
+    });
+    document.getElementById('markUnsoldBtn').addEventListener('click', markUnsold);
+  }
+
+  async function sellToTeam(teamId) {
+    const team = allTeams.find(t => t.id === teamId);
+    const price = Number(document.getElementById('soldPriceInput').value);
+    if (!price || price < currentBlockPlayer.base_price) { showMsg('blockMsg', 'err', 'Sold price must be at least the base price.'); return; }
+    if (!canAfford(team, price)) {
+      showMsg('blockMsg', 'err', '⛔ Blocked by reserve-purse rule: ' + team.team_name + ' would not have enough left to complete their 8-player squad at this price.');
+      return;
+    }
+    showMsg('blockMsg', 'info', 'Recording sale...');
+    const { error: logErr } = await client.from('auction_bid_log').insert({ player_id: currentBlockPlayer.id, team_id: teamId, bid_amount: price });
+    if (logErr) { showMsg('blockMsg', 'err', 'Failed to log bid: ' + logErr.message); return; }
+    const { error: pErr } = await client.from('auction_players').update({
+      status: 'sold', sold_to_team_id: teamId, sold_price: price, sold_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }).eq('id', currentBlockPlayer.id);
+    if (pErr) { showMsg('blockMsg', 'err', 'Failed: ' + pErr.message); return; }
+    const { error: tErr } = await client.from('auction_teams').update({
+      remaining_purse: team.remaining_purse - price, squad_count: team.squad_count + 1, updated_at: new Date().toISOString()
+    }).eq('id', teamId);
+    if (tErr) { showMsg('blockMsg', 'err', 'Failed: ' + tErr.message); return; }
+    showMsg('dashMsg', 'ok', '✅ ' + currentBlockPlayer.full_name + ' sold to ' + team.team_name + ' for ' + money(price) + '.');
+    document.getElementById('blockArea').innerHTML = '';
+    currentBlockPlayer = null;
+    await loadAll();
+  }
+
+  async function markUnsold() {
+    const { error } = await client.from('auction_players').update({ status: 'unsold', updated_at: new Date().toISOString() }).eq('id', currentBlockPlayer.id);
+    if (error) { showMsg('blockMsg', 'err', 'Failed: ' + error.message); return; }
+    showMsg('dashMsg', 'ok', currentBlockPlayer.full_name + ' marked unsold.');
+    document.getElementById('blockArea').innerHTML = '';
+    currentBlockPlayer = null;
+    await loadAll();
+  }
+
+  // ---------- RECALL ROUND ----------
+  document.getElementById('runRecallBtn').addEventListener('click', async () => {
+    const pool = document.getElementById('recallPool').value;
+    const setNumber = Number(document.getElementById('recallSet').value);
+    const toRecall = allPlayers.filter(p => p.pool === pool && p.set_number === setNumber && p.status === 'unsold' && !p.recall_used);
+    if (!toRecall.length) { showMsg('recallMsg', 'err', 'No unsold players in this set are waiting for a recall.'); return; }
+    const { error } = await client.from('auction_players')
+      .update({ status: 'recalled', recall_used: true, updated_at: new Date().toISOString() })
+      .in('id', toRecall.map(p => p.id));
+    if (error) { showMsg('recallMsg', 'err', 'Failed: ' + error.message); return; }
+    showMsg('recallMsg', 'ok', '✅ ' + toRecall.length + ' player(s) re-offered. Go to Live Auction, pick this pool/set, and Load next player.');
+    await loadAll();
+  });
+
+  // ---------- FORCED ASSIGNMENT ----------
+  function renderForcedAssignPriority() {
+    const incomplete = allTeams.filter(t => t.squad_count < t.squad_target)
+      .sort((a, b) => (a.squad_count - b.squad_count) || (a.remaining_purse - b.remaining_purse));
+    document.getElementById('forcedAssignPriority').innerHTML = `
+      <table><thead><tr><th>#</th><th>Team</th><th>Squad</th><th>Remaining Purse</th></tr></thead>
+      <tbody>${incomplete.map((t, i) => `<tr><td>${i + 1}</td><td>${esc(t.team_name)}</td><td>${t.squad_count}/${t.squad_target}</td><td>${money(t.remaining_purse)}</td></tr>`).join('') || '<tr><td colspan="4" class="emptyNote">All teams have complete squads.</td></tr>'}</tbody></table>`;
+    const unsoldPlayers = allPlayers.filter(p => p.status === 'unsold' || p.status === 'recalled');
+    document.getElementById('faPlayer').innerHTML = '<option value="">Select player</option>' + unsoldPlayers.map(p => `<option value="${p.id}">${esc(p.full_name)} (${esc(p.pool)}, base ${money(p.base_price)})</option>`).join('');
+  }
+
+  document.getElementById('forcedAssignBtn').addEventListener('click', async () => {
+    const teamId = document.getElementById('faTeam').value;
+    const playerId = document.getElementById('faPlayer').value;
+    if (!teamId || !playerId) { showMsg('faMsg', 'err', 'Select both a team and a player.'); return; }
+    const team = allTeams.find(t => t.id === teamId);
+    const player = allPlayers.find(p => p.id === playerId);
+    if (team.squad_count >= team.squad_target) { showMsg('faMsg', 'err', team.team_name + ' already has a complete squad.'); return; }
+    const newPurse = Math.max(0, team.remaining_purse - player.base_price); // purse floors at 0, never negative
+    showMsg('faMsg', 'info', 'Assigning...');
+    const { error: pErr } = await client.from('auction_players').update({
+      status: 'sold', sold_to_team_id: teamId, sold_price: player.base_price, sold_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }).eq('id', playerId);
+    if (pErr) { showMsg('faMsg', 'err', 'Failed: ' + pErr.message); return; }
+    const { error: tErr } = await client.from('auction_teams').update({
+      remaining_purse: newPurse, squad_count: team.squad_count + 1, updated_at: new Date().toISOString()
+    }).eq('id', teamId);
+    if (tErr) { showMsg('faMsg', 'err', 'Failed: ' + tErr.message); return; }
+    showMsg('faMsg', 'ok', '✅ ' + player.full_name + ' force-assigned to ' + team.team_name + ' at ' + money(player.base_price) + '.');
+    await loadAll();
+  });
+
+  // ---------- PRESIGN ----------
+  document.getElementById('presignBtn').addEventListener('click', async () => {
+    const teamId = document.getElementById('psTeam').value;
+    const name = document.getElementById('psName').value.trim();
+    if (!teamId) { showMsg('psMsg', 'err', 'Select a team.'); return; }
+    if (!name) { showMsg('psMsg', 'err', 'Player name is required.'); return; }
+    const team = allTeams.find(t => t.id === teamId);
+    if (team.presign_count >= PRESIGN_MAX) { showMsg('psMsg', 'err', team.team_name + ' already has the max ' + PRESIGN_MAX + ' presigns.'); return; }
+    if (team.remaining_purse < PRESIGN_COST) { showMsg('psMsg', 'err', team.team_name + ' does not have Rs 35L left to presign.'); return; }
+    showMsg('psMsg', 'info', 'Saving...');
+    const { error: plErr } = await client.from('auction_players').insert({
+      full_name: name, position: document.getElementById('psPosition').value.trim() || null,
+      pool: 'presign', base_price: PRESIGN_COST, status: 'presigned', sold_to_team_id: teamId, sold_price: PRESIGN_COST, sold_at: new Date().toISOString()
+    });
+    if (plErr) { showMsg('psMsg', 'err', 'Failed: ' + plErr.message); return; }
+    const { error: tErr } = await client.from('auction_teams').update({
+      remaining_purse: team.remaining_purse - PRESIGN_COST, squad_count: team.squad_count + 1, presign_count: team.presign_count + 1, updated_at: new Date().toISOString()
+    }).eq('id', teamId);
+    if (tErr) { showMsg('psMsg', 'err', 'Failed: ' + tErr.message); return; }
+    showMsg('psMsg', 'ok', '✅ ' + name + ' presigned to ' + team.team_name + ' for Rs 35L.');
+    document.getElementById('psName').value = '';
+    document.getElementById('psPosition').value = '';
+    await loadAll();
+  });
+
+  function renderPresignRows() {
+    const presigns = allPlayers.filter(p => p.pool === 'presign');
+    document.getElementById('presignRows').innerHTML = presigns.map(p => {
+      const team = allTeams.find(t => t.id === p.sold_to_team_id);
+      return `<tr><td>${esc(p.full_name)}</td><td>${esc(p.position || '—')}</td><td>${team ? esc(team.team_name) : '—'}</td><td>${money(p.sold_price)}</td><td>${new Date(p.sold_at).toLocaleDateString('en-IN')}</td></tr>`;
+    }).join('') || '<tr><td colspan="5" class="emptyNote">No presigns yet.</td></tr>';
+  }
+
+  // ---------- FINAL SQUADS ----------
+  function renderSquads() {
+    renderPresignRows();
+    const area = document.getElementById('squadsArea');
+    area.innerHTML = allTeams.map(t => {
+      const squad = allPlayers.filter(p => p.sold_to_team_id === t.id && (p.status === 'sold' || p.status === 'presigned'));
+      return `<div class="trackerCard">
+        <h3 style="margin:0 0 4px;font-size:16px">${esc(t.team_name)} <span style="color:var(--muted);font-size:12px;font-weight:400">(${squad.length}/${t.squad_target} · ${money(t.remaining_purse)} left)</span></h3>
+        <table><thead><tr><th>Player</th><th>Pool</th><th>Price</th></tr></thead>
+        <tbody>${squad.map(p => `<tr><td>${esc(p.full_name)}</td><td>${esc(p.pool)}</td><td>${money(p.sold_price)}</td></tr>`).join('') || '<tr><td colspan="3" class="emptyNote">No players yet.</td></tr>'}</tbody></table>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('exportSquadsBtn').addEventListener('click', () => {
+    const rows = [];
+    allTeams.forEach(t => {
+      allPlayers.filter(p => p.sold_to_team_id === t.id && (p.status === 'sold' || p.status === 'presigned')).forEach(p => {
+        rows.push({ team: t.team_name, player: p.full_name, position: p.position || '', pool: p.pool, price: p.sold_price });
+      });
+    });
+    const header = 'Team,Player,Position,Pool,Price (INR)';
+    const body = rows.map(r => [r.team, r.player, r.position, r.pool, r.price].map(v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : v).join(',')).join('\n');
+    const blob = new Blob([header + '\n' + body], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'gul-auction-final-squads.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // ---------- REPLACEMENTS ----------
+  document.getElementById('rpSaveBtn').addEventListener('click', async () => {
+    const teamId = document.getElementById('rpTeam').value;
+    const original = document.getElementById('rpOriginal').value.trim();
+    const replacement = document.getElementById('rpReplacement').value.trim();
+    if (!teamId || !original || !replacement) { showMsg('rpMsg', 'err', 'Team, original player and replacement name are all required.'); return; }
+    const { error } = await client.from('auction_replacements').insert({
+      team_id: teamId, original_player_name: original, replacement_player_name: replacement,
+      source: document.getElementById('rpSource').value,
+      approved_by: document.getElementById('rpApprovedBy').value.trim() || null,
+      reason: document.getElementById('rpReason').value.trim() || null
+    });
+    if (error) { showMsg('rpMsg', 'err', 'Failed: ' + error.message); return; }
+    showMsg('rpMsg', 'ok', '✅ Replacement logged.');
+    ['rpOriginal', 'rpReplacement', 'rpApprovedBy', 'rpReason'].forEach(id => document.getElementById(id).value = '');
+    await loadAll();
+  });
+
+  function renderReplacements() {
+    document.getElementById('replacementRows').innerHTML = allReplacements.map(r => {
+      const team = allTeams.find(t => t.id === r.team_id);
+      return `<tr>
+        <td>${team ? esc(team.team_name) : '—'}</td>
+        <td>${esc(r.original_player_name || '—')}</td>
+        <td>${esc(r.replacement_player_name)}</td>
+        <td>${esc((r.source || '').replace(/_/g, ' '))}</td>
+        <td>${esc(r.approved_by || '—')}</td>
+        <td class="wrap-cell">${esc(r.reason || '—')}</td>
+        <td>${new Date(r.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" class="emptyNote">No replacements logged yet.</td></tr>';
+  }
+
+  refreshAuthState();
+}
+</script>
+</body>
+</html>
