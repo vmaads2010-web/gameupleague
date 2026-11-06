@@ -541,10 +541,12 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         ${player.photo_url ? `<img src="../${esc(player.photo_url)}" alt="${esc(player.full_name)}" style="width:130px;height:130px;border-radius:14px;object-fit:cover;border:3px solid var(--gold);margin:8px auto;display:block">` : ''}
         <div class="pname">${esc(player.full_name)}</div>
         <div class="pbase">${esc(player.position || 'Position not set')} ${player.is_flexible ? '· <span style="color:var(--gold)">Flexible</span>' : ''} · Base price: ${money(player.base_price)}</div>
-        <div style="margin-top:18px;padding:16px;background:rgba(0,0,0,.25);border-radius:12px">
+        <div style="margin-top:18px;padding:18px;background:${leadingTeam ? 'rgba(255,201,60,.12)' : 'rgba(0,0,0,.25)'};border:2px solid ${leadingTeam ? 'var(--gold)' : 'transparent'};border-radius:12px">
           <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Current Bid</div>
-          <div style="font-family:Anton;font-size:40px;color:var(--gold)">${money(currentBid)}</div>
-          <div style="font-size:14px;color:var(--muted)">${leadingTeam ? 'Leading: ' + esc(leadingTeam.team_name) + ' 👑' : 'No bids yet — base price only'}</div>
+          <div style="font-family:Anton;font-size:44px;color:var(--gold)">${money(currentBid)}</div>
+          ${leadingTeam
+            ? `<div style="font-size:20px;font-weight:900;color:#fff;margin-top:4px">👑 ${esc(leadingTeam.team_name)}</div>`
+            : `<div style="font-size:14px;color:var(--muted)">No bids yet — base price only</div>`}
         </div>
       </div>
       <div class="bidGrid">${teamCards}</div>
@@ -589,10 +591,14 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       remaining_purse: team.remaining_purse - price, squad_count: team.squad_count + 1, updated_at: new Date().toISOString()
     }).eq('id', teamId);
     if (tErr) { showMsg('blockMsg', 'err', 'Failed: ' + tErr.message); return; }
-    showMsg('dashMsg', 'ok', '✅ ' + currentBlockPlayer.full_name + ' sold to ' + team.team_name + ' for ' + money(price) + '.');
+    showMsg('dashMsg', 'ok', '🎉 SOLD! ' + currentBlockPlayer.full_name + ' → ' + team.team_name + ' for ' + money(price) + '.');
+    await client.from('auction_state').update({
+      current_block_player_id: null, current_bid: null, current_leading_team_id: null,
+      last_sold_player_name: currentBlockPlayer.full_name, last_sold_team_name: team.team_name,
+      last_sold_price: price, last_sold_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }).eq('id', 1);
     currentBlockPlayer = null; currentBid = null; currentLeadingTeamId = null;
-    await broadcastBlockState();
-    document.getElementById('blockArea').innerHTML = '';
+    document.getElementById('blockArea').innerHTML = `<div class="blockCard" style="border-color:#6be3b3"><div class="pname" style="color:#6be3b3">🎉 SOLD!</div><div class="pbase">${esc(team.team_name)} bought the player for ${money(price)}</div></div>`;
     await loadAll();
   }
 

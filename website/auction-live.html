@@ -45,6 +45,16 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;position:sticky;top
 .headerBar .brand img{width:52px;height:60px}
 .mascot{width:76px;height:auto;filter:drop-shadow(0 10px 20px rgba(0,0,0,.4))}
 .blockPhoto{width:150px;height:150px;border-radius:18px;object-fit:cover;border:3px solid var(--gold);margin:0 auto 14px;display:block;background:#2a0e12}
+.leadBanner{margin-top:14px;padding:12px 16px;background:rgba(255,201,60,.15);border:2px solid var(--gold);border-radius:12px;font-size:22px;font-weight:900;color:#fff;animation:leadPulse .5s ease}
+@keyframes leadPulse{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.soldOverlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(10,4,5,.88);backdrop-filter:blur(4px)}
+.soldCard{text-align:center;animation:soldPop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes soldPop{0%{transform:scale(.4) rotate(-6deg);opacity:0}70%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.soldCard .soldTag{font-family:var(--font-display);font-style:italic;font-size:clamp(50px,12vw,100px);color:#6be3b3;text-shadow:0 0 30px rgba(107,227,179,.6);letter-spacing:-2px}
+.soldCard .soldName{font-size:clamp(22px,5vw,32px);font-weight:900;margin-top:6px}
+.soldCard .soldInfo{font-size:18px;color:var(--gold);margin-top:8px;font-weight:800}
+.confetti{position:fixed;top:-20px;width:10px;height:16px;z-index:51;animation:confettiFall linear forwards}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
 </style>
 </head>
 <body>
@@ -59,6 +69,7 @@ th{color:var(--gold);font-size:11px;text-transform:uppercase;position:sticky;top
   </div>
 
   <div id="blockArea"></div>
+  <div id="soldOverlayArea"></div>
 
   <div class="sectionTitle">Teams &amp; Purse Remaining</div>
   <div id="teamsGrid" class="teamsGrid"></div>
@@ -78,6 +89,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const client = supabase.createClient(window.GUL_SUPABASE_URL, window.GUL_SUPABASE_ANON_KEY);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = (n) => n == null ? '—' : '₹' + Number(n).toLocaleString('en-IN');
+  let lastCelebratedSoldAt = null;
+
+  function showSoldCelebration(playerName, teamName, price) {
+    const area = document.getElementById('soldOverlayArea');
+    const colors = ['#ffc93c', '#6be3b3', '#ff6a3d', '#f7f9ff', '#e3262e'];
+    const confetti = Array.from({ length: 60 }, () => {
+      const left = Math.random() * 100;
+      const delay = Math.random() * 0.5;
+      const duration = 2.2 + Math.random() * 1.6;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      return `<div class="confetti" style="left:${left}vw;background:${color};animation-duration:${duration}s;animation-delay:${delay}s"></div>`;
+    }).join('');
+    area.innerHTML = `<div class="soldOverlay">
+      ${confetti}
+      <div class="soldCard">
+        <div class="soldTag">SOLD!</div>
+        <div class="soldName">${esc(playerName || '')}</div>
+        <div class="soldInfo">${esc(teamName || '')} · ${money(price)}</div>
+      </div>
+    </div>`;
+    setTimeout(() => { area.innerHTML = ''; }, 4200);
+  }
 
   async function tick() {
     const [{ data: teams }, { data: players }, { data: state }] = await Promise.all([
@@ -101,11 +134,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ${current.photo_url ? `<img class="blockPhoto" src="${esc(current.photo_url)}" alt="${esc(current.full_name)}">` : ''}
         <div class="pname">${esc(current.full_name)}</div>
         <div class="pbase">${esc(current.position || 'Position not set')}${current.is_flexible ? ' · <span style="color:var(--gold)">Flexible</span>' : ''} · Base price: ${money(current.base_price)}</div>
-        <div style="margin-top:16px;padding:14px;background:rgba(0,0,0,.25);border-radius:12px">
+        <div style="margin-top:16px;padding:14px;background:${leadingTeam ? 'rgba(255,201,60,.1)' : 'rgba(0,0,0,.25)'};border-radius:12px">
           <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Current Bid</div>
           <div style="font-family:var(--font-display);font-style:italic;font-size:36px;color:var(--gold)">${money(bidAmount)}</div>
-          <div style="font-size:13px;color:var(--muted)">${leadingTeam ? '👑 Leading: ' + esc(leadingTeam.team_name) : 'No bids yet'}</div>
+          <div style="font-size:13px;color:var(--muted)">${leadingTeam ? '' : 'No bids yet'}</div>
         </div>
+        ${leadingTeam ? `<div class="leadBanner">👑 ${esc(leadingTeam.team_name)}</div>` : ''}
         ${upcoming.length ? `<div style="margin-top:18px;text-align:left">
           <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Up Next</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
@@ -118,6 +152,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
     } else {
       blockEl.innerHTML = `<div class="blockCard idle"><div class="sub">⏳ No player on the block right now — check back shortly.</div></div>`;
+    }
+
+    // SOLD celebration - fires once per sale, shown for ~4.5s then clears itself
+    const soldAt = state && state.last_sold_at ? new Date(state.last_sold_at).getTime() : null;
+    if (soldAt && soldAt !== lastCelebratedSoldAt && Date.now() - soldAt < 10000) {
+      lastCelebratedSoldAt = soldAt;
+      showSoldCelebration(state.last_sold_player_name, state.last_sold_team_name, state.last_sold_price);
     }
 
     // Teams grid
