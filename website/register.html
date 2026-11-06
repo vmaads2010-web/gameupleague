@@ -640,6 +640,11 @@ a.tlItem{position:relative;overflow:hidden}
      <div class="amt" id="payAmt">Loading…</div>
      <div id="payQr" style="display:flex;justify-content:center"></div>
      <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
+     <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — the UPI button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or just scan the QR code above directly.</div>
+     <div class="note" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+      Button not opening your app? Pay manually to: <b id="upiIdText" style="color:var(--gold)">thegameupleague@okaxis</b>
+      <button type="button" id="copyUpiBtn" style="width:auto;margin:0;padding:6px 12px;font-size:12px;background:rgba(255,201,60,.15);color:var(--gold);border:1px solid rgba(255,201,60,.4)">📋 Copy</button>
+     </div>
      <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
 
      <div class="screenshotBox" id="shotField">
@@ -814,6 +819,28 @@ document.getElementById('shotInput').addEventListener('change', async (e) => {
 });
 
 let currentOffer = null;
+
+// Instagram/Facebook/WhatsApp's own in-app browser is the #1 real-world
+// reason "Pay with UPI app" does nothing: those webviews block navigation
+// to custom URL schemes like upi:// for security, with no visible error -
+// it just silently fails to tap. Detect it and point players at the fix.
+(function () {
+  const ua = navigator.userAgent || '';
+  const isInApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|WhatsApp/i.test(ua);
+  if (isInApp) document.getElementById('upiInAppWarning').style.display = 'block';
+})();
+
+document.getElementById('upiIdText').textContent = window.GUL_UPI_ID || 'thegameupleague@okaxis';
+document.getElementById('copyUpiBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('copyUpiBtn');
+  try {
+    await navigator.clipboard.writeText(window.GUL_UPI_ID || 'thegameupleague@okaxis');
+    btn.textContent = '✅ Copied';
+  } catch (err) {
+    btn.textContent = window.GUL_UPI_ID || 'thegameupleague@okaxis';
+  }
+  setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+});
 
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the offer banner markup), instead of firing
