@@ -41,13 +41,22 @@ table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{color:var(--gold);font-size:11px;text-transform:uppercase;position:sticky;top:0;background:#1a0a0c}
 .sub{color:var(--muted);font-size:13px}
+.headerBar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.headerBar .brand img{width:52px;height:60px}
+.mascot{width:76px;height:auto;filter:drop-shadow(0 10px 20px rgba(0,0,0,.4))}
+.blockPhoto{width:150px;height:150px;border-radius:18px;object-fit:cover;border:3px solid var(--gold);margin:0 auto 14px;display:block;background:#2a0e12}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="brand"><img src="assets/gul-logo-hq.png" alt="The Game Up League"><span>THE GAME UP LEAGUE</span></div>
-  <span class="eyebrow">RELOADED</span>
-  <h1><span class="liveDot"></span>Live Player Auction</h1>
+  <div class="headerBar">
+    <div>
+      <div class="brand"><img src="assets/gul-logo-hq.png" alt="The Game Up League"><span>THE GAME UP LEAGUE</span></div>
+      <span class="eyebrow">RELOADED</span>
+      <h1 style="margin-bottom:4px"><span class="liveDot"></span>Live Player Auction</h1>
+    </div>
+    <img class="mascot" src="assets/season2-mascot.jpg" alt="GUL RELOADED Mascot" style="border-radius:14px">
+  </div>
 
   <div id="blockArea"></div>
 
@@ -84,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (current) {
       blockEl.innerHTML = `<div class="blockCard">
         <div class="tag">${esc(current.pool)} · Set ${current.set_number}</div>
+        ${current.photo_url ? `<img class="blockPhoto" src="${esc(current.photo_url)}" alt="${esc(current.full_name)}">` : ''}
         <div class="pname">${esc(current.full_name)}</div>
         <div class="pbase">Base price: ${money(current.base_price)}${current.position ? ' · ' + esc(current.position) : ''}</div>
       </div>`;
