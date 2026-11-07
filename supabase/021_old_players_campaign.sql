@@ -32,3 +32,8 @@ alter table public.old_players_campaign enable row level security;
 
 create policy "admin all old_players_campaign" on public.old_players_campaign
   for all to authenticated using (is_admin()) with check (is_admin());
+
+-- RLS policies alone are not enough - Postgres also requires an explicit
+-- GRANT to the role before its policies are even consulted. Missing this
+-- caused "permission denied for table old_players_campaign" for every admin.
+grant select, insert, update, delete on public.old_players_campaign to authenticated;

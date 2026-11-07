@@ -520,8 +520,35 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </div>
     </div>
     <p class="mini" style="color:var(--muted);font-size:13px;margin:-8px 0 16px">
-      Season 1 (Football Reimagined) players, imported from the previous registration form. Click "Open WhatsApp" on a row to launch a pre-filled chat on your own device (with the Game Up League WhatsApp account) — attach the poster yourself, then hit send and mark it sent here.
+      Season 1 (Football Reimagined) players, imported from the previous registration form. WhatsApp has no way to send a real message to many people with one click without the paid Business API — this click-to-chat flow opens each chat pre-filled, one at a time; you review, attach the poster, and hit send yourself.
     </p>
+
+    <div class="trackerCard" id="opQueueCard" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <h3 style="margin:0 0 4px;font-size:15px">🚀 Next Player Mode</h3>
+          <p class="mini" style="color:var(--muted);font-size:12.5px;margin:0" id="opQueueProgress">Goes through every pending player one by one.</p>
+        </div>
+        <button class="secondaryBtn" id="opStartQueueBtn">▶ Start Campaign</button>
+      </div>
+      <div id="opQueueActive" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <img id="opQueuePhoto" src="" alt="" style="width:64px;height:64px;border-radius:12px;object-fit:cover;background:#1a0a0c;display:none">
+          <div style="flex:1;min-width:180px">
+            <div style="font-size:18px;font-weight:800" id="opQueueName">—</div>
+            <div style="color:var(--muted);font-size:13px" id="opQueueMobile">—</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+          <button class="secondaryBtn" id="opQueueOpenBtn">💬 1. Open WhatsApp Chat</button>
+          <a class="secondaryBtn" href="../assets/og-share.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 2. Download Poster (attach it yourself)</a>
+          <button class="secondaryBtn" id="opQueueSentBtn">✓ 3. Mark Sent &amp; Next →</button>
+          <button class="secondaryBtn" id="opQueueSkipBtn">⏭ Skip</button>
+          <button class="dangerBtn" id="opQueueStopBtn">■ Stop</button>
+        </div>
+      </div>
+    </div>
+
     <div class="stats" id="oldPlayerStats"></div>
 
     <div class="searchRow">
@@ -1359,6 +1386,7 @@ THE GAME UP LEAGUE – RELOADED ⚽🔥`;
     allOldPlayers = data || [];
     renderOldPlayerStats();
     renderOldPlayerRows(filteredOldPlayers());
+    if (typeof opUpdateQueueProgress === 'function') opUpdateQueueProgress();
   }
 
   function renderOldPlayerStats() {
@@ -1472,6 +1500,75 @@ THE GAME UP LEAGUE – RELOADED ⚽🔥`;
       { label: 'Emergency Contact', value: p => p.emergency_contact || '' }
     ]);
   });
+
+  // ---- Next Player queue mode ----
+  // Walks the pending list one player at a time so the admin never has to
+  // hunt through the table: open chat -> download poster -> attach + send by
+  // hand in WhatsApp -> mark sent, which immediately loads the next player.
+  let opQueue = [];
+  let opQueueIndex = -1;
+
+  function opPendingQueue() {
+    return allOldPlayers.filter(p => p.campaign_status === 'pending');
+  }
+
+  function opUpdateQueueProgress() {
+    const remaining = opPendingQueue().length;
+    document.getElementById('opQueueProgress').textContent = opQueueIndex >= 0
+      ? `Player ${opQueueIndex + 1} of ${opQueue.length} in this run — ${remaining} pending overall.`
+      : `${remaining} pending player${remaining === 1 ? '' : 's'} left to message.`;
+  }
+
+  function opShowQueuePlayer() {
+    const player = opQueue[opQueueIndex];
+    if (!player) { opStopQueue(); return; }
+    document.getElementById('opQueueName').textContent = player.full_name;
+    document.getElementById('opQueueMobile').textContent = player.mobile + (player.position ? ' · ' + player.position : '');
+    const img = document.getElementById('opQueuePhoto');
+    if (player.photo_url) { img.src = player.photo_url; img.style.display = 'block'; } else { img.style.display = 'none'; }
+    opUpdateQueueProgress();
+  }
+
+  function opStopQueue() {
+    opQueue = []; opQueueIndex = -1;
+    document.getElementById('opQueueActive').style.display = 'none';
+    document.getElementById('opStartQueueBtn').style.display = 'inline-block';
+    opUpdateQueueProgress();
+  }
+
+  document.getElementById('opStartQueueBtn').addEventListener('click', () => {
+    opQueue = opPendingQueue();
+    if (!opQueue.length) { alert('No pending players left to message.'); return; }
+    opQueueIndex = 0;
+    document.getElementById('opQueueActive').style.display = 'block';
+    document.getElementById('opStartQueueBtn').style.display = 'none';
+    opShowQueuePlayer();
+  });
+
+  document.getElementById('opQueueOpenBtn').addEventListener('click', () => {
+    const player = opQueue[opQueueIndex];
+    if (!player) return;
+    window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
+  });
+
+  document.getElementById('opQueueSentBtn').addEventListener('click', async () => {
+    const player = opQueue[opQueueIndex];
+    if (!player) return;
+    const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', player.id);
+    if (error) { alert('Could not update: ' + error.message); return; }
+    await loadOldPlayers();
+    opQueueIndex++;
+    if (opQueueIndex >= opQueue.length) { alert('✅ Done — ran through every pending player in this batch.'); opStopQueue(); return; }
+    opShowQueuePlayer();
+  });
+
+  document.getElementById('opQueueSkipBtn').addEventListener('click', () => {
+    opQueueIndex++;
+    if (opQueueIndex >= opQueue.length) { opStopQueue(); return; }
+    opShowQueuePlayer();
+  });
+
+  document.getElementById('opQueueStopBtn').addEventListener('click', opStopQueue);
 
   async function loadTeams() {
     const { data: teams, error } = await client
