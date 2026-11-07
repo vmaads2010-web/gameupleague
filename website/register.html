@@ -481,12 +481,25 @@ a.tlItem{position:relative;overflow:hidden}
      if (referralRadio) referralRadio.checked = true;
    }
 
+   // Early Bird is shown automatically until its own end-time passes - no
+   // manual flip needed. While it's active, Solo/Referral stay hidden and
+   // every registration is a single Early Bird player; the moment it passes
+   // (8 Nov 2026 00:00) the Solo/Referral toggle appears on its own.
+   window.isEarlyBirdActive = function (c) {
+     const eb = c.registration.early_bird;
+     return !!(eb && Date.now() <= new Date(eb.end).getTime());
+   };
+
    // Recomputed every time the player flips Solo/Referral - the single source
    // of truth the rest of the page (player-block count, price display, UPI
    // amount, QR code, submit payload) reads from. Referral is always one
    // combined payment covering all 3 players - there is no separate
    // leader/member path, and a payment screenshot is always required.
    window.getRegSelection = function (c) {
+     if (window.isEarlyBirdActive(c)) {
+       const eb = c.registration.early_bird;
+       return { label: 'Early Bird', window: eb.window, note: eb.note, price: eb.price, quotedPerPlayer: eb.price, playerCount: 1, isReferral: false };
+     }
      const regType = document.querySelector('input[name="regType"]:checked').value;
      if (regType === 'referral') {
        const r = c.registration.referral;
@@ -497,6 +510,7 @@ a.tlItem{position:relative;overflow:hidden}
    };
 
    function renderOfferBox(c) {
+     document.getElementById('regTypeField').style.display = window.isEarlyBirdActive(c) ? 'none' : 'block';
      const sel = window.getRegSelection(c);
      document.getElementById('offerLabel').textContent = sel.label + ' Registration — Open Now';
      document.getElementById('offerWindow').textContent = sel.window || '';
@@ -513,11 +527,12 @@ a.tlItem{position:relative;overflow:hidden}
    window.__gulContentPromise.then(c => {
      renderOfferBox(c);
 
-     // Live countdown to the registration window's closing time, right where
-     // someone is about to decide whether to register now or put it off.
-     if (c.registration.regular && c.registration.regular.end) {
+     // Live countdown to the current phase's own close - Early Bird tonight,
+     // or the full registration window (2 Dec) once that phase is live.
+     const countdownEndIso = window.isEarlyBirdActive(c) ? c.registration.early_bird.end : (c.registration.regular && c.registration.regular.end);
+     if (countdownEndIso) {
        const cdEl = document.getElementById('offerCountdownBig');
-       const endTime = new Date(c.registration.regular.end).getTime();
+       const endTime = new Date(countdownEndIso).getTime();
        const pad = (v) => String(v).padStart(2, '0');
        function tickCountdownBig() {
          const diff = endTime - Date.now();
@@ -543,7 +558,7 @@ a.tlItem{position:relative;overflow:hidden}
    });
   </script>
 
-  <div class="notice">⚠️ Fill in your details, then (unless you're a referral group member) pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
+  <div class="notice">⚠️ Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
 
   <div class="card">
    <form id="regForm">
