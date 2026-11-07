@@ -76,7 +76,8 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payBox .amt{font-size:30px;font-weight:900;color:var(--gold);margin:8px 0}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
 .paySegment{display:flex;background:#1a0a0c;border:1px solid rgba(255,201,60,.25);border-radius:12px;padding:4px;margin:14px 0 18px;gap:4px}
-.paySegment button{flex:1;padding:10px 6px;border-radius:9px;border:0;background:transparent;color:var(--muted);font-size:12.5px;font-weight:800;cursor:pointer;transition:background .2s,color .2s;line-height:1.3}
+.paySegment button{flex:1;padding:10px 6px;border-radius:9px;border:1px solid transparent;background:transparent;color:rgba(255,255,255,.8);font-size:13px;font-weight:800;cursor:pointer;transition:background .2s,color .2s,border-color .2s;line-height:1.3}
+.paySegment button:not(.active){border-color:rgba(255,255,255,.1)}
 .paySegment button.active{background:var(--gold);color:#2a1206;box-shadow:0 4px 14px rgba(255,201,60,.3)}
 .payPanel{display:none}
 .payPanel.active{display:block;animation:payPanelIn .3s ease}
@@ -469,7 +470,7 @@ a.tlItem{position:relative;overflow:hidden}
      </div>
 
      <div class="payPanel active" id="payPanel-app">
-      <a class="upiBtn btn gold" id="payUpiBtn" href="#" style="width:100%;justify-content:center;display:flex;padding:14px 22px;font-size:16px">Pay ₹<span id="payAppAmt"></span> Now →</a>
+      <a class="upiBtn btn gold" id="payUpiBtn" href="#" style="width:100%;justify-content:center;display:flex;gap:7px;padding:14px 22px;font-size:16px">Pay Now <span>·</span> ₹<span id="payAppAmt"></span> →</a>
       <p class="payStepHint">Opens your UPI app (GPay, PhonePe, Paytm...) directly, with the amount already filled in — one tap, nothing to type.</p>
       <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — this button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or switch to the 📷 Scan QR or 🆔 UPI ID tab above.</div>
      </div>
