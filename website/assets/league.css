@@ -194,8 +194,9 @@ html.lenis,html.lenis body{height:auto}
 .brand span,.brandFull{font-size:13px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis}
 .hamburgerBtn{flex-shrink:0;width:42px;height:42px;padding:0}
 @media (min-width:480px){.brand span,.brandFull{font-size:16px}.brand img{width:40px;height:46px}.navRegister{font-size:15px!important;padding:10px 26px!important}}
-@media (max-width:420px){.navRegister{font-size:10.5px!important;padding:7px 11px!important;letter-spacing:.03em}}
-@media (max-width:360px){.navRegister{font-size:9.5px!important;padding:6px 9px!important}.brand img{width:26px;height:30px}}
+@media (max-width:480px){.brandFull{display:none}.brand{justify-content:center}.brand img{width:38px;height:44px}}
+@media (max-width:420px){.navRegister{font-size:10px!important;padding:7px 10px!important;letter-spacing:.02em}}
+@media (max-width:360px){.navRegister{font-size:9px!important;padding:6px 8px!important}.brand img{width:32px;height:37px}}
 
 /* Hub: no leftover comic-panel boxes; first screen shows the logo and the start of the list */
 .comicPanel a.tlItem,.roboPanel .tlItem,.tlPanel .tlItem{background:none!important;border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
