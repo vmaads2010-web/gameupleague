@@ -108,6 +108,18 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payBox canvas{background:#fff;padding:10px;border-radius:12px;margin:12px 0}
 .payBox .upiBtn{display:inline-block;width:auto;padding:12px 22px;margin-top:4px}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+.paySegment{display:flex;background:#1a0a0c;border:1px solid rgba(255,201,60,.25);border-radius:12px;padding:4px;margin:14px 0 18px;gap:4px}
+.paySegment button{flex:1;padding:10px 6px;border-radius:9px;border:0;background:transparent;color:var(--muted);font-size:12.5px;font-weight:800;cursor:pointer;transition:background .2s,color .2s;line-height:1.3}
+.paySegment button.active{background:var(--gold);color:#2a1206;box-shadow:0 4px 14px rgba(255,201,60,.3)}
+.payPanel{display:none}
+.payPanel.active{display:block;animation:payPanelIn .3s ease}
+@keyframes payPanelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.payQrWrap{position:relative;display:inline-block;margin:12px auto}
+.payQrWrap .qrLogo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:10px;border:3px solid #fff;background:#fff;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.payUpiIdCard{background:#1a0a0c;border:1px dashed rgba(255,201,60,.4);border-radius:12px;padding:16px;margin:10px 0}
+.payUpiIdCard .uid{font-size:19px;font-weight:900;color:var(--gold);word-break:break-all}
+.payStepHint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.payTrust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12)}
 .screenshotBox{margin-top:16px;padding-top:16px;border-top:1px dashed rgba(255,255,255,.18)}
 .screenshotBox label{text-align:left}
 .sectionTitle{font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin:28px 0 14px;padding-top:18px;border-top:1px solid var(--line)}
@@ -608,17 +620,36 @@ a.tlItem{position:relative;overflow:hidden}
     <div class="payBox" id="payBox">
      <div class="payRequiredNotice">⚠️ Required — attach your payment screenshot below before you can submit. The Submit button stays locked until you do.</div>
      <h3>Pay via UPI</h3>
-     <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
+     <p class="sub" style="margin:0">Pick whichever is easiest on your phone</p>
      <div class="amt" id="payAmt">Loading…</div>
-     <div id="payQr" style="display:flex;justify-content:center"></div>
-     <div class="note" style="margin:4px 0 8px">Scanning the QR? Type the amount (shown above) yourself when your UPI app asks — it isn't filled in automatically that way.</div>
-     <div><a class="upiBtn btn gold" id="payUpiBtn" href="#">Pay with UPI app →</a></div>
-     <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — the UPI button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or just scan the QR code above directly.</div>
-     <div class="note" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
-      Button not opening your app? Pay manually to: <b id="upiIdText" style="color:var(--gold)">thegameupleague@okaxis</b>
-      <button type="button" id="copyUpiBtn" style="width:auto;margin:0;padding:6px 12px;font-size:12px;background:rgba(255,201,60,.15);color:var(--gold);border:1px solid rgba(255,201,60,.4)">📋 Copy</button>
+
+     <div class="paySegment" id="payTabs" role="tablist">
+      <button type="button" data-pay-tab="app" class="active">📱 UPI App</button>
+      <button type="button" data-pay-tab="qr">📷 Scan QR</button>
+      <button type="button" data-pay-tab="id">🆔 UPI ID</button>
      </div>
-     <div class="note">Payment is not verified automatically yet — GUL will confirm it manually against your reference code.</div>
+
+     <div class="payPanel active" id="payPanel-app">
+      <a class="upiBtn btn gold" id="payUpiBtn" href="#" style="width:100%;justify-content:center;display:flex;font-size:16px">Pay ₹<span id="payAppAmt"></span> Now →</a>
+      <p class="payStepHint">Opens your UPI app (GPay, PhonePe, Paytm...) directly, with the amount already filled in — one tap, nothing to type.</p>
+      <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — this button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or switch to the 📷 Scan QR or 🆔 UPI ID tab above.</div>
+     </div>
+
+     <div class="payPanel" id="payPanel-qr">
+      <div class="payQrWrap" id="payQr"></div>
+      <p class="payStepHint">Scan with any UPI app's camera — the amount fills in automatically, this QR is built fresh for your exact fee.</p>
+     </div>
+
+     <div class="payPanel" id="payPanel-id">
+      <div class="payUpiIdCard">
+       <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Pay to this UPI ID</div>
+       <div class="uid" id="upiIdText">thegameupleague@okaxis</div>
+      </div>
+      <button type="button" id="copyUpiBtn" style="width:auto;margin:0 auto;padding:10px 20px;font-size:13px;background:rgba(255,201,60,.15);color:var(--gold);border:1px solid rgba(255,201,60,.4);display:block">📋 Copy UPI ID</button>
+      <p class="payStepHint">Open any UPI app yourself, choose "Pay to UPI ID / Pay anyone", paste this ID, and enter ₹<span id="payIdAmt"></span>.</p>
+     </div>
+
+     <div class="payTrust">🔒 Payment is not auto-verified yet — GUL confirms it manually against your reference code.</div>
 
      <div class="screenshotBox" id="shotField">
       <label>Upload your payment screenshot <span class="required-star">*</span></label>
@@ -908,6 +939,16 @@ document.getElementById('copyUpiBtn').addEventListener('click', async () => {
   setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
 });
 
+// Three-way payment tabs (App / Scan QR / UPI ID) - plain show/hide, no
+// framework needed. Re-selecting a tab after the amount changes (Solo vs
+// Referral) keeps the player on the tab they were already using.
+document.getElementById('payTabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-pay-tab]');
+  if (!btn) return;
+  document.querySelectorAll('#payTabs button').forEach(b => b.classList.toggle('active', b === btn));
+  document.querySelectorAll('.payPanel').forEach(p => p.classList.toggle('active', p.id === 'payPanel-' + btn.dataset.payTab));
+});
+
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the offer banner markup). Re-run every time
 // the player flips Solo/Referral - the QR and amount depend on that choice.
@@ -922,14 +963,23 @@ window.updatePaymentUI = function (c) {
       '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
     document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
     document.getElementById('payUpiBtn').href = upiLink;
-    // A real GPay-generated QR scans far more reliably than one built by a
-    // JS library at small size (players kept getting "unable to recognise a
-    // valid code" when they screenshotted the old one and re-scanned it from
-    // their gallery). This static code has no amount baked in, so the note
-    // under it tells players to type the amount themselves after scanning -
-    // the "Pay with UPI app" button above still fills the amount automatically.
-    document.getElementById('payQr').innerHTML =
-      '<img src="assets/gul-upi-qr.jpg" alt="GUL UPI QR code" style="width:220px;height:220px;border-radius:8px">';
+    document.getElementById('payAppAmt').textContent = amount.toLocaleString('en-IN');
+    document.getElementById('payIdAmt').textContent = amount.toLocaleString('en-IN');
+
+    // Generated large (300px) with HIGH error correction, which is what
+    // actually keeps a QR scannable after a player screenshots it and
+    // re-scans from their gallery - the old 180px/default-correction QR was
+    // too fragile for that round trip and kept failing to decode. A small
+    // logo badge sits in the centre; H-level correction tolerates up to ~30%
+    // of the code being covered, so this is safe.
+    const qrWrap = document.getElementById('payQr');
+    qrWrap.innerHTML = '';
+    new QRCode(qrWrap, { text: upiLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+    const logo = document.createElement('img');
+    logo.className = 'qrLogo';
+    logo.src = 'assets/favicon-64.png';
+    logo.alt = '';
+    qrWrap.appendChild(logo);
   }
   updateSubmitGate();
 };
