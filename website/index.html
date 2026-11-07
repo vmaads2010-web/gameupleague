@@ -423,7 +423,7 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 .offerBannerDot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0}
 @media (prefers-reduced-motion: no-preference){.offerBannerDot{animation:pulseDot 1.4s ease-in-out infinite}}
 @keyframes pulseDot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{opacity:.4;box-shadow:0 0 0 6px rgba(255,255,255,0)}}
-.offerBannerText{font-weight:800;font-size:13.5px;color:#fff;letter-spacing:.2px;white-space:nowrap}
+.offerBannerText{font-weight:800;font-size:13.5px;color:#fff;letter-spacing:.2px}
 .offerBannerText b{color:#fff;font-size:inherit;font-weight:900}
 .offerBannerOldPrice{color:rgba(255,255,255,.75);font-weight:700;text-decoration-color:#1a0a0c;text-decoration-thickness:2px}
 .offerBannerBtn{background:#fff;color:#101c31;font-weight:900;font-size:12.5px;padding:7px 16px;border-radius:999px;white-space:nowrap;transition:transform .25s ease}
@@ -462,14 +462,10 @@ body:before{display:none}
 main{overflow-x:clip}
 .offerBanner{background:var(--red);animation:none;padding:0}
 .offerBannerIn{width:min(1200px,calc(100% - 24px));margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;padding:9px 0}
-.offerBannerLine{display:flex;align-items:center;justify-content:flex-start;text-align:left;flex:1 1 220px;min-width:0;overflow:hidden}
+.offerBannerLine{display:flex;align-items:center;justify-content:center;text-align:center;flex:1 1 220px;min-width:0;overflow:hidden}
 .offerBannerDot{display:none}
-.offerBannerTicker{overflow:hidden;flex:1;min-width:0}
-.offerBannerTrack{display:inline-flex;white-space:nowrap;animation:gulTicker 16s linear infinite}
-.offerBannerTrack .offerBannerText{display:inline-block;padding-right:56px;white-space:nowrap}
-@keyframes gulTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion: reduce){.offerBannerTrack{animation:none}.offerBannerTicker{overflow-x:auto}.offerBannerTrack .offerBannerText:last-child{display:none}}
-.offerBannerText{font-size:12.5px;line-height:1.4}
+.offerBannerText{font-size:12.5px;line-height:1.4;transition:opacity .28s ease;white-space:normal}
+.offerBannerText.fading{opacity:0}
 .offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
 .offerBannerBtn{border-radius:0;padding:7px 14px;font-size:12px}
 .nav{background:rgba(11,5,6,.86);border-bottom:1px solid var(--line)}
@@ -770,12 +766,7 @@ a.tlItem{position:relative;overflow:hidden}
  <div class="offerBannerIn">
   <span class="offerBannerLine">
    <span class="offerBannerDot"></span>
-   <span class="offerBannerTicker">
-    <span class="offerBannerTrack" id="offerBannerTrack">
-     <span class="offerBannerText" id="offerBannerText"></span>
-     <span class="offerBannerText" id="offerBannerText2" aria-hidden="true"></span>
-    </span>
-   </span>
+   <span class="offerBannerText" id="offerBannerText"></span>
   </span>
   <span class="offerBannerAction">
    <span class="offerCountdown" id="offerCountdown" style="display:none"></span>
@@ -1377,7 +1368,11 @@ window.__gulData
     document.getElementById('earlyBirdSection').style.display = earlyBirdActive ? 'grid' : 'none';
     document.getElementById('soloReferralSection').style.display = earlyBirdActive ? 'none' : 'grid';
 
-    let bannerHtml, countdownEndIso;
+    // Each slide carries its OWN text and its OWN deadline, always shown
+    // together - no more a single countdown mismatched against whichever
+    // offer happened to be on screen. With two offers live, the slides
+    // cross-fade; with one, it just sits still.
+    let slides = [];
     if (earlyBirdActive) {
       document.getElementById('offerTag').textContent = '⏳ ' + earlyBird.label;
       set('offerNewPrice', '₹' + earlyBird.price.toLocaleString('en-IN'));
@@ -1388,16 +1383,14 @@ window.__gulData
         document.getElementById('offerOldPrice').style.display = 'none';
       }
       set('offerNote', 'Valid ' + earlyBird.window + (earlyBird.note ? ' — ' + earlyBird.note : ''));
-      const ebDate = new Date(earlyBird.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-      bannerHtml = '🔥 EARLY BIRD — <b>₹' + earlyBird.price.toLocaleString('en-IN') + '/player</b> · closes tonight, ' + ebDate;
-      countdownEndIso = earlyBird.end;
+      slides.push({ html: '🔥 EARLY BIRD — <b>₹' + earlyBird.price.toLocaleString('en-IN') + '/player</b> · closes tonight', endIso: earlyBird.end });
     } else {
       set('soloPrice', '₹' + solo.price.toLocaleString('en-IN'));
       set('soloNote', 'Valid ' + solo.window);
       const referralOpen = !!(referral.end && Date.now() <= new Date(referral.end).getTime());
       document.getElementById('referralCard').style.display = referralOpen ? 'block' : 'none';
       const soloDate = (c.registration.regular && c.registration.regular.end) ? new Date(c.registration.regular.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
-      const items = ['🔥 Solo — <b>₹' + solo.price.toLocaleString('en-IN') + '/player</b> · closes ' + soloDate];
+      slides.push({ html: '🔥 Solo Registration — <b>₹' + solo.price.toLocaleString('en-IN') + '/player</b> · closes ' + soloDate, endIso: c.registration.regular && c.registration.regular.end });
       if (referralOpen) {
         set('referralPrice', '₹' + referral.pricePerPlayer.toLocaleString('en-IN'));
         set('referralMath', '₹' + referral.pricePerPlayer.toLocaleString('en-IN') + ' per player — bring ' + referral.groupSize + ' or more, everyone pays the same rate, one combined payment');
@@ -1405,10 +1398,8 @@ window.__gulData
         set('referralTotalBadge', '💰 Save ₹' + perPlayerSavings.toLocaleString('en-IN') + ' per player');
         set('referralNote', '✅ ' + referral.note + ' ⏳ Valid ' + referral.window + '.');
         const refDate = new Date(referral.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        items.push('⚡ Referral (3+) — <b>₹' + referral.pricePerPlayer.toLocaleString('en-IN') + '/player</b> · closes ' + refDate);
+        slides.push({ html: '⚡ Referral (3+) Registration — <b>₹' + referral.pricePerPlayer.toLocaleString('en-IN') + '/player</b> · closes ' + refDate, endIso: referral.end });
       }
-      bannerHtml = items.join('&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;');
-      countdownEndIso = c.registration.regular && c.registration.regular.end;
     }
 
     const teamFee = c.teamRegistration ? c.teamRegistration.fee : 12000;
@@ -1420,29 +1411,29 @@ window.__gulData
       setHref('turfMapsLink', c.turf.mapsUrl);
     }
 
-    document.getElementById('offerBannerText').innerHTML = bannerHtml;
-    document.getElementById('offerBannerText2').innerHTML = bannerHtml;
     document.getElementById('offerBanner').style.display = 'block';
 
-    // Live countdown to the current phase's own end-time - early bird tonight,
-    // or the full registration window's close (2 Dec) once that phase starts.
-    if (countdownEndIso) {
-      const countdownEl = document.getElementById('offerCountdown');
-      const endTime = new Date(countdownEndIso).getTime();
-      let countdownTimer = null;
+    const bannerTextEl = document.getElementById('offerBannerText');
+    const countdownEl = document.getElementById('offerCountdown');
+    const pad = (v) => String(v).padStart(2, '0');
+    let countdownTimer = null;
+    let slideTimer = null;
+
+    // Renders one slide's text AND restarts the countdown pointed at THAT
+    // slide's own deadline, so the two never drift out of sync.
+    function showSlide(slide) {
+      bannerTextEl.innerHTML = slide.html;
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (!slide.endIso) { countdownEl.style.display = 'none'; return; }
+      const endTime = new Date(slide.endIso).getTime();
       function tickCountdown() {
         const diff = endTime - Date.now();
-        if (diff <= 0) {
-          countdownEl.style.display = 'none';
-          if (countdownTimer) clearInterval(countdownTimer);
-          return;
-        }
+        if (diff <= 0) { countdownEl.style.display = 'none'; clearInterval(countdownTimer); return; }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
         const parts = d > 0 ? [[d, 'D'], [h, 'H'], [m, 'M']] : [[h, 'H'], [m, 'M'], [s, 'S']];
-        const pad = (v) => String(v).padStart(2, '0');
         countdownEl.innerHTML = '<span class="cdLabel">Ends in</span>' +
           parts.map(([v, u], idx) =>
             (idx > 0 ? '<span class="cdSep">:</span>' : '') +
@@ -1453,6 +1444,19 @@ window.__gulData
       }
       tickCountdown();
       countdownTimer = setInterval(tickCountdown, 1000);
+    }
+
+    let slideIndex = 0;
+    showSlide(slides[0]);
+    if (slides.length > 1) {
+      slideTimer = setInterval(() => {
+        slideIndex = (slideIndex + 1) % slides.length;
+        bannerTextEl.classList.add('fading');
+        setTimeout(() => {
+          showSlide(slides[slideIndex]);
+          bannerTextEl.classList.remove('fading');
+        }, 280);
+      }, 5000);
     }
 
     set('season1Note', c.season1.archiveNote);
