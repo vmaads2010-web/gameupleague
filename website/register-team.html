@@ -94,6 +94,24 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .screenshotBox label{text-align:left}
 .payRequiredNotice{background:rgba(227,38,46,.12);border:1px solid rgba(227,38,46,.4);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ff9d9d;margin-bottom:16px;text-align:left;line-height:1.5}
 .required-star{color:#ff9d9d}
+.fieldHint{display:block;font-size:12px;color:var(--muted,#9aa5b1);margin-top:4px}
+.sizeHelp{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.sizeGuide{margin-top:8px}
+.sizeGuide summary{cursor:pointer;font-size:11.5px;color:var(--gold);font-weight:700;list-style:none}
+.sizeGuide summary::-webkit-details-marker{display:none}
+.sizeGuide img{width:100%;border-radius:8px;margin-top:8px;display:block}
+.sectionTitle{font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin:28px 0 14px;padding-top:18px;border-top:1px solid var(--line)}
+.sectionTitle:first-of-type{margin-top:0;padding-top:0;border-top:0}
+.checkRow{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#260d10;margin-bottom:8px;cursor:pointer}
+.checkRow input{width:auto;accent-color:var(--gold)}
+.checkRow span{font-size:13.5px}
+details.terms{background:#260d10;border:1px solid var(--line);border-radius:12px;padding:4px 16px;margin-bottom:16px}
+details.terms summary{padding:12px 0;font-weight:800;font-size:13px;color:var(--gold);cursor:pointer}
+.termsBody{font-size:12.5px;color:var(--muted);line-height:1.7;padding-bottom:16px;max-height:340px;overflow-y:auto}
+.termsBody h4{color:#cfd9ef;font-size:12.5px;margin:14px 0 4px}
+.termsBody h4:first-child{margin-top:0}
+.consentBox{background:rgba(255,201,60,.06);border:1px solid rgba(255,201,60,.25);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.consentBox .checkRow{background:transparent;border:0;padding:6px 0;margin-bottom:0}
 </style>
 <!-- league-css:start -->
 <style id="league-css">
@@ -437,29 +455,88 @@ a.tlItem{position:relative;overflow:hidden}
 
   <div class="card">
    <form id="regForm">
-    <div class="field"><label>Proposed team name *</label><input id="teamName" required></div>
-    <div class="field"><label>Owner full name *</label><input id="ownerName" required></div>
-    <div class="row2">
-     <div class="field"><label>Mobile number *</label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
-     <div class="field"><label>Email *</label><input id="email" type="email" required></div>
-    </div>
+
+    <div class="sectionTitle">1 · Team Details</div>
+    <div class="field"><label>Team name <span class="required-star">*</span></label><input id="teamName" required><span class="fieldHint">This is final once submitted — it cannot be renamed later.</span></div>
     <div class="field">
-     <label>Team type *</label>
+     <label>Team type <span class="required-star">*</span></label>
      <select id="teamType" required>
       <option value="old">Existing / renewal team</option>
       <option value="new">New team</option>
      </select>
     </div>
     <div class="field">
-     <label>Team logo (optional)</label>
+     <label>Team logo <span class="required-star">*</span></label>
      <div class="logoPicker">
       <img class="logoPreview" id="logoPreview" alt="">
       <label class="logoPickBtn" id="logoPickLabel" for="logoInput">Tap to choose a logo</label>
       <input type="file" id="logoInput" accept="image/*" style="display:none">
      </div>
-     <div class="logoHint" id="logoHint">We automatically shrink the logo before uploading, to keep it small and fast.</div>
+     <div class="logoHint" id="logoHint">We automatically shrink the logo before uploading. This also cannot be changed once submitted.</div>
     </div>
-    <div class="payBox" id="payBox" style="margin-top:22px">
+    <div class="field"><label>Team Instagram ID (optional)</label><input id="teamInstaId" placeholder="@teamhandle"></div>
+
+    <div class="sectionTitle">2 · Owner Details</div>
+    <div class="field"><label>Owner full name <span class="required-star">*</span></label><input id="ownerName" required></div>
+    <div class="row2">
+     <div class="field"><label>Mobile number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
+     <div class="field"><label>Email <span class="required-star">*</span></label><input id="email" type="email" required></div>
+    </div>
+    <div class="field">
+     <label>Owner photograph <span class="required-star">*</span></label>
+     <div class="logoPicker">
+      <img class="logoPreview" id="ownerPhotoPreview" alt="">
+      <label class="logoPickBtn" id="ownerPhotoPickLabel" for="ownerPhotoInput">Tap to choose a photo</label>
+      <input type="file" id="ownerPhotoInput" accept="image/*" style="display:none">
+     </div>
+     <div class="logoHint" id="ownerPhotoHint">Clear face photo — this goes live on the website and in campaign posters.</div>
+    </div>
+    <div class="field"><label>Owner Instagram ID (optional)</label><input id="ownerInstaId" placeholder="@yourhandle"></div>
+    <div class="field">
+     <label>Owner jersey size</label>
+     <div class="sizeHelp">👉 Not sure? Match it to your <b>chest size in inches</b> below — pick the closest one.</div>
+     <select id="ownerJerseySize">
+      <option value="">Select jersey size</option>
+      <option value="20">20 — Chest 20"</option><option value="22">22 — Chest 22"</option><option value="24">24 — Chest 24"</option>
+      <option value="26">26 — Chest 26"</option><option value="28">28 — Chest 28"</option><option value="30">30 — Chest 30"</option>
+      <option value="32">32 — Chest 32"</option><option value="34">34 — Chest 34"</option><option value="36">36 — Chest 36"</option>
+      <option value="38">38 — Chest 38"</option><option value="40">40 — Chest 40"</option><option value="42">42 — Chest 42"</option>
+      <option value="44">44 — Chest 44"</option><option value="46">46 — Chest 46"</option><option value="48">48 — Chest 48"</option>
+     </select>
+     <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
+    </div>
+
+    <div class="sectionTitle">3 · Manager Details</div>
+    <div class="row2">
+     <div class="field"><label>Manager name <span class="required-star">*</span></label><input id="managerName" required></div>
+     <div class="field"><label>Manager contact number <span class="required-star">*</span></label><input id="managerContact" required inputmode="tel" placeholder="+91"></div>
+    </div>
+
+    <div class="sectionTitle">4 · Consent &amp; Declaration</div>
+    <details class="terms">
+     <summary>Read full entry terms &amp; conduct rules</summary>
+     <div class="termsBody">
+      <h4>1. Entry Fee</h4>
+      The team entry fee is non-refundable once paid, under any circumstances.
+      <h4>2. Trophy</h4>
+      The Game Up League trophy is a rolling trophy, passed on to the next champion each season. To keep it permanently instead of passing it on, the winning owner must pay an additional ₹16,000.
+      <h4>3. Cash Prize</h4>
+      Where a cash prize is offered instead of or alongside the trophy, its allocation is at the discretion of the winning team's owner.
+      <h4>4. Rules &amp; Regulations</h4>
+      By registering, the team owner agrees to abide by all current and future Game Up League rules and regulations in full.
+      <h4>5. Auction Rules</h4>
+      The team owner accepts and agrees to the Game Up League player auction rules and regulations, including budget, bidding, and squad-completion rules.
+      <h4>6. Team Name &amp; Logo</h4>
+      Once this registration is submitted, the team name and logo are final and cannot be changed for the season.
+     </div>
+    </details>
+    <div class="consentBox">
+     <label class="checkRow"><input type="checkbox" id="termsAccepted" required><span>I confirm the above is accurate and agree to the entry fee, trophy, cash prize, league rules and auction rules stated above. <span class="required-star">*</span></span></label>
+     <label class="checkRow"><input type="checkbox" id="nameLogoLockAck" required><span>I understand my team name and logo cannot be changed once submitted. <span class="required-star">*</span></span></label>
+    </div>
+
+    <div class="sectionTitle">5 · Payment</div>
+    <div class="payBox" id="payBox" style="margin-top:0">
      <div class="payRequiredNotice">⚠️ Required — attach your payment screenshot below before you can submit. The Submit button stays locked until you do.</div>
      <h3>Pay via UPI</h3>
      <p class="sub" style="margin:0">Pick whichever is easiest on your phone</p>
@@ -504,7 +581,7 @@ a.tlItem{position:relative;overflow:hidden}
      </div>
     </div>
 
-    <button type="submit" id="submitBtn" disabled>Attach your payment screenshot above to submit</button>
+    <button type="submit" id="submitBtn" disabled>Add your team logo above to submit</button>
    </form>
    <div id="status" class="status"></div>
   </div>
@@ -551,19 +628,23 @@ function compressImage(file, maxDim = 500, quality = 0.7) {
 }
 
 let selectedLogoBlob = null;
+let selectedOwnerPhotoBlob = null;
 let selectedShotBlob = null;
 // Generated once, immediately - no DB round-trip needed - so the payment QR
 // (and the reference code on it) is ready before the rest of the form is filled.
 const code = regCode();
 
-// The Submit button is the actual gate the payment-screenshot requirement
-// relies on: it stays disabled until a screenshot is attached, so there is
-// no way to finish this form with an unpaid-looking team entry in the database.
+// The Submit button is the actual gate the photo/screenshot requirements
+// rely on: it stays disabled until the team logo, owner photo, and payment
+// screenshot are all attached, so there is no way to finish this form with
+// an incomplete or unpaid-looking team entry in the database.
 function updateSubmitGate() {
   const btn = document.getElementById('submitBtn');
-  const ready = !!selectedShotBlob;
+  const ready = !!selectedLogoBlob && !!selectedOwnerPhotoBlob && !!selectedShotBlob;
   btn.disabled = !ready;
-  btn.textContent = ready ? 'Submit Team Registration' : 'Attach your payment screenshot above to submit';
+  btn.textContent = ready ? 'Submit Team Registration'
+    : (!selectedLogoBlob ? 'Add your team logo above to submit'
+      : (!selectedOwnerPhotoBlob ? 'Add the owner photo above to submit' : 'Attach your payment screenshot above to submit'));
 }
 
 document.getElementById('logoInput').addEventListener('change', async (e) => {
@@ -582,6 +663,26 @@ document.getElementById('logoInput').addEventListener('change', async (e) => {
     selectedLogoBlob = null;
     hint.textContent = 'Could not process that file: ' + err.message;
   }
+  updateSubmitGate();
+});
+
+document.getElementById('ownerPhotoInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const hint = document.getElementById('ownerPhotoHint');
+  hint.textContent = 'Compressing...';
+  try {
+    const originalKB = Math.round(file.size / 1024);
+    selectedOwnerPhotoBlob = await compressImage(file);
+    const compressedKB = Math.round(selectedOwnerPhotoBlob.size / 1024);
+    document.getElementById('ownerPhotoPreview').src = URL.createObjectURL(selectedOwnerPhotoBlob);
+    document.getElementById('ownerPhotoPickLabel').textContent = 'Change photo';
+    hint.textContent = 'Original ' + originalKB + ' KB → compressed to ' + compressedKB + ' KB.';
+  } catch (err) {
+    selectedOwnerPhotoBlob = null;
+    hint.textContent = 'Could not process that file: ' + err.message;
+  }
+  updateSubmitGate();
 });
 
 document.getElementById('shotInput').addEventListener('change', async (e) => {
@@ -678,6 +779,10 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
 
+    if (!document.getElementById('teamName').value.trim()) {
+      showStatus('err', 'Please enter your team name.');
+      return;
+    }
     const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
     if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
       showStatus('err', 'Please enter a valid 10-digit Indian mobile number.');
@@ -686,6 +791,28 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const emailValue = document.getElementById('email').value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
       showStatus('err', 'Please enter a valid email address.');
+      return;
+    }
+    if (!selectedLogoBlob) {
+      showStatus('err', 'Please attach your team logo — this cannot be added later.');
+      return;
+    }
+    if (!selectedOwnerPhotoBlob) {
+      showStatus('err', 'Please attach the owner photograph.');
+      return;
+    }
+    const managerNameValue = document.getElementById('managerName').value.trim();
+    const managerContactDigits = document.getElementById('managerContact').value.replace(/\D/g, '').replace(/^91/, '');
+    if (!managerNameValue) {
+      showStatus('err', 'Please enter the manager\'s name.');
+      return;
+    }
+    if (!/^[6-9]\d{9}$/.test(managerContactDigits)) {
+      showStatus('err', 'Please enter a valid 10-digit manager contact number.');
+      return;
+    }
+    if (!document.getElementById('termsAccepted').checked || !document.getElementById('nameLogoLockAck').checked) {
+      showStatus('err', 'Please tick both consent boxes above to continue.');
       return;
     }
     if (!selectedShotBlob) {
@@ -704,18 +831,26 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       return;
     }
 
-    let logoPath = null;
-    if (selectedLogoBlob) {
-      showStatus('ok', 'Uploading logo...');
-      logoPath = code + '.jpg';
-      const { error: uploadErr } = await client.storage
-        .from('team-logos')
-        .upload(logoPath, selectedLogoBlob, { contentType: 'image/jpeg' });
-      if (uploadErr) {
-        showStatus('err', 'Logo upload failed: ' + uploadErr.message + '\n\nPlease try submitting again.');
-        btn.disabled = false;
-        return;
-      }
+    showStatus('ok', 'Uploading logo...');
+    const logoPath = code + '.jpg';
+    const { error: uploadErr } = await client.storage
+      .from('team-logos')
+      .upload(logoPath, selectedLogoBlob, { contentType: 'image/jpeg' });
+    if (uploadErr) {
+      showStatus('err', 'Logo upload failed: ' + uploadErr.message + '\n\nPlease try submitting again.');
+      btn.disabled = false;
+      return;
+    }
+
+    showStatus('ok', 'Uploading owner photo...');
+    const ownerPhotoPath = code + '-owner.jpg';
+    const { error: ownerPhotoErr } = await client.storage
+      .from('owner-photos')
+      .upload(ownerPhotoPath, selectedOwnerPhotoBlob, { contentType: 'image/jpeg' });
+    if (ownerPhotoErr) {
+      showStatus('err', 'Owner photo upload failed: ' + ownerPhotoErr.message + '\n\nPlease try submitting again.');
+      btn.disabled = false;
+      return;
     }
 
     showStatus('ok', 'Uploading payment screenshot...');
@@ -738,7 +873,15 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       mobile: document.getElementById('mobile').value.trim(),
       email: document.getElementById('email').value.trim(),
       team_type: document.getElementById('teamType').value,
-      team_logo_url: logoPath
+      team_logo_url: logoPath,
+      owner_photo_url: ownerPhotoPath,
+      owner_instagram_id: document.getElementById('ownerInstaId').value.trim() || null,
+      team_instagram_id: document.getElementById('teamInstaId').value.trim() || null,
+      jersey_size: document.getElementById('ownerJerseySize').value || null,
+      manager_name: managerNameValue,
+      manager_contact: document.getElementById('managerContact').value.trim(),
+      terms_accepted: document.getElementById('termsAccepted').checked,
+      name_logo_lock_ack: document.getElementById('nameLogoLockAck').checked
     };
 
     const { error } = await client.from('team_registrations').insert(payload);
