@@ -109,7 +109,8 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payBox .upiBtn{display:inline-block;width:auto;padding:12px 22px;margin-top:4px}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
 .paySegment{display:flex;background:#1a0a0c;border:1px solid rgba(255,201,60,.25);border-radius:12px;padding:4px;margin:14px 0 18px;gap:4px}
-.paySegment button{flex:1;padding:10px 6px;border-radius:9px;border:1px solid transparent;background:transparent;color:rgba(255,255,255,.8);font-size:13px;font-weight:800;cursor:pointer;transition:background .2s,color .2s,border-color .2s;line-height:1.3}
+.paySegment button{flex:1;padding:10px 6px;border-radius:9px;border:1px solid transparent;background:transparent;color:rgba(255,255,255,.8);font-size:13px;font-weight:800;cursor:pointer;transition:background .2s,color .2s,border-color .2s;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0}
+.paySegment button .ico{font-size:15px;margin-right:.3em}
 .paySegment button:not(.active){border-color:rgba(255,255,255,.1)}
 .paySegment button.active{background:var(--gold);color:#2a1206;box-shadow:0 4px 14px rgba(255,201,60,.3)}
 .payPanel{display:none}
@@ -121,6 +122,8 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payUpiIdCard{background:#1a0a0c;border:1px dashed rgba(255,201,60,.4);border-radius:12px;padding:16px;margin:10px 0}
 .payUpiIdCard .uid{font-size:19px;font-weight:900;color:var(--gold);word-break:break-all}
 .payStepHint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.ico{display:inline-block;width:1em;height:1em;vertical-align:-0.15em;margin-right:.35em;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none;flex-shrink:0}
+.ico-lg{width:1.3em;height:1.3em}
 .payTrust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12)}
 .screenshotBox{margin-top:16px;padding-top:16px;border-top:1px dashed rgba(255,255,255,.18)}
 .screenshotBox label{text-align:left}
@@ -466,19 +469,19 @@ a.tlItem{position:relative;overflow:hidden}
 
   <div class="field" id="regTypeField" style="margin-bottom:18px">
    <label>How are you registering? <span class="required-star">*</span></label>
-   <div class="radioRow"><input type="radio" id="regTypeSolo" name="regType" value="solo" checked><label for="regTypeSolo">⚽ Solo — register just yourself</label></div>
-   <div class="radioRow"><input type="radio" id="regTypeReferral" name="regType" value="referral"><label for="regTypeReferral">👥 Referral — bring friends (3+) together, pay less each</label></div>
+   <div class="radioRow"><input type="radio" id="regTypeSolo" name="regType" value="solo" checked><label for="regTypeSolo"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>Solo — register just yourself</label></div>
+   <div class="radioRow"><input type="radio" id="regTypeReferral" name="regType" value="referral"><label for="regTypeReferral"><svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.5 4.5 2.5 4.5 5.3"/></svg>Referral — bring friends (3+) together, pay less each</label></div>
    <span class="fieldHint" id="regTypeHint" style="display:none;margin-top:8px">Fill in every player's full details below. One combined payment covers the whole group — only one payment screenshot is needed.</span>
   </div>
 
   <div class="field" id="referralCountField" style="display:none;margin-bottom:18px">
-   <label>👥 How many players in your group? (minimum 3)</label>
+   <label><svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.5 4.5 2.5 4.5 5.3"/></svg>How many players in your group? (minimum 3)</label>
    <div style="display:flex;align-items:center;gap:14px">
     <button type="button" id="referralCountMinus" style="width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--line);background:#260d10;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer">−</button>
     <div style="flex:1;text-align:center;font-family:var(--font-display);font-style:italic;font-size:28px;color:var(--gold)" id="referralCountDisplay">3</div>
     <button type="button" id="referralCountPlus" style="width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--line);background:#260d10;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer">+</button>
    </div>
-   <span class="fieldHint">🙋 You + 👥 more friends — add as many as you like, everyone pays ₹1,600 each.</span>
+   <span class="fieldHint"><svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.5 4.5 2.5 4.5 5.3"/></svg>You + your friends — add as many as you like, everyone pays ₹1,600 each.</span>
   </div>
 
   <div class="offerBox">
@@ -605,7 +608,7 @@ a.tlItem{position:relative;overflow:hidden}
    });
   </script>
 
-  <div class="notice">⚠️ Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
+  <div class="notice"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
 
   <div class="card">
    <form id="regForm">
@@ -653,21 +656,21 @@ a.tlItem{position:relative;overflow:hidden}
 
     <div class="sectionTitle">6 · Payment</div>
     <div class="payBox" id="payBox">
-     <div class="payRequiredNotice">⚠️ Required — attach your payment screenshot below before you can submit. The Submit button stays locked until you do.</div>
+     <div class="payRequiredNotice"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>Required — attach your payment screenshot below before you can submit. The Submit button stays locked until you do.</div>
      <h3>Pay via UPI</h3>
      <p class="sub" style="margin:0">Pick whichever is easiest on your phone</p>
      <div class="amt" id="payAmt">Loading…</div>
 
      <div class="paySegment" id="payTabs" role="tablist">
-      <button type="button" data-pay-tab="app" class="active">📱 UPI App</button>
-      <button type="button" data-pay-tab="qr">📷 Scan QR</button>
-      <button type="button" data-pay-tab="id">🆔 UPI ID</button>
+      <button type="button" data-pay-tab="app" class="active"><svg class="ico" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18.5" x2="13" y2="18.5"/></svg>UPI App</button>
+      <button type="button" data-pay-tab="qr"><svg class="ico" viewBox="0 0 24 24"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Scan QR</button>
+      <button type="button" data-pay-tab="id"><svg class="ico" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><line x1="13" y1="10" x2="18" y2="10"/><line x1="13" y1="14" x2="18" y2="14"/></svg>UPI ID</button>
      </div>
 
      <div class="payPanel active" id="payPanel-app">
       <a class="upiBtn btn gold" id="payUpiBtn" href="#" style="width:100%;justify-content:center;display:flex;gap:7px;font-size:16px">Pay Now <span>·</span> ₹<span id="payAppAmt"></span> →</a>
       <p class="payStepHint">Opens your UPI app (GPay, PhonePe, Paytm...) directly, with the amount already filled in — one tap, nothing to type.</p>
-      <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — this button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or switch to the 📷 Scan QR or 🆔 UPI ID tab above.</div>
+      <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>You're inside Instagram/WhatsApp's built-in browser — this button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or switch to the Scan QR or UPI ID tab above.</div>
      </div>
 
      <div class="payPanel" id="payPanel-qr">
@@ -680,11 +683,11 @@ a.tlItem{position:relative;overflow:hidden}
        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Pay to this UPI ID</div>
        <div class="uid" id="upiIdText">thegameupleague@okaxis</div>
       </div>
-      <button type="button" id="copyUpiBtn" style="width:auto;margin:0 auto;padding:10px 20px;font-size:13px;background:rgba(255,201,60,.15);color:var(--gold);border:1px solid rgba(255,201,60,.4);display:block">📋 Copy UPI ID</button>
+      <button type="button" id="copyUpiBtn" style="width:auto;margin:0 auto;padding:10px 20px;font-size:13px;background:rgba(255,201,60,.15);color:var(--gold);border:1px solid rgba(255,201,60,.4);display:block"><svg class="ico" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>Copy UPI ID</button>
       <p class="payStepHint">Open any UPI app yourself, choose "Pay to UPI ID / Pay anyone", paste this ID, and enter ₹<span id="payIdAmt"></span>.</p>
      </div>
 
-     <div class="payTrust">🔒 Payment is not auto-verified yet — GUL confirms it manually against your reference code.</div>
+     <div class="payTrust"><svg class="ico" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg>Payment is not auto-verified yet — GUL confirms it manually against your reference code.</div>
 
      <div class="screenshotBox" id="shotField">
       <label>Upload your payment screenshot <span class="required-star">*</span></label>
@@ -859,7 +862,7 @@ function buildPlayerBlock(n) {
     <div class="sectionTitle">${label}Photo &amp; Kit</div>
     <div class="field" id="p${n}_photoField">
      <label>Player photograph <span class="required-star">*</span></label>
-     <div class="photoNotice">📸 Upload a clear photo of <b>${currentPlayerCount > 1 ? 'this player' : 'yourself'}</b> — this exact photo goes on the website, so make it a good one!</div>
+     <div class="photoNotice"><svg class="ico" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>Upload a clear photo of <b>${currentPlayerCount > 1 ? 'this player' : 'yourself'}</b> — this exact photo goes on the website, so make it a good one!</div>
      <div class="photoPicker">
       <img class="photoPreview" id="p${n}_photoPreview" alt="">
       <label class="photoPickBtn" id="p${n}_photoPickLabel" for="p${n}_photoInput">Tap to choose a photo</label>
@@ -869,7 +872,7 @@ function buildPlayerBlock(n) {
     </div>
     <div class="row2">
      <div class="field"><label>Jersey size</label>
-      <div class="sizeHelp">👉 Not sure? Match it to the <b>chest size in inches</b> below — pick the closest one.</div>
+      <div class="sizeHelp"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r=".6" fill="currentColor" stroke="none"/></svg>Not sure? Match it to the <b>chest size in inches</b> below — pick the closest one.</div>
       <select id="p${n}_jerseySize">
        <option value="">Select jersey size</option>
        <option value="20">20 — Chest 20"</option><option value="22">22 — Chest 22"</option><option value="24">24 — Chest 24"</option>
@@ -878,17 +881,17 @@ function buildPlayerBlock(n) {
        <option value="38">38 — Chest 38"</option><option value="40">40 — Chest 40"</option><option value="42">42 — Chest 42"</option>
        <option value="44">44 — Chest 44"</option><option value="46">46 — Chest 46"</option><option value="48">48 — Chest 48"</option>
       </select>
-      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
+      <details class="sizeGuide"><summary><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="1.5"/><line x1="7" y1="7" x2="7" y2="10"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="15" y1="7" x2="15" y2="10"/><line x1="19" y1="7" x2="19" y2="11"/></svg>Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
      </div>
      <div class="field"><label>Shorts size</label>
-      <div class="sizeHelp">👉 Not sure? Match it to the <b>waist size in inches</b> below — pick the closest one.</div>
+      <div class="sizeHelp"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="7.5" r=".6" fill="currentColor" stroke="none"/></svg>Not sure? Match it to the <b>waist size in inches</b> below — pick the closest one.</div>
       <select id="p${n}_shortsSize">
        <option value="">Select shorts size</option>
        <option value="32">32 — Waist 24"</option><option value="34">34 — Waist 26"</option><option value="36">36 — Waist 28"</option>
        <option value="38">38 — Waist 30"</option><option value="40">40 — Waist 32"</option><option value="42">42 — Waist 34"</option>
        <option value="44">44 — Waist 36"</option><option value="46">46 — Waist 38"</option><option value="48">48 — Waist 40"</option>
       </select>
-      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
+      <details class="sizeGuide"><summary><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="1.5"/><line x1="7" y1="7" x2="7" y2="10"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="15" y1="7" x2="15" y2="10"/><line x1="19" y1="7" x2="19" y2="11"/></svg>Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
      </div>
     </div>
     <div class="field" id="p${n}_instaField"><label>Player Instagram link <span class="required-star">*</span></label><input id="p${n}_instaId" required placeholder="@username or instagram.com/username"></div>
