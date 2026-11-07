@@ -112,7 +112,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <button class="dashTabBtn" data-tab="sponsorship">💰 Sponsorship</button>
       <button class="dashTabBtn" data-tab="expenses">🧾 Expenses</button>
       <button class="dashTabBtn" data-tab="finance">📊 Finance / ROI</button>
-      <button class="dashTabBtn" data-tab="oldplayers">📣 Old Players Campaign</button>
+      <button class="dashTabBtn" data-tab="oldplayers">📣 WhatsApp Campaign</button>
     </div>
 
     <div id="dashMsg" class="msg"></div>
@@ -513,15 +513,44 @@ td.wrap-cell{white-space:normal;max-width:180px}
 
     <div class="tabPanel" id="tabPanel-oldplayers" style="display:none">
     <div class="refreshRow">
-      <h2 style="margin:0;font-size:18px">Old Players – WhatsApp Re-engagement Campaign</h2>
+      <h2 style="margin:0;font-size:18px">📣 WhatsApp Campaign</h2>
       <div style="display:flex;gap:8px">
         <a class="secondaryBtn" href="../assets/old-players-campaign-poster.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 Download Poster</a>
         <button class="exportBtn" id="exportOldPlayersBtn">⬇ Export CSV</button>
       </div>
     </div>
     <p class="mini" style="color:var(--muted);font-size:13px;margin:-8px 0 16px">
-      Season 1 (Football Reimagined) players, imported from the previous registration form. WhatsApp has no way to send a real message to many people with one click without the paid Business API — this click-to-chat flow opens each chat pre-filled, one at a time; you review, attach the poster, and hit send yourself.
+      WhatsApp has no way to send a real message to many people with one click, and no way to tell this dashboard what a player replied, without the paid Business API (not connected here) — this is a click-to-chat helper: it opens each chat pre-filled, one at a time, and only tracks what you yourself confirm (sent, attach poster, who's actually re-registered). It does not and cannot read replies automatically.
     </p>
+
+    <div class="trackerCard" style="margin-bottom:16px">
+      <div class="trackerGrid">
+        <div><label>Audience</label>
+          <select id="opAudience">
+            <option value="old_players">Old Players (previous seasons)</option>
+            <option value="new_players">New Registrations (this season)</option>
+          </select>
+        </div>
+        <div id="opSeasonField"><label>Season</label>
+          <select id="opSeasonFilter"><option value="">All seasons</option></select>
+        </div>
+        <div style="grid-column:1/-1"><label>Message template</label>
+          <select id="opTemplateSelect"></select>
+        </div>
+        <div style="grid-column:1/-1">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <label style="margin:0">Message preview / edit</label>
+            <button class="secondaryBtn" id="opTemplateCustomBtn" style="width:auto;padding:5px 12px;font-size:12px">➕ New custom template</button>
+          </div>
+          <textarea id="opTemplateBody" rows="6" style="width:100%;margin-top:6px;font-family:inherit;font-size:13px;background:var(--surface,#1a0a0c);color:inherit;border:1px solid var(--line);border-radius:8px;padding:10px" placeholder="Use {{first_name}} - it's replaced with each player's first name."></textarea>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+            <input id="opTemplateName" placeholder="Template name" style="flex:1">
+            <button class="secondaryBtn" id="opTemplateSaveBtn" style="width:auto;padding:6px 14px">💾 Save template</button>
+          </div>
+          <div class="mini" id="opTemplateMsg" style="color:var(--muted);font-size:12px;margin-top:4px"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="trackerCard" id="opQueueCard" style="margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
@@ -556,13 +585,6 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <option value="">All campaign statuses</option>
         <option value="pending">Pending</option>
         <option value="sent">Sent</option>
-        <option value="replied">Replied</option>
-      </select>
-      <select id="opResponseFilter">
-        <option value="">All responses</option>
-        <option value="1">1 — Interested</option>
-        <option value="2">2 — Needs info</option>
-        <option value="3">3 — Not interested</option>
       </select>
       <select id="opRenewedFilter">
         <option value="">Renewed + Not Renewed</option>
@@ -575,11 +597,11 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <table>
         <thead><tr>
           <th>Name</th><th>Mobile</th><th>Position</th><th>Type</th>
-          <th>Campaign Status</th><th>Response</th><th>Re-registered</th><th>Actions</th>
+          <th>Campaign Status</th><th>Re-registered</th><th>Actions</th>
         </tr></thead>
         <tbody id="oldPlayerRows"></tbody>
       </table>
-      <div id="oldPlayerEmptyNote" class="emptyNote" style="display:none">No previous players imported yet.</div>
+      <div id="oldPlayerEmptyNote" class="emptyNote" style="display:none">No players loaded for this audience yet.</div>
     </div>
     </div>
   </div>
@@ -615,6 +637,8 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   let allSponsors = [];
   let allExpenses = [];
   let allOldPlayers = [];
+  let allCampaignRows = [];
+  let allTemplates = [];
   let editingSponsorId = null;
   let editingExpenseId = null;
 
@@ -723,6 +747,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     await loadTeamReferences();
     await loadSponsors();
     await loadExpenses();
+    await loadTemplates();
     await loadOldPlayers();
     renderFinance();
   }
@@ -1345,57 +1370,129 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       .map(([task, count, amount]) => `<tr><td>${task}</td><td>${count}</td><td>${amount}</td></tr>`).join('');
   }
 
-  // ---- Old Players Campaign ----
+  // ---- WhatsApp Campaign (old players + new registrations, template-driven) ----
+  // Nothing here can detect what a player replied on WhatsApp - there is no
+  // Business API connected. The only things this dashboard tracks are things
+  // it directly causes itself: a chat being opened from here ("sent"), and a
+  // mobile number showing up in player_registrations ("renewed"), checked by
+  // a normal query, not by reading anyone's messages.
 
   function oldPlayerFirstName(fullName) {
     return String(fullName || '').trim().split(/\s+/)[0] || 'there';
   }
 
-  // Personalised with the player's first name. Automatically switches
-  // between tonight's urgent Early Bird wording and the generic Solo/Referral
-  // wording once that deadline passes - so the same button keeps sending the
-  // right message whether it's used in this last half hour or days from now.
-  const EARLY_BIRD_END = new Date('2026-11-07T23:59:59+05:30').getTime();
-  function oldPlayerCampaignMessage(fullName) {
-    const firstName = oldPlayerFirstName(fullName);
-    const urgent = Date.now() <= EARLY_BIRD_END;
-    const offerBlock = urgent
-      ? `🔥 *LAST CHANCE – EARLY BIRD, ENDS TONIGHT!*
-Just ₹1,600 (instead of ₹1,800) — but only if you register before *11:59 PM TODAY*. ⏳`
-      : `💰 *Registration is open:*
-• Solo — ₹1,800
-• Bring 2 friends (group of 3) — just ₹1,600 each, ₹4,800 total
-📅 Closes 2 December 2026.`;
-    return `Hey ${firstName}! 👋⚽🐺
-
-*THE GAME UP LEAGUE: RELOADED* 🏆 is here!
-
-We had an incredible season together, and honestly, it won't be the same without you on the pitch. Come back and play with us one more time! 🔥
-
-${offerBlock}
-
-What's your plan for Season 2?
-1️⃣ YES! Registering now.
-2️⃣ INTERESTED — send me more details.
-3️⃣ Not this season.
-
-Just reply with 1, 2 or 3 and we'll take it from there 🙌
-
-👉 Register here: https://thegameupleague.com/register.html
-
-Let's bring the squad back together! 🔥
-*THE GAME UP LEAGUE: RELOADED*`;
+  function currentTemplateBody() {
+    return document.getElementById('opTemplateBody').value || '';
+  }
+  function renderTemplateMessage(fullName) {
+    return currentTemplateBody().replace(/\{\{\s*first_name\s*\}\}/gi, oldPlayerFirstName(fullName));
   }
 
-  async function loadOldPlayers() {
-    const { data, error } = await client.from('old_players_campaign').select('*').order('full_name', { ascending: true });
-    if (error) { showMsg('dashMsg', 'err', 'Could not load old players: ' + error.message); return; }
-    allOldPlayers = data || [];
-    await syncOldPlayerRenewals();
+  async function loadTemplates() {
+    const { data, error } = await client.from('whatsapp_templates').select('*').order('created_at', { ascending: true });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load message templates: ' + error.message); return; }
+    allTemplates = data || [];
+    renderTemplateOptions();
+  }
+
+  function renderTemplateOptions() {
+    const audience = document.getElementById('opAudience').value;
+    const sel = document.getElementById('opTemplateSelect');
+    const list = allTemplates.filter(t => t.audience === audience);
+    const prev = sel.value;
+    sel.innerHTML = list.map(t => `<option value="${t.id}">${esc(t.name)}</option>`).join('');
+    const stillThere = list.some(t => t.id === prev);
+    if (stillThere) { sel.value = prev; }
+    else {
+      const def = list.find(t => t.is_default) || list[0];
+      if (def) sel.value = def.id;
+    }
+    const chosen = list.find(t => t.id === sel.value);
+    if (chosen) loadTemplateIntoEditor(chosen);
+    else { document.getElementById('opTemplateName').value = ''; document.getElementById('opTemplateBody').value = ''; }
+  }
+
+  function loadTemplateIntoEditor(t) {
+    document.getElementById('opTemplateName').value = t.name;
+    document.getElementById('opTemplateBody').value = t.body;
+    document.getElementById('opTemplateMsg').textContent = '';
+  }
+
+  document.getElementById('opTemplateSelect').addEventListener('change', () => {
+    const t = allTemplates.find(x => x.id === document.getElementById('opTemplateSelect').value);
+    if (t) loadTemplateIntoEditor(t);
+  });
+
+  document.getElementById('opTemplateCustomBtn').addEventListener('click', () => {
+    document.getElementById('opTemplateSelect').value = '';
+    document.getElementById('opTemplateName').value = '';
+    document.getElementById('opTemplateBody').value = `Hey {{first_name}}! 👋\n\n`;
+    document.getElementById('opTemplateMsg').textContent = 'Write your message, name it below, then Save - it will show up in the dropdown above from now on.';
+    document.getElementById('opTemplateName').focus();
+  });
+
+  document.getElementById('opTemplateSaveBtn').addEventListener('click', async () => {
+    const name = document.getElementById('opTemplateName').value.trim();
+    const body = document.getElementById('opTemplateBody').value;
+    if (!name || !body.trim()) { showMsg('dashMsg', 'err', 'Template name and message body are both required.'); return; }
+    const audience = document.getElementById('opAudience').value;
+    const selId = document.getElementById('opTemplateSelect').value;
+    const existing = allTemplates.find(t => t.id === selId);
+    const payload = { name, body, audience, updated_at: new Date().toISOString() };
+    const { error } = existing
+      ? await client.from('whatsapp_templates').update(payload).eq('id', existing.id)
+      : await client.from('whatsapp_templates').insert(payload);
+    if (error) { document.getElementById('opTemplateMsg').textContent = '❌ ' + error.message; return; }
+    document.getElementById('opTemplateMsg').textContent = '✅ Saved - available for next time too.';
+    await loadTemplates();
+  });
+
+  document.getElementById('opAudience').addEventListener('change', () => { renderTemplateOptions(); loadCampaignRows(); });
+  document.getElementById('opSeasonFilter').addEventListener('change', () => loadCampaignRows());
+
+  function renderSeasonOptions() {
+    const seasons = [...new Set(allOldPlayers.map(p => p.season_label).filter(Boolean))];
+    const sel = document.getElementById('opSeasonFilter');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">All seasons</option>' + seasons.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('');
+    if (seasons.includes(prev)) sel.value = prev;
+  }
+
+  // Master loader: pulls the right audience into allCampaignRows (a common
+  // shape both the table and the queue render from), regardless of which
+  // underlying table it came from.
+  async function loadCampaignRows() {
+    const audience = document.getElementById('opAudience').value;
+    document.getElementById('opSeasonField').style.display = audience === 'old_players' ? 'block' : 'none';
+
+    if (audience === 'old_players') {
+      const { data, error } = await client.from('old_players_campaign').select('*').order('full_name', { ascending: true });
+      if (error) { showMsg('dashMsg', 'err', 'Could not load old players: ' + error.message); return; }
+      allOldPlayers = data || [];
+      await syncOldPlayerRenewals();
+      renderSeasonOptions();
+      const seasonF = document.getElementById('opSeasonFilter').value;
+      allCampaignRows = allOldPlayers
+        .filter(p => !seasonF || p.season_label === seasonF)
+        .map(p => ({ ...p, _trackable: true }));
+    } else {
+      const { data, error } = await client.from('player_registrations')
+        .select('id, full_name, mobile, position, created_at').order('created_at', { ascending: false });
+      if (error) { showMsg('dashMsg', 'err', 'Could not load new registrations: ' + error.message); return; }
+      // These rows have no campaign_status/reregistered columns of their own -
+      // they are this season's own registrants, sending is not persisted here.
+      allCampaignRows = (data || []).map(r => ({
+        id: r.id, full_name: r.full_name, mobile: String(r.mobile || '').replace(/\D/g, '').slice(-10),
+        position: r.position, participation_type: 'Player', campaign_status: null,
+        reregistered: null, duplicate_mobile: false, photo_url: null, _trackable: false
+      }));
+    }
     renderOldPlayerStats();
     renderOldPlayerRows(filteredOldPlayers());
     if (typeof opUpdateQueueProgress === 'function') opUpdateQueueProgress();
   }
+  // Back-compat name used by other tabs' init sequence.
+  async function loadOldPlayers() { await loadCampaignRows(); }
 
   // Cross-checks every not-yet-renewed old player against this season's
   // player_registrations every time this tab loads, so anyone who registers
@@ -1413,14 +1510,18 @@ Let's bring the squad back together! 🔥
   }
 
   function renderOldPlayerStats() {
-    const total = allOldPlayers.length;
-    const validMobile = allOldPlayers.filter(p => p.mobile_valid).length;
-    const pending = allOldPlayers.filter(p => p.campaign_status === 'pending').length;
-    const sent = allOldPlayers.filter(p => p.campaign_status === 'sent' || p.campaign_status === 'replied').length;
-    const r1 = allOldPlayers.filter(p => p.response === '1').length;
-    const r2 = allOldPlayers.filter(p => p.response === '2').length;
-    const r3 = allOldPlayers.filter(p => p.response === '3').length;
-    const reregistered = allOldPlayers.filter(p => p.reregistered).length;
+    const audience = document.getElementById('opAudience').value;
+    const total = allCampaignRows.length;
+    const sent = allCampaignRows.filter(p => p.campaign_status === 'sent').length;
+    if (audience !== 'old_players') {
+      document.getElementById('oldPlayerStats').innerHTML = [
+        ['Total New Registrations', total],
+        ['Opened This Session', sent]
+      ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+      return;
+    }
+    const pending = allCampaignRows.filter(p => p.campaign_status === 'pending').length;
+    const reregistered = allCampaignRows.filter(p => p.reregistered).length;
     const notRenewed = total - reregistered;
     const renewalPct = total ? Math.round((reregistered / total) * 100) : 0;
     document.getElementById('oldPlayerStats').innerHTML = [
@@ -1429,21 +1530,16 @@ Let's bring the squad back together! 🔥
       ['🔴 Not Renewed Yet', notRenewed],
       ['Renewal %', renewalPct + '%'],
       ['Pending Messages', pending],
-      ['Messages Sent', sent],
-      ['Interested – Reply 1', r1],
-      ['Need More Details – Reply 2', r2],
-      ['Not Interested – Reply 3', r3]
+      ['Messages Sent', sent]
     ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
   }
 
   function filteredOldPlayers() {
     const q = document.getElementById('opSearch').value.trim().toLowerCase();
     const statusF = document.getElementById('opStatusFilter').value;
-    const respF = document.getElementById('opResponseFilter').value;
     const renewedF = document.getElementById('opRenewedFilter').value;
-    return allOldPlayers.filter(p => {
+    return allCampaignRows.filter(p => {
       if (statusF && p.campaign_status !== statusF) return false;
-      if (respF && p.response !== respF) return false;
       if (renewedF === 'yes' && !p.reregistered) return false;
       if (renewedF === 'no' && p.reregistered) return false;
       if (q) {
@@ -1454,13 +1550,11 @@ Let's bring the squad back together! 🔥
     });
   }
 
-  ['opSearch', 'opStatusFilter', 'opResponseFilter', 'opRenewedFilter'].forEach(id => {
+  ['opSearch', 'opStatusFilter', 'opRenewedFilter'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => renderOldPlayerRows(filteredOldPlayers()));
   });
 
-  const OP_STATUS_PILL = { pending: 'pending', sent: 'pending', replied: 'approved' };
-  const OP_RESPONSE_LABELS = { '1': '1 · Interested', '2': '2 · Needs info', '3': '3 · Not interested' };
-  const OP_RESPONSE_PILL = { '1': 'approved', '2': 'pending', '3': 'rejected' };
+  const OP_STATUS_PILL = { pending: 'pending', sent: 'paid' };
 
   function renderOldPlayerRows(list) {
     const tbody = document.getElementById('oldPlayerRows');
@@ -1471,14 +1565,10 @@ Let's bring the squad back together! 🔥
         <td>${esc(p.mobile)}</td>
         <td class="wrap-cell">${esc(p.position || '—')}</td>
         <td>${esc(p.participation_type || 'Player')}</td>
-        <td><span class="pill ${OP_STATUS_PILL[p.campaign_status] || 'pending'}">${esc(p.campaign_status)}</span></td>
-        <td>${p.response ? `<span class="pill ${OP_RESPONSE_PILL[p.response]}">${esc(OP_RESPONSE_LABELS[p.response])}</span>` : '—'}</td>
-        <td><span class="pill ${p.reregistered ? 'paid' : 'unpaid'}">${p.reregistered ? '✅ Yes' : 'Not yet'}</span></td>
+        <td>${p.campaign_status ? `<span class="pill ${OP_STATUS_PILL[p.campaign_status] || 'pending'}">${esc(p.campaign_status)}</span>` : '—'}</td>
+        <td>${p.reregistered === null ? '—' : `<span class="pill ${p.reregistered ? 'paid' : 'unpaid'}">${p.reregistered ? '✅ Yes' : 'Not yet'}</span>`}</td>
         <td class="actionsCell">
-          <button class="secondaryBtn" data-action="op-whatsapp">💬 ${p.campaign_status === 'pending' ? 'Send &amp; Track' : '↻ Re-send'}</button>
-          <button class="secondaryBtn" data-action="op-resp-1" title="Interested - ready to register">1</button>
-          <button class="secondaryBtn" data-action="op-resp-2" title="Interested - needs info">2</button>
-          <button class="secondaryBtn" data-action="op-resp-3" title="Not interested">3</button>
+          <button class="secondaryBtn" data-action="op-whatsapp">💬 ${p._trackable ? (p.campaign_status === 'pending' ? 'Send &amp; Track' : '↻ Re-send') : 'Send'}</button>
         </td>
       </tr>`).join('');
   }
@@ -1487,44 +1577,30 @@ Let's bring the squad back together! 🔥
     const row = e.target.closest('tr');
     if (!row) return;
     const id = row.dataset.id;
-    const player = allOldPlayers.find(p => p.id === id);
+    const player = allCampaignRows.find(p => String(p.id) === id);
     if (!player) return;
 
     if (e.target.closest('[data-action="op-whatsapp"]')) {
-      // One click does both: opens the pre-filled chat AND tracks it as sent
-      // right away, so the Sent count stays accurate without a second click.
-      // Already-sent rows ask first, so a re-send can't double-count by accident.
-      if (player.campaign_status !== 'pending' && !confirm('This player was already marked ' + player.campaign_status + '. Open WhatsApp again?')) return;
-      window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
-      if (player.campaign_status === 'pending') {
+      if (player._trackable && player.campaign_status !== 'pending' && !confirm('This player was already marked ' + player.campaign_status + '. Open WhatsApp again?')) return;
+      window.open(waLink(player.mobile, renderTemplateMessage(player.full_name)), '_blank');
+      if (player._trackable && player.campaign_status === 'pending') {
         const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', id);
         if (error) { alert('Chat opened, but could not mark it sent: ' + error.message); return; }
-        await loadOldPlayers();
+        await loadCampaignRows();
       }
       return;
-    }
-    const respBtn = e.target.closest('[data-action^="op-resp-"]');
-    if (respBtn) {
-      const response = respBtn.dataset.action.split('-')[2];
-      const { error } = await client.from('old_players_campaign')
-        .update({ response, campaign_status: 'replied', updated_at: new Date().toISOString() }).eq('id', id);
-      if (error) { alert('Could not update: ' + error.message); return; }
-      await loadOldPlayers();
     }
   });
 
   document.getElementById('exportOldPlayersBtn').addEventListener('click', () => {
-    downloadCsv('gul-old-players-campaign.csv', allOldPlayers, [
+    downloadCsv('gul-whatsapp-campaign.csv', allCampaignRows, [
       { label: 'Name', value: p => p.full_name },
       { label: 'Mobile', value: p => p.mobile },
       { label: 'Duplicate Mobile', value: p => p.duplicate_mobile ? 'Yes' : 'No' },
       { label: 'Position', value: p => p.position || '' },
       { label: 'Type', value: p => p.participation_type || '' },
-      { label: 'Campaign Status', value: p => p.campaign_status },
-      { label: 'Response', value: p => p.response || '' },
-      { label: 'Re-registered', value: p => p.reregistered ? 'Yes' : 'No' },
-      { label: 'Instagram', value: p => p.instagram_id || '' },
-      { label: 'Emergency Contact', value: p => p.emergency_contact || '' }
+      { label: 'Campaign Status', value: p => p.campaign_status || '' },
+      { label: 'Renewed', value: p => p.reregistered === null ? 'n/a' : (p.reregistered ? 'Yes' : 'No') }
     ]);
   });
 
@@ -1538,14 +1614,15 @@ Let's bring the squad back together! 🔥
   function opPendingQueue() {
     // Skips anyone who already re-registered - no point messaging them again,
     // and this is exactly the "unregistered-only" bulk run that's needed.
-    return allOldPlayers.filter(p => p.campaign_status === 'pending' && !p.reregistered);
+    // New-registration audience has no campaign_status, so every row qualifies.
+    return allCampaignRows.filter(p => !p.reregistered && (!p._trackable || p.campaign_status === 'pending'));
   }
 
   function opUpdateQueueProgress() {
     const remaining = opPendingQueue().length;
     document.getElementById('opQueueProgress').textContent = opQueueIndex >= 0
-      ? `Player ${opQueueIndex + 1} of ${opQueue.length} in this run — ${remaining} pending overall.`
-      : `${remaining} pending player${remaining === 1 ? '' : 's'} left to message.`;
+      ? `Player ${opQueueIndex + 1} of ${opQueue.length} in this run — ${remaining} left overall.`
+      : `${remaining} player${remaining === 1 ? '' : 's'} left to message.`;
   }
 
   function opShowQueuePlayer() {
@@ -1567,7 +1644,7 @@ Let's bring the squad back together! 🔥
 
   document.getElementById('opStartQueueBtn').addEventListener('click', () => {
     opQueue = opPendingQueue();
-    if (!opQueue.length) { alert('No pending players left to message.'); return; }
+    if (!opQueue.length) { alert('No one left to message in this audience.'); return; }
     opQueueIndex = 0;
     document.getElementById('opQueueActive').style.display = 'block';
     document.getElementById('opStartQueueBtn').style.display = 'none';
@@ -1579,12 +1656,14 @@ Let's bring the squad back together! 🔥
     if (!player) return;
     // Opens the pre-filled chat and tracks it as sent in the same click -
     // matches the per-row "Send & Track" button so the count is automatic.
-    window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
-    const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', player.id);
-    if (error) { alert('Could not update: ' + error.message); return; }
-    await loadOldPlayers();
+    window.open(waLink(player.mobile, renderTemplateMessage(player.full_name)), '_blank');
+    if (player._trackable) {
+      const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', player.id);
+      if (error) { alert('Could not update: ' + error.message); return; }
+      await loadCampaignRows();
+    }
     opQueueIndex++;
-    if (opQueueIndex >= opQueue.length) { alert('✅ Done — ran through every pending player in this batch.'); opStopQueue(); return; }
+    if (opQueueIndex >= opQueue.length) { alert('✅ Done — ran through everyone in this batch.'); opStopQueue(); return; }
     opShowQueuePlayer();
   });
 
