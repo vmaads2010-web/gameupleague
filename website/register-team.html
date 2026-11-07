@@ -450,6 +450,7 @@ a.tlItem{position:relative;overflow:hidden}
      <p class="sub" style="margin:0">Scan with any UPI app, or tap the button on your phone</p>
      <div class="amt" id="payAmt">Loading…</div>
      <div id="payQr" style="display:flex;justify-content:center"></div>
+     <div class="note" style="margin:4px 0 8px">Scanning the QR? Type the amount (shown above) yourself when your UPI app asks — it isn't filled in automatically that way.</div>
      <div><a class="upiBtn btn gold" id="payUpiBtn" href="#" style="display:inline-block;width:auto;padding:12px 22px;margin-top:4px">Pay with UPI app →</a></div>
      <div class="note" id="upiInAppWarning" style="display:none;color:#ffb199;font-weight:700">⚠️ You're inside Instagram/WhatsApp's built-in browser — the UPI button often won't open your payment app from here. Tap the ⋯ menu (top-right) and choose "Open in browser/Chrome" first, or just scan the QR code above directly.</div>
      <div class="note" style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
@@ -604,7 +605,9 @@ window.__gulContentPromise.then(c => {
       '&am=' + teamFee + '&cu=INR&tn=' + encodeURIComponent(note);
     document.getElementById('payAmt').textContent = '₹' + teamFee.toLocaleString('en-IN');
     document.getElementById('payUpiBtn').href = upiLink;
-    new QRCode(document.getElementById('payQr'), { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
+    // Real GPay-generated QR, not a JS-library one - see register.html for why.
+    document.getElementById('payQr').innerHTML =
+      '<img src="assets/gul-upi-qr.jpg" alt="GUL UPI QR code" style="width:220px;height:220px;border-radius:8px">';
   }
 }).catch(() => {
   document.getElementById('payAmt').textContent = 'Could not load pricing — contact GUL directly.';
