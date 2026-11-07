@@ -450,6 +450,13 @@ a.tlItem{position:relative;overflow:hidden}
   <h1>Game Up League:</h1>
   <p class="sub">Player Registration Form</p>
 
+  <div class="field" id="regTypeField" style="margin-bottom:18px">
+   <label>How are you registering? <span class="required-star">*</span></label>
+   <div class="radioRow"><input type="radio" id="regTypeSolo" name="regType" value="solo" checked><label for="regTypeSolo">⚽ Solo — register just yourself</label></div>
+   <div class="radioRow"><input type="radio" id="regTypeReferral" name="regType" value="referral"><label for="regTypeReferral">👥 Referral — register a group of 3 together, pay less each</label></div>
+   <span class="fieldHint" id="regTypeHint" style="display:none;margin-top:8px">Fill in all 3 players' full details below. One combined payment of ₹4,800 covers all three — only one payment screenshot is needed.</span>
+  </div>
+
   <div class="offerBox">
    <div class="offerBadge"><span class="dot"></span><span id="offerLabel">Loading offer…</span></div>
    <div class="offerMain">
@@ -465,26 +472,52 @@ a.tlItem{position:relative;overflow:hidden}
    // Fires immediately, before the supabase/QR-code libraries below load, so the
    // offer banner fills in right away instead of waiting on those downloads.
    window.__gulContentPromise = fetch('content.json?v=' + Date.now(), { cache: 'no-store' }).then(r => r.json());
-   window.__gulContentPromise.then(c => {
-     const currentOffer = c.registration[c.registration.activeOffer];
-     document.getElementById('offerLabel').textContent = currentOffer.label + ' Registration — Open Now';
-     document.getElementById('offerWindow').textContent = currentOffer.window || '';
-     document.getElementById('offerPrice').innerHTML = '₹' + currentOffer.price.toLocaleString('en-IN') + '<small> / player</small>';
-     document.getElementById('offerExtraNote').textContent = currentOffer.note || '';
 
-     const regular = c.registration.regular;
-     const urgencyEl = document.getElementById('offerUrgency');
-     if (c.registration.activeOffer !== 'regular' && regular.price > currentOffer.price) {
-       urgencyEl.innerHTML = '⏳ This rate won\'t last — once this offer closes, the price goes up to <b>₹' + regular.price.toLocaleString('en-IN') + '/player</b>. Register now to lock in ₹' + currentOffer.price.toLocaleString('en-IN') + '.';
-     } else {
-       urgencyEl.style.display = 'none';
+   // Reads the page's own query string (?type=referral from the homepage's
+   // "Register with Friends" button) so the right tab is preselected before
+   // the player touches anything.
+   if (new URLSearchParams(location.search).get('type') === 'referral') {
+     const referralRadio = document.querySelector('input[name="regType"][value="referral"]');
+     if (referralRadio) referralRadio.checked = true;
+   }
+
+   // Recomputed every time the player flips Solo/Referral - the single source
+   // of truth the rest of the page (player-block count, price display, UPI
+   // amount, QR code, submit payload) reads from. Referral is always one
+   // combined payment covering all 3 players - there is no separate
+   // leader/member path, and a payment screenshot is always required.
+   window.getRegSelection = function (c) {
+     const regType = document.querySelector('input[name="regType"]:checked').value;
+     if (regType === 'referral') {
+       const r = c.registration.referral;
+       return { label: 'Referral — Group of 3', window: r.window, note: r.note, price: r.totalPrice, quotedPerPlayer: r.pricePerPlayer, playerCount: 3, isReferral: true };
      }
+     const s = c.registration.solo;
+     return { label: 'Solo', window: s.window, note: s.note, price: s.price, quotedPerPlayer: s.price, playerCount: 1, isReferral: false };
+   };
 
-     // Live countdown to this offer's closing time, right where someone is
-     // about to decide whether to register now or put it off.
-     if (currentOffer.end) {
+   function renderOfferBox(c) {
+     const sel = window.getRegSelection(c);
+     document.getElementById('offerLabel').textContent = sel.label + ' Registration — Open Now';
+     document.getElementById('offerWindow').textContent = sel.window || '';
+     document.getElementById('offerPrice').innerHTML = '₹' + sel.price.toLocaleString('en-IN') + (sel.isReferral ? '<small> total (group of 3)</small>' : '<small> / player</small>');
+     document.getElementById('offerExtraNote').textContent = sel.note || '';
+     document.getElementById('offerUrgency').style.display = 'none';
+     document.getElementById('regTypeHint').style.display = sel.isReferral ? 'block' : 'none';
+     if (window.renderPlayers) window.renderPlayers(sel.playerCount);
+     if (window.updatePaymentUI) window.updatePaymentUI(c);
+   }
+
+   document.querySelectorAll('input[name="regType"]').forEach(el => el.addEventListener('change', () => window.__gulContentPromise.then(renderOfferBox)));
+
+   window.__gulContentPromise.then(c => {
+     renderOfferBox(c);
+
+     // Live countdown to the registration window's closing time, right where
+     // someone is about to decide whether to register now or put it off.
+     if (c.registration.regular && c.registration.regular.end) {
        const cdEl = document.getElementById('offerCountdownBig');
-       const endTime = new Date(currentOffer.end).getTime();
+       const endTime = new Date(c.registration.regular.end).getTime();
        const pad = (v) => String(v).padStart(2, '0');
        function tickCountdownBig() {
          const diff = endTime - Date.now();
@@ -510,39 +543,11 @@ a.tlItem{position:relative;overflow:hidden}
    });
   </script>
 
-  <div class="notice">⚠️ Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once the screenshot is attached.</div>
+  <div class="notice">⚠️ Fill in your details, then (unless you're a referral group member) pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
 
   <div class="card">
    <form id="regForm">
 
-    <div class="sectionTitle">1 · Personal Information</div>
-    <div class="field"><label>Full name <span class="required-star">*</span></label><input id="fullName" required></div>
-    <div class="row2">
-     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required><span class="fieldHint">Must be born on or before 16/01/2009</span></div>
-     <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="mobile" required inputmode="tel" placeholder="+91"></div>
-    </div>
-    <div class="row2">
-     <div class="field"><label>Email address <span class="required-star">*</span></label><input id="email" type="email" required></div>
-     <div class="field"><label>Full address <span class="required-star">*</span></label><input id="city" required placeholder="e.g. 12 Station Road, Vasai West, 401202"></div>
-    </div>
-
-    <div class="sectionTitle">2 · Playing Position</div>
-    <div class="field" id="positionField">
-     <label>Position <span class="required-star">*</span> (select all that apply)</label>
-     <label class="checkRow"><input type="checkbox" name="position" value="Goalkeeper (GK)"><span>Goalkeeper (GK)</span></label>
-     <label class="checkRow"><input type="checkbox" name="position" value="Defence (DEF)"><span>Defence (DEF)</span></label>
-     <label class="checkRow"><input type="checkbox" name="position" value="Midfield (MID)"><span>Midfield (MID)</span></label>
-     <label class="checkRow"><input type="checkbox" name="position" value="Attack (ATT)"><span>Attack (ATT)</span></label>
-    </div>
-
-    <div class="sectionTitle">3 · Emergency Contact</div>
-    <div class="field"><label>Emergency contact person's name <span class="required-star">*</span></label><input id="emName" required></div>
-    <div class="row2">
-     <div class="field"><label>Emergency contact number <span class="required-star">*</span></label><input id="emNumber" required inputmode="tel"></div>
-     <div class="field"><label>Relationship with player <span class="required-star">*</span></label><input id="emRelation" required placeholder="e.g. Father, Sister"></div>
-    </div>
-
-    <div class="sectionTitle">4 · Additional Information</div>
     <div class="field">
      <label>How did you hear about The Game Up League?</label>
      <select id="heardFrom">
@@ -553,59 +558,11 @@ a.tlItem{position:relative;overflow:hidden}
       <option>Other</option>
      </select>
     </div>
-    <div class="field" id="photoField">
-     <label>Player photograph <span class="required-star">*</span></label>
-     <div class="photoNotice">📸 Upload a clear photo of <b>yourself</b> — this exact photo goes on the website, so make it a good one!</div>
-     <div class="photoPicker">
-      <img class="photoPreview" id="photoPreview" alt="">
-      <label class="photoPickBtn" id="photoPickLabel" for="photoInput">Tap to choose a photo</label>
-      <input type="file" id="photoInput" accept="image/*" style="display:none">
-     </div>
-     <div class="photoHint" id="photoHint">We automatically shrink the photo before uploading, to keep it small and fast.</div>
-    </div>
-    <div class="row2">
-     <div class="field"><label>Jersey size</label>
-      <div class="sizeHelp">👉 Not sure? Match it to your <b>chest size in inches</b> below — pick the closest one.</div>
-      <select id="jerseySize">
-       <option value="">Select your jersey size</option>
-       <option value="20">20 — Chest 20"</option>
-       <option value="22">22 — Chest 22"</option>
-       <option value="24">24 — Chest 24"</option>
-       <option value="26">26 — Chest 26"</option>
-       <option value="28">28 — Chest 28"</option>
-       <option value="30">30 — Chest 30"</option>
-       <option value="32">32 — Chest 32"</option>
-       <option value="34">34 — Chest 34"</option>
-       <option value="36">36 — Chest 36"</option>
-       <option value="38">38 — Chest 38"</option>
-       <option value="40">40 — Chest 40"</option>
-       <option value="42">42 — Chest 42"</option>
-       <option value="44">44 — Chest 44"</option>
-       <option value="46">46 — Chest 46"</option>
-       <option value="48">48 — Chest 48"</option>
-      </select>
-      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
-     </div>
-     <div class="field"><label>Shorts size</label>
-      <div class="sizeHelp">👉 Not sure? Match it to your <b>waist size in inches</b> below — pick the closest one.</div>
-      <select id="shortsSize">
-       <option value="">Select your shorts size</option>
-       <option value="32">32 — Waist 24"</option>
-       <option value="34">34 — Waist 26"</option>
-       <option value="36">36 — Waist 28"</option>
-       <option value="38">38 — Waist 30"</option>
-       <option value="40">40 — Waist 32"</option>
-       <option value="42">42 — Waist 34"</option>
-       <option value="44">44 — Waist 36"</option>
-       <option value="46">46 — Waist 38"</option>
-       <option value="48">48 — Waist 40"</option>
-      </select>
-      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
-     </div>
-    </div>
-    <div class="field" id="instaField"><label>Player Instagram link <span class="required-star">*</span></label><input id="instaId" required placeholder="@username or instagram.com/username"></div>
+
+    <div id="playersContainer"></div>
 
     <div class="sectionTitle">5 · Consent &amp; Declaration</div>
+    <p class="sub" id="consentIntro" style="margin:0 0 14px">By submitting, you confirm the details above for yourself.</p>
     <details class="terms">
      <summary>Read full Medical Consent, Code of Conduct &amp; Waiver terms</summary>
      <div class="termsBody">
@@ -719,9 +676,10 @@ function clearContainerError(e) {
 // so a player can type "15121990" but can never produce "15/12/1990" - every
 // mobile submission was failing DOB validation for this reason. Auto-inserts
 // the slashes as they type digits, so the field always ends up in the right
-// format no matter what keypad the phone shows.
-const dobInput = document.getElementById('dob');
-if (dobInput) {
+// format no matter what keypad the phone shows. Wired per-player below since
+// a referral registration has up to 3 DOB fields (dob1/dob2/dob3).
+function wireDobAutoSlash(dobInput) {
+  if (!dobInput) return;
   dobInput.addEventListener('input', () => {
     let digits = dobInput.value.replace(/\D/g, '').slice(0, 8);
     let out = digits.slice(0, 2);
@@ -761,44 +719,136 @@ function compressImage(file, maxDim = 500, quality = 0.7) {
   });
 }
 
-let selectedPhotoBlob = null;
+// photoBlobs[n] holds player n's compressed photo (n = 1..playerCount).
+// regCodes[n] holds that player's own registration code, generated once per
+// player as soon as their block first renders - so each player's payment-QR
+// note and final reference code stay stable even if the player count changes.
+const photoBlobs = {};
+const regCodes = {};
 let selectedShotBlob = null;
-// Generated once, immediately - it needs no DB round-trip, so the payment QR
-// (and the reference code shown on it) can be ready before the player has
-// finished filling the rest of the form, not only after a first submit.
-const code = regCode();
+let currentPlayerCount = 1;
 
-// The Submit button is the actual gate the player's screenshot requirement
-// relies on: it stays disabled until both the player photo and the payment
-// screenshot are attached, so there is no way to finish this form with an
-// unpaid-looking registration sitting in the database.
+// The Submit button stays disabled until every active player's photo is
+// attached, plus the one shared payment screenshot - so there is no way to
+// finish this form with an unpaid-looking or photo-less registration.
 function updateSubmitGate() {
   const btn = document.getElementById('submitBtn');
-  const ready = !!selectedPhotoBlob && !!selectedShotBlob;
+  let missingPhoto = false;
+  for (let n = 1; n <= currentPlayerCount; n++) if (!photoBlobs[n]) missingPhoto = true;
+  const ready = !missingPhoto && !!selectedShotBlob;
   btn.disabled = !ready;
   btn.textContent = ready ? 'Submit Registration'
-    : (!selectedPhotoBlob ? 'Add your player photo above to submit' : 'Attach your payment screenshot above to submit');
+    : (missingPhoto ? 'Add every player\'s photo above to submit' : 'Attach your payment screenshot above to submit');
 }
 
-document.getElementById('photoInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const hint = document.getElementById('photoHint');
-  const label = document.getElementById('photoPickLabel');
-  hint.textContent = 'Compressing...';
-  try {
-    const originalKB = Math.round(file.size / 1024);
-    selectedPhotoBlob = await compressImage(file);
-    const compressedKB = Math.round(selectedPhotoBlob.size / 1024);
-    document.getElementById('photoPreview').src = URL.createObjectURL(selectedPhotoBlob);
-    label.textContent = 'Change photo';
-    hint.textContent = 'Original ' + originalKB + ' KB → compressed to ' + compressedKB + ' KB. Looks good.';
-  } catch (err) {
-    selectedPhotoBlob = null;
-    hint.textContent = 'Could not process that photo: ' + err.message + ' Try a different file, or skip the photo.';
+// Builds one player's Sections 1-4 (personal info, position, emergency
+// contact, photo/kit) as an HTML string, with every field id prefixed p{n}_
+// so up to 3 of these can coexist on the page for a referral registration.
+function buildPlayerBlock(n) {
+  const label = currentPlayerCount > 1 ? 'Player ' + n + ' — ' : '';
+  return `
+    <div class="sectionTitle">${label}Personal Information</div>
+    <div class="field"><label>Full name <span class="required-star">*</span></label><input id="p${n}_fullName" required></div>
+    <div class="row2">
+     <div class="field"><label>Date of birth <span class="required-star">*</span></label><input id="p${n}_dob" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" required><span class="fieldHint">Must be born on or before 16/01/2009</span></div>
+     <div class="field"><label>Mobile / WhatsApp number <span class="required-star">*</span></label><input id="p${n}_mobile" required inputmode="tel" placeholder="+91"></div>
+    </div>
+    <div class="row2">
+     <div class="field"><label>Email address <span class="required-star">*</span></label><input id="p${n}_email" type="email" required></div>
+     <div class="field"><label>Full address <span class="required-star">*</span></label><input id="p${n}_city" required placeholder="e.g. 12 Station Road, Vasai West, 401202"></div>
+    </div>
+
+    <div class="sectionTitle">${label}Playing Position</div>
+    <div class="field" id="p${n}_positionField">
+     <label>Position <span class="required-star">*</span> (select all that apply)</label>
+     <label class="checkRow"><input type="checkbox" name="p${n}_position" value="Goalkeeper (GK)"><span>Goalkeeper (GK)</span></label>
+     <label class="checkRow"><input type="checkbox" name="p${n}_position" value="Defence (DEF)"><span>Defence (DEF)</span></label>
+     <label class="checkRow"><input type="checkbox" name="p${n}_position" value="Midfield (MID)"><span>Midfield (MID)</span></label>
+     <label class="checkRow"><input type="checkbox" name="p${n}_position" value="Attack (ATT)"><span>Attack (ATT)</span></label>
+    </div>
+
+    <div class="sectionTitle">${label}Emergency Contact</div>
+    <div class="field"><label>Emergency contact person's name <span class="required-star">*</span></label><input id="p${n}_emName" required></div>
+    <div class="row2">
+     <div class="field"><label>Emergency contact number <span class="required-star">*</span></label><input id="p${n}_emNumber" required inputmode="tel"></div>
+     <div class="field"><label>Relationship with player <span class="required-star">*</span></label><input id="p${n}_emRelation" required placeholder="e.g. Father, Sister"></div>
+    </div>
+
+    <div class="sectionTitle">${label}Photo &amp; Kit</div>
+    <div class="field" id="p${n}_photoField">
+     <label>Player photograph <span class="required-star">*</span></label>
+     <div class="photoNotice">📸 Upload a clear photo of <b>${currentPlayerCount > 1 ? 'this player' : 'yourself'}</b> — this exact photo goes on the website, so make it a good one!</div>
+     <div class="photoPicker">
+      <img class="photoPreview" id="p${n}_photoPreview" alt="">
+      <label class="photoPickBtn" id="p${n}_photoPickLabel" for="p${n}_photoInput">Tap to choose a photo</label>
+      <input type="file" id="p${n}_photoInput" accept="image/*" style="display:none">
+     </div>
+     <div class="photoHint" id="p${n}_photoHint">We automatically shrink the photo before uploading, to keep it small and fast.</div>
+    </div>
+    <div class="row2">
+     <div class="field"><label>Jersey size</label>
+      <div class="sizeHelp">👉 Not sure? Match it to the <b>chest size in inches</b> below — pick the closest one.</div>
+      <select id="p${n}_jerseySize">
+       <option value="">Select jersey size</option>
+       <option value="20">20 — Chest 20"</option><option value="22">22 — Chest 22"</option><option value="24">24 — Chest 24"</option>
+       <option value="26">26 — Chest 26"</option><option value="28">28 — Chest 28"</option><option value="30">30 — Chest 30"</option>
+       <option value="32">32 — Chest 32"</option><option value="34">34 — Chest 34"</option><option value="36">36 — Chest 36"</option>
+       <option value="38">38 — Chest 38"</option><option value="40">40 — Chest 40"</option><option value="42">42 — Chest 42"</option>
+       <option value="44">44 — Chest 44"</option><option value="46">46 — Chest 46"</option><option value="48">48 — Chest 48"</option>
+      </select>
+      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
+     </div>
+     <div class="field"><label>Shorts size</label>
+      <div class="sizeHelp">👉 Not sure? Match it to the <b>waist size in inches</b> below — pick the closest one.</div>
+      <select id="p${n}_shortsSize">
+       <option value="">Select shorts size</option>
+       <option value="32">32 — Waist 24"</option><option value="34">34 — Waist 26"</option><option value="36">36 — Waist 28"</option>
+       <option value="38">38 — Waist 30"</option><option value="40">40 — Waist 32"</option><option value="42">42 — Waist 34"</option>
+       <option value="44">44 — Waist 36"</option><option value="46">46 — Waist 38"</option><option value="48">48 — Waist 40"</option>
+      </select>
+      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full shorts size chart</summary><img src="assets/gul-size-chart-shorts.jpg" alt="Shorts size chart - waist, length and thighs in inches" loading="lazy"></details>
+     </div>
+    </div>
+    <div class="field" id="p${n}_instaField"><label>Player Instagram link <span class="required-star">*</span></label><input id="p${n}_instaId" required placeholder="@username or instagram.com/username"></div>
+  `;
+}
+
+// Rebuilds the player-block container for the chosen player count (1 for
+// Solo, 3 for Referral), re-wiring each block's DOB auto-slash and photo
+// listener since the DOM nodes are freshly created every time this runs.
+window.renderPlayers = function (count) {
+  currentPlayerCount = count;
+  const container = document.getElementById('playersContainer');
+  container.innerHTML = Array.from({ length: count }, (_, i) => buildPlayerBlock(i + 1)).join('');
+  document.getElementById('consentIntro').textContent = count > 1
+    ? 'By submitting, you confirm the details above for all ' + count + ' players.'
+    : 'By submitting, you confirm the details above for yourself.';
+  for (let n = 1; n <= count; n++) {
+    if (!regCodes[n]) regCodes[n] = regCode();
+    wireDobAutoSlash(document.getElementById('p' + n + '_dob'));
+    document.getElementById('p' + n + '_photoInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const hint = document.getElementById('p' + n + '_photoHint');
+      const label = document.getElementById('p' + n + '_photoPickLabel');
+      hint.textContent = 'Compressing...';
+      try {
+        const originalKB = Math.round(file.size / 1024);
+        photoBlobs[n] = await compressImage(file);
+        const compressedKB = Math.round(photoBlobs[n].size / 1024);
+        document.getElementById('p' + n + '_photoPreview').src = URL.createObjectURL(photoBlobs[n]);
+        label.textContent = 'Change photo';
+        hint.textContent = 'Original ' + originalKB + ' KB → compressed to ' + compressedKB + ' KB. Looks good.';
+      } catch (err) {
+        photoBlobs[n] = null;
+        hint.textContent = 'Could not process that photo: ' + err.message + ' Try a different file.';
+      }
+      updateSubmitGate();
+    });
   }
   updateSubmitGate();
-});
+};
+window.renderPlayers(1);
 
 document.getElementById('shotInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -843,22 +893,26 @@ document.getElementById('copyUpiBtn').addEventListener('click', async () => {
 });
 
 // Reuses the fetch kicked off immediately near the top of the page (see the
-// early inline script right after the offer banner markup), instead of firing
-// a second network request for the same file. Also fills in the QR as soon
-// as the price is known, so payment is ready before the rest of the form is.
-window.__gulContentPromise.then(c => {
-  currentOffer = c.registration[c.registration.activeOffer];
-  if (currentOffer && window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
+// early inline script right after the offer banner markup). Re-run every time
+// the player flips Solo/Referral - the QR and amount depend on that choice.
+// Referral is always one combined payment, so a screenshot is always required.
+window.updatePaymentUI = function (c) {
+  currentOffer = window.getRegSelection(c);
+  if (window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
     const amount = currentOffer.price;
-    const note = 'GUL ' + code;
+    const note = 'GUL ' + (regCodes[1] || regCode());
     const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
       '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
       '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
     document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
     document.getElementById('payUpiBtn').href = upiLink;
-    new QRCode(document.getElementById('payQr'), { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
+    const qrEl = document.getElementById('payQr');
+    qrEl.innerHTML = '';
+    new QRCode(qrEl, { text: upiLink, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff' });
   }
-}).catch(() => {
+  updateSubmitGate();
+};
+window.__gulContentPromise.then(c => { window.updatePaymentUI(c); }).catch(() => {
   document.getElementById('payAmt').textContent = 'Could not load pricing — contact GUL directly.';
 });
 
@@ -873,49 +927,76 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const btn = document.getElementById('submitBtn');
     clearFieldErrors();
 
-    const selectedPositionsCheck = Array.from(document.querySelectorAll('input[name="position"]:checked'));
-    if (!selectedPositionsCheck.length) {
-      flagField('positionField', 'Select at least one playing position above.');
-      return;
-    }
-    const dobMatch = document.getElementById('dob').value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    let dobIso = null;
-    if (!dobMatch) {
-      flagField('dob', 'Enter your date of birth as DD/MM/YYYY (e.g. 05/03/2008).');
-      return;
-    } else {
+    const isReferralType = currentOffer.isReferral;
+    const count = currentPlayerCount;
+    const cutoff = new Date(2009, 0, 16); // Players must be born on or before 16 Jan 2009
+
+    // Validates all N players (1 for Solo, 3 for Referral) before touching the
+    // network - stops on the first problem found, same as the single-player
+    // form did, just looped per player so every player's own fields get checked.
+    const players = [];
+    for (let n = 1; n <= count; n++) {
+      const tag = (txt) => count > 1 ? 'Player ' + n + ': ' + txt : txt;
+      const selectedPositionsCheck = Array.from(document.querySelectorAll('input[name="p' + n + '_position"]:checked'));
+      if (!selectedPositionsCheck.length) {
+        flagField('p' + n + '_positionField', tag('Select at least one playing position above.'));
+        return;
+      }
+      const dobMatch = document.getElementById('p' + n + '_dob').value.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      let dobIso = null;
+      if (!dobMatch) {
+        flagField('p' + n + '_dob', tag('Enter date of birth as DD/MM/YYYY (e.g. 05/03/2008).'));
+        return;
+      }
       const [, dd, mm, yyyy] = dobMatch;
       const dobDate = new Date(Number(yyyy), Number(mm) - 1, Number(dd));
-      const cutoff = new Date(2009, 0, 16); // Players must be born on or before 16 Jan 2009
       if (dobDate.getDate() !== Number(dd) || dobDate.getMonth() !== Number(mm) - 1 || dobDate.getFullYear() !== Number(yyyy)) {
-        flagField('dob', 'That date doesn\'t exist — please re-check it.');
+        flagField('p' + n + '_dob', tag('That date doesn\'t exist — please re-check it.'));
         return;
       }
       if (dobDate > cutoff) {
-        flagField('dob', 'You must be born on or before 16/01/2009 to register.');
+        flagField('p' + n + '_dob', tag('Must be born on or before 16/01/2009 to register.'));
         return;
       }
       dobIso = yyyy + '-' + mm + '-' + dd;
+
+      const mobileDigits = document.getElementById('p' + n + '_mobile').value.replace(/\D/g, '').replace(/^91/, '');
+      if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
+        flagField('p' + n + '_mobile', tag('Enter a valid 10-digit Indian mobile number.'));
+        return;
+      }
+      const emailValue = document.getElementById('p' + n + '_email').value.trim();
+      if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+        flagField('p' + n + '_email', tag('That email address doesn\'t look right — fix it or leave blank.'));
+        return;
+      }
+      const instaValue = document.getElementById('p' + n + '_instaId').value.trim();
+      if (!/^@?[a-zA-Z0-9._]{1,30}$/.test(instaValue)) {
+        flagField('p' + n + '_instaId', tag('Enter a valid Instagram username (letters, numbers, dots, underscores only).'));
+        return;
+      }
+      if (!photoBlobs[n]) {
+        flagField('p' + n + '_photoPickLabel', tag('Upload a player photograph above — it goes on the website.'));
+        return;
+      }
+      players.push({
+        n,
+        code: regCodes[n],
+        dobIso,
+        positions: selectedPositionsCheck.map(el => el.value),
+        fullName: document.getElementById('p' + n + '_fullName').value.trim(),
+        mobile: document.getElementById('p' + n + '_mobile').value.trim(),
+        email: emailValue || null,
+        city: document.getElementById('p' + n + '_city').value.trim() || null,
+        instaId: instaValue,
+        emName: document.getElementById('p' + n + '_emName').value.trim(),
+        emNumber: document.getElementById('p' + n + '_emNumber').value.trim(),
+        emRelation: document.getElementById('p' + n + '_emRelation').value.trim(),
+        jerseySize: document.getElementById('p' + n + '_jerseySize').value || null,
+        shortsSize: document.getElementById('p' + n + '_shortsSize').value || null
+      });
     }
-    const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
-    if (!/^[6-9]\d{9}$/.test(mobileDigits)) {
-      flagField('mobile', 'Enter a valid 10-digit Indian mobile number.');
-      return;
-    }
-    const emailValue = document.getElementById('email').value.trim();
-    if (emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-      flagField('email', 'That email address doesn\'t look right — fix it or leave this blank.');
-      return;
-    }
-    const instaValue = document.getElementById('instaId').value.trim();
-    if (!/^@?[a-zA-Z0-9._]{1,30}$/.test(instaValue)) {
-      flagField('instaId', 'Enter a valid Instagram username (letters, numbers, dots, underscores only).');
-      return;
-    }
-    if (!selectedPhotoBlob) {
-      flagField('photoPickLabel', 'Upload your player photograph above — it goes on the website.');
-      return;
-    }
+
     if (!selectedShotBlob) {
       flagField('shotPickLabel', 'Attach your payment screenshot above — required to submit.');
       return;
@@ -940,22 +1021,30 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       return;
     }
 
-    showStatus('ok', 'Uploading photo...');
-    // Store just the object key (relative to the player-photos bucket), not
-    // prefixed with the bucket name - that's what the Storage SDK expects
-    // when generating a signed URL later from the admin dashboard.
-    const photoPath = code + '.jpg';
-    const { error: photoErr } = await client.storage
-      .from('player-photos')
-      .upload(photoPath, selectedPhotoBlob, { contentType: 'image/jpeg' });
-    if (photoErr) {
-      showStatus('err', 'Photo upload failed: ' + photoErr.message + '\n\nPlease try submitting again.');
-      btn.disabled = false;
-      return;
+    // Every player's registration_code is tied together via referral_code (the
+    // group leader's own code) so GUL can see at a glance which registrations
+    // belong to the same group of 3 and share one combined payment.
+    const groupReferralCode = isReferralType ? players[0].code : null;
+    const heardFromValue = document.getElementById('heardFrom').value || null;
+    const declarationAccepted = document.getElementById('declarationAccepted').checked;
+    const mediaConsentAccepted = document.getElementById('mediaConsentAccepted').checked;
+
+    for (const p of players) {
+      showStatus('ok', 'Uploading photo ' + p.n + ' of ' + count + '...');
+      const photoPath = p.code + '.jpg';
+      const { error: photoErr } = await client.storage
+        .from('player-photos')
+        .upload(photoPath, photoBlobs[p.n], { contentType: 'image/jpeg' });
+      if (photoErr) {
+        showStatus('err', 'Photo upload failed for ' + p.fullName + ': ' + photoErr.message + '\n\nPlease try submitting again.');
+        btn.disabled = false;
+        return;
+      }
+      p.photoPath = photoPath;
     }
 
     showStatus('ok', 'Uploading payment screenshot...');
-    const shotPath = code + '-shot-' + Date.now() + '.jpg';
+    const shotPath = players[0].code + '-shot-' + Date.now() + '.jpg';
     const { error: shotErr } = await client.storage
       .from('payment-screenshots')
       .upload(shotPath, selectedShotBlob, { contentType: 'image/jpeg' });
@@ -967,58 +1056,62 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     showStatus('ok', 'Submitting...');
 
-    const selectedPositions = Array.from(document.querySelectorAll('input[name="position"]:checked')).map(el => el.value);
-
-    const payload = {
-      registration_code: code,
-      season_id: season ? season.id : null,
-      full_name: document.getElementById('fullName').value.trim(),
-      mobile: document.getElementById('mobile').value.trim(),
-      email: document.getElementById('email').value.trim() || null,
-      dob: dobIso,
-      city: document.getElementById('city').value.trim() || null,
-      position: selectedPositions.length ? selectedPositions.join(', ') : null,
-      referral_code: null,
-      player_insta_id: document.getElementById('instaId').value.trim() || null,
-      photo_url: photoPath,
-      offer_applied: currentOffer ? currentOffer.label : null,
-      quoted_fee_paise: currentOffer ? currentOffer.price * 100 : null,
-      emergency_contact_name: document.getElementById('emName').value.trim(),
-      emergency_contact_number: document.getElementById('emNumber').value.trim(),
-      emergency_contact_relationship: document.getElementById('emRelation').value.trim(),
-      heard_from: document.getElementById('heardFrom').value || null,
-      jersey_size: document.getElementById('jerseySize').value || null,
-      shorts_size: document.getElementById('shortsSize').value || null,
-      declaration_accepted: document.getElementById('declarationAccepted').checked,
-      media_consent_accepted: document.getElementById('mediaConsentAccepted').checked
-    };
-
-    // No .select() here on purpose: the public can INSERT a registration but
-    // cannot READ registrations back (that's admin-only, by design, for privacy).
-    // We already have the registration_code client-side from payload, so there's
-    // nothing to read back anyway.
-    const { error } = await client.from('player_registrations').insert(payload);
-    if (error) {
-      showStatus('err', 'Registration failed: ' + error.message + '\n\nYour photo and screenshot are already uploaded - just try submitting again.');
-      btn.disabled = false;
-      return;
+    const insertedCodes = [];
+    for (const p of players) {
+      const payload = {
+        registration_code: p.code,
+        season_id: season ? season.id : null,
+        full_name: p.fullName,
+        mobile: p.mobile,
+        email: p.email,
+        dob: p.dobIso,
+        city: p.city,
+        position: p.positions.join(', '),
+        referral_code: groupReferralCode,
+        is_referral_leader: isReferralType ? (p.n === 1) : null,
+        player_insta_id: p.instaId,
+        photo_url: p.photoPath,
+        offer_applied: currentOffer.label,
+        quoted_fee_paise: currentOffer.quotedPerPlayer * 100,
+        emergency_contact_name: p.emName,
+        emergency_contact_number: p.emNumber,
+        emergency_contact_relationship: p.emRelation,
+        heard_from: heardFromValue,
+        jersey_size: p.jerseySize,
+        shorts_size: p.shortsSize,
+        declaration_accepted: declarationAccepted,
+        media_consent_accepted: mediaConsentAccepted
+      };
+      // No .select() here on purpose: the public can INSERT a registration but
+      // cannot READ registrations back (that's admin-only, by design, for privacy).
+      const { error } = await client.from('player_registrations').insert(payload);
+      if (error) {
+        showStatus('err', 'Registration failed for ' + p.fullName + ': ' + error.message +
+          (insertedCodes.length ? '\n\nAlready saved: ' + insertedCodes.join(', ') + ' — contact GUL with these codes plus this error so nothing is lost.' : '\n\nYour photos and screenshot are already uploaded - just try submitting again.'));
+        btn.disabled = false;
+        return;
+      }
+      insertedCodes.push(p.code);
     }
 
-    // Links the already-uploaded screenshot to this registration code. If this
-    // one insert fails, the registration itself is still saved (above), so
-    // nothing the player entered is lost - only this linking step needs a retry,
-    // which GUL can do directly from the admin dashboard if it ever comes to that.
-    const { error: linkErr } = await client.from('payment_screenshots').insert({
-      registration_code: code,
-      image_path: shotPath
-    });
+    // Links the one shared screenshot to every player's registration_code, so
+    // each registration is independently traceable to the group payment. If
+    // this fails, every registration itself is still saved (above), so
+    // nothing the players entered is lost - only this linking step needs a
+    // retry, which GUL can do directly from the admin dashboard.
+    let linkErr = null;
+    for (const p of players) {
+      const { error } = await client.from('payment_screenshots').insert({ registration_code: p.code, image_path: shotPath });
+      if (error) linkErr = error;
+    }
 
     btn.disabled = false;
     document.getElementById('regForm').style.display = 'none';
-    showStatus('ok', '✅ Registration complete!\n\nYour reference code: ' + code +
-      (currentOffer ? '\nQuoted fee: ₹' + currentOffer.price.toLocaleString('en-IN') + ' (' + currentOffer.label + ')' : '') +
-      '\n\nSave this code. GUL will verify your payment against the bank statement.' +
-      (linkErr ? '\n\n(Your screenshot upload succeeded, but linking it had a hiccup - GUL has your code and can match it manually.)' : ''));
+    showStatus('ok', '✅ Registration complete!\n\n' +
+      players.map(p => p.fullName + ' — ' + p.code).join('\n') +
+      '\nQuoted fee: ₹' + currentOffer.quotedPerPlayer.toLocaleString('en-IN') + ' per player (' + currentOffer.label + ')' +
+      '\n\nSave these codes. GUL will verify your payment against the bank statement.' +
+      (linkErr ? '\n\n(Your screenshot upload succeeded, but linking it had a hiccup - GUL has your codes and can match it manually.)' : ''));
   });
 }
 });
