@@ -166,7 +166,9 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <table>
         <thead><tr>
           <th>Code</th><th>Team Name</th><th>Owner</th><th>Mobile</th><th>Email</th>
-          <th>Type</th><th>Fee</th><th>Logo</th><th>Registered</th>
+          <th>Type</th><th>Fee</th><th>Logo</th><th>Owner Photo</th>
+          <th>Team Insta</th><th>Owner Insta</th><th>Owner Jersey</th>
+          <th>Manager</th><th>Co-owner Jersey</th><th>Registered</th>
           <th>Status</th><th>Payment</th><th>Screenshot</th><th>Actions</th>
         </tr></thead>
         <tbody id="teamRows"></tbody>
@@ -1705,8 +1707,14 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
         <td>${esc(t.mobile)}</td>
         <td class="wrap-cell">${esc(t.email)}</td>
         <td>${t.team_type === 'new' ? 'New' : 'Existing'}</td>
-        <td>₹12,000</td>
+        <td>${t.quoted_fee_paise ? money(t.quoted_fee_paise) : '₹12,000'}</td>
         <td>${t.team_logo_url ? `<button class="photoLink" data-logo="${esc(t.team_logo_url)}">View</button>` : '—'}</td>
+        <td>${t.owner_photo_url ? `<button class="photoLink" data-owner-photo="${esc(t.owner_photo_url)}">View</button>` : '—'}</td>
+        <td class="wrap-cell">${esc(t.team_instagram_id || '—')}</td>
+        <td class="wrap-cell">${esc(t.owner_instagram_id || '—')}</td>
+        <td>${esc(t.jersey_size || '—')}</td>
+        <td class="wrap-cell">${t.manager_name ? esc(t.manager_name) + (t.manager_contact ? ' · ' + esc(t.manager_contact) : '') : '—'}</td>
+        <td class="wrap-cell">${t.co_owner_jersey_requested ? '✅ ' + esc(t.co_owner_name || 'Yes') + (t.co_owner_jersey_size ? ' (' + esc(t.co_owner_jersey_size) + ')' : '') : '—'}</td>
         <td>${created}</td>
         <td><span class="pill ${t.status}">${esc(t.status)}</span></td>
         <td><span class="pill ${paid ? 'paid' : 'unpaid'}">${paid ? 'Paid' : 'Unpaid'}</span></td>
@@ -1815,6 +1823,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     const originalLabel = btn.textContent;
     btn.disabled = true; btn.textContent = 'Preparing logos...';
     const logoMap = await signedUrlMap('team-logos', allTeams.map(t => t.team_logo_url));
+    const ownerPhotoMap = await signedUrlMap('owner-photos', allTeams.map(t => t.owner_photo_url));
     downloadCsv('gul-team-registrations.csv', allTeams, [
       { label: 'Code', value: t => t.registration_code },
       { label: 'Team Name', value: t => t.proposed_team_name },
@@ -1822,10 +1831,19 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       { label: 'Mobile', value: t => t.mobile },
       { label: 'Email', value: t => t.email },
       { label: 'Type', value: t => t.team_type === 'new' ? 'New' : 'Existing' },
-      { label: 'Fee (INR)', value: () => 12000 },
+      { label: 'Fee (INR)', value: t => t.quoted_fee_paise ? t.quoted_fee_paise / 100 : 12000 },
       { label: 'Status', value: t => t.status },
       { label: 'Paid', value: t => paymentFor(t.id, 'team_registration_id') ? 'Yes' : 'No' },
       { label: 'Logo URL (valid 30 days)', value: t => t.team_logo_url ? (logoMap[t.team_logo_url] || '') : '' },
+      { label: 'Owner Photo URL (valid 30 days)', value: t => t.owner_photo_url ? (ownerPhotoMap[t.owner_photo_url] || '') : '' },
+      { label: 'Team Instagram', value: t => t.team_instagram_id || '' },
+      { label: 'Owner Instagram', value: t => t.owner_instagram_id || '' },
+      { label: 'Owner Jersey Size', value: t => t.jersey_size || '' },
+      { label: 'Manager Name', value: t => t.manager_name || '' },
+      { label: 'Manager Contact', value: t => t.manager_contact || '' },
+      { label: 'Co-owner Jersey Requested', value: t => t.co_owner_jersey_requested ? 'Yes' : 'No' },
+      { label: 'Co-owner Name', value: t => t.co_owner_name || '' },
+      { label: 'Co-owner Jersey Size', value: t => t.co_owner_jersey_size || '' },
       { label: 'Registered', value: t => new Date(t.created_at).toLocaleString('en-IN') }
     ]);
     btn.disabled = false; btn.textContent = originalLabel;
@@ -1951,6 +1969,13 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     if (logoBtn) {
       const { data, error } = await client.storage.from('team-logos').createSignedUrl(logoBtn.dataset.logo, 300);
       if (error) { alert('Could not load logo: ' + error.message); return; }
+      window.open(data.signedUrl, '_blank');
+      return;
+    }
+    const ownerPhotoBtn = e.target.closest('[data-owner-photo]');
+    if (ownerPhotoBtn) {
+      const { data, error } = await client.storage.from('owner-photos').createSignedUrl(ownerPhotoBtn.dataset.ownerPhoto, 300);
+      if (error) { alert('Could not load owner photo: ' + error.message); return; }
       window.open(data.signedUrl, '_blank');
       return;
     }
