@@ -474,7 +474,7 @@ a.tlItem{position:relative;overflow:hidden}
      </div>
      <div class="logoHint" id="logoHint">We automatically shrink the logo before uploading. This also cannot be changed once submitted.</div>
     </div>
-    <div class="field"><label>Team Instagram ID (optional)</label><input id="teamInstaId" placeholder="@teamhandle"></div>
+    <div class="field"><label>Team Instagram ID <span class="required-star">*</span></label><input id="teamInstaId" required placeholder="@teamhandle"><span class="fieldHint">GUL uses this to promote your team. No team account yet? Enter your own personal Instagram ID instead.</span></div>
 
     <div class="sectionTitle">2 · Owner Details</div>
     <div class="field"><label>Owner full name <span class="required-star">*</span></label><input id="ownerName" required></div>
@@ -493,7 +493,7 @@ a.tlItem{position:relative;overflow:hidden}
     </div>
     <div class="field"><label>Owner Instagram ID (optional)</label><input id="ownerInstaId" placeholder="@yourhandle"></div>
     <div class="field">
-     <label>Owner jersey size</label>
+     <label>Owner jersey size <span class="fieldHint" style="display:inline;margin:0;color:var(--gold)">— free, included</span></label>
      <div class="sizeHelp">👉 Not sure? Match it to your <b>chest size in inches</b> below — pick the closest one.</div>
      <select id="ownerJerseySize">
       <option value="">Select jersey size</option>
@@ -504,6 +504,25 @@ a.tlItem{position:relative;overflow:hidden}
       <option value="44">44 — Chest 44"</option><option value="46">46 — Chest 46"</option><option value="48">48 — Chest 48"</option>
      </select>
      <details class="sizeGuide"><summary>📏 Still confused? Tap here to see the full jersey size chart</summary><img src="assets/gul-size-chart-shirt.jpg" alt="Jersey size chart - chest and length in inches" loading="lazy"></details>
+    </div>
+
+    <div class="field">
+     <label class="checkRow" style="margin-bottom:10px"><input type="checkbox" id="coOwnerJerseyCheck"><span>Add a co-owner jersey — <b style="color:var(--gold)">+₹500</b> (owner's own jersey above is free; a second jersey for a co-owner costs ₹500 extra)</span></label>
+     <div id="coOwnerFields" style="display:none">
+      <div class="row2">
+       <div class="field"><label>Co-owner name</label><input id="coOwnerName" placeholder="Co-owner's full name"></div>
+       <div class="field"><label>Co-owner jersey size</label>
+        <select id="coOwnerJerseySize">
+         <option value="">Select jersey size</option>
+         <option value="20">20 — Chest 20"</option><option value="22">22 — Chest 22"</option><option value="24">24 — Chest 24"</option>
+         <option value="26">26 — Chest 26"</option><option value="28">28 — Chest 28"</option><option value="30">30 — Chest 30"</option>
+         <option value="32">32 — Chest 32"</option><option value="34">34 — Chest 34"</option><option value="36">36 — Chest 36"</option>
+         <option value="38">38 — Chest 38"</option><option value="40">40 — Chest 40"</option><option value="42">42 — Chest 42"</option>
+         <option value="44">44 — Chest 44"</option><option value="46">46 — Chest 46"</option><option value="48">48 — Chest 48"</option>
+        </select>
+       </div>
+      </div>
+     </div>
     </div>
 
     <div class="sectionTitle">3 · Manager Details</div>
@@ -735,36 +754,57 @@ document.getElementById('payTabs').addEventListener('click', (e) => {
   document.querySelectorAll('.payPanel').forEach(p => p.classList.toggle('active', p.id === 'payPanel-' + btn.dataset.payTab));
 });
 
+// Co-owner jersey toggle - shows/hides the extra fields and recomputes the
+// payable amount (base entry fee + Rs 500 if checked). Owner's own jersey
+// stays free, folded into the entry fee as before.
+const COOWNER_JERSEY_FEE = 500;
+function currentTotalFee() {
+  return teamFee + (document.getElementById('coOwnerJerseyCheck').checked ? COOWNER_JERSEY_FEE : 0);
+}
+
+document.getElementById('coOwnerJerseyCheck').addEventListener('change', (e) => {
+  document.getElementById('coOwnerFields').style.display = e.target.checked ? 'block' : 'none';
+  updateTeamPaymentUI();
+});
+
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the fee box markup), instead of firing a
 // second network request for the same file. Also fills in the QR as soon as
 // the fee is known, so payment is ready before the rest of the form is.
+// Re-run whenever the co-owner jersey checkbox changes, since the amount
+// (and therefore the UPI link / QR) depends on it.
+let lastContent = null;
+function updateTeamPaymentUI() {
+  if (!lastContent || !window.GUL_UPI_ID || window.GUL_UPI_ID.includes('PASTE')) return;
+  const amount = currentTotalFee();
+  const note = 'GUL ' + code;
+  const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
+    '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
+    '&am=' + amount + '&cu=INR&tn=' + encodeURIComponent(note);
+  document.getElementById('payAmt').textContent = '₹' + amount.toLocaleString('en-IN');
+  document.getElementById('payUpiBtn').href = upiLink;
+  document.getElementById('payAppAmt').textContent = amount.toLocaleString('en-IN');
+  document.getElementById('payIdAmt').textContent = amount.toLocaleString('en-IN');
+  // Shorter QR-only link (drops pn/pname and tn/note) scans much faster -
+  // fewer characters means fewer modules for the same 440px canvas, so
+  // each module is bigger and a camera locks on quicker. Q-level
+  // correction (25%) still comfortably covers the small centred logo.
+  // See register.html for the full reasoning.
+  const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + amount + '&cu=INR';
+  const qrWrap = document.getElementById('payQr');
+  qrWrap.innerHTML = '';
+  new QRCode(qrWrap, { text: qrLink, width: 440, height: 440, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
+  const logo = document.createElement('img');
+  logo.className = 'qrLogo';
+  logo.src = 'assets/favicon-64.png';
+  logo.alt = '';
+  qrWrap.appendChild(logo);
+}
+
 window.__gulContentPromise.then(c => {
+  lastContent = c;
   teamFee = (c.teamRegistration && c.teamRegistration.fee) || 12000;
-  if (window.GUL_UPI_ID && !window.GUL_UPI_ID.includes('PASTE')) {
-    const note = 'GUL ' + code;
-    const upiLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
-      '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
-      '&am=' + teamFee + '&cu=INR&tn=' + encodeURIComponent(note);
-    document.getElementById('payAmt').textContent = '₹' + teamFee.toLocaleString('en-IN');
-    document.getElementById('payUpiBtn').href = upiLink;
-    document.getElementById('payAppAmt').textContent = teamFee.toLocaleString('en-IN');
-    document.getElementById('payIdAmt').textContent = teamFee.toLocaleString('en-IN');
-    // Shorter QR-only link (drops pn/pname and tn/note) scans much faster -
-    // fewer characters means fewer modules for the same 300px canvas, so
-    // each module is bigger and a camera locks on quicker. Q-level
-    // correction (25%) still comfortably covers the small centred logo.
-    // See register.html for the full reasoning.
-    const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + teamFee + '&cu=INR';
-    const qrWrap = document.getElementById('payQr');
-    qrWrap.innerHTML = '';
-    new QRCode(qrWrap, { text: qrLink, width: 440, height: 440, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
-    const logo = document.createElement('img');
-    logo.className = 'qrLogo';
-    logo.src = 'assets/favicon-64.png';
-    logo.alt = '';
-    qrWrap.appendChild(logo);
-  }
+  updateTeamPaymentUI();
 }).catch(() => {
   document.getElementById('payAmt').textContent = 'Could not load pricing — contact GUL directly.';
 });
@@ -781,6 +821,11 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
 
     if (!document.getElementById('teamName').value.trim()) {
       showStatus('err', 'Please enter your team name.');
+      return;
+    }
+    const teamInstaValue = document.getElementById('teamInstaId').value.trim();
+    if (!teamInstaValue) {
+      showStatus('err', 'Please enter an Instagram ID (your team\'s, or your own personal one if the team doesn\'t have an account yet) - GUL uses this to promote your team.');
       return;
     }
     const mobileDigits = document.getElementById('mobile').value.replace(/\D/g, '').replace(/^91/, '');
@@ -876,12 +921,16 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       team_logo_url: logoPath,
       owner_photo_url: ownerPhotoPath,
       owner_instagram_id: document.getElementById('ownerInstaId').value.trim() || null,
-      team_instagram_id: document.getElementById('teamInstaId').value.trim() || null,
+      team_instagram_id: teamInstaValue,
       jersey_size: document.getElementById('ownerJerseySize').value || null,
       manager_name: managerNameValue,
       manager_contact: document.getElementById('managerContact').value.trim(),
       terms_accepted: document.getElementById('termsAccepted').checked,
-      name_logo_lock_ack: document.getElementById('nameLogoLockAck').checked
+      name_logo_lock_ack: document.getElementById('nameLogoLockAck').checked,
+      co_owner_jersey_requested: document.getElementById('coOwnerJerseyCheck').checked,
+      co_owner_name: document.getElementById('coOwnerJerseyCheck').checked ? (document.getElementById('coOwnerName').value.trim() || null) : null,
+      co_owner_jersey_size: document.getElementById('coOwnerJerseyCheck').checked ? (document.getElementById('coOwnerJerseySize').value || null) : null,
+      quoted_fee_paise: currentTotalFee() * 100
     };
 
     const { error } = await client.from('team_registrations').insert(payload);
@@ -902,7 +951,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     btn.disabled = false;
     document.getElementById('regForm').style.display = 'none';
     showStatus('ok', '✅ Team registration complete!\n\nYour reference code: ' + code +
-      '\nEntry fee: ₹' + teamFee.toLocaleString('en-IN') +
+      '\nFee paid: ₹' + currentTotalFee().toLocaleString('en-IN') + (payload.co_owner_jersey_requested ? ' (includes ₹500 co-owner jersey)' : '') +
       '\n\nSave this code. GUL will verify your payment against the bank statement and contact you on ' + payload.mobile + ' or ' + payload.email + '.' +
       (linkErr ? '\n\n(Your screenshot upload succeeded, but linking it had a hiccup - GUL has your code and can match it manually.)' : ''));
   });
