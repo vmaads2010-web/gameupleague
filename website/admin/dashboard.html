@@ -112,6 +112,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
       <button class="dashTabBtn" data-tab="sponsorship">💰 Sponsorship</button>
       <button class="dashTabBtn" data-tab="expenses">🧾 Expenses</button>
       <button class="dashTabBtn" data-tab="finance">📊 Finance / ROI</button>
+      <button class="dashTabBtn" data-tab="oldplayers">📣 Old Players Campaign</button>
     </div>
 
     <div id="dashMsg" class="msg"></div>
@@ -509,6 +510,47 @@ td.wrap-cell{white-space:normal;max-width:180px}
       </div>
     </div>
     </div>
+
+    <div class="tabPanel" id="tabPanel-oldplayers" style="display:none">
+    <div class="refreshRow">
+      <h2 style="margin:0;font-size:18px">Old Players – WhatsApp Re-engagement Campaign</h2>
+      <div style="display:flex;gap:8px">
+        <a class="secondaryBtn" href="../assets/og-share.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 Download Poster</a>
+        <button class="exportBtn" id="exportOldPlayersBtn">⬇ Export CSV</button>
+      </div>
+    </div>
+    <p class="mini" style="color:var(--muted);font-size:13px;margin:-8px 0 16px">
+      Season 1 (Football Reimagined) players, imported from the previous registration form. Click "Open WhatsApp" on a row to launch a pre-filled chat on your own device (with the Game Up League WhatsApp account) — attach the poster yourself, then hit send and mark it sent here.
+    </p>
+    <div class="stats" id="oldPlayerStats"></div>
+
+    <div class="searchRow">
+      <input id="opSearch" placeholder="Search by name or mobile...">
+      <select id="opStatusFilter">
+        <option value="">All campaign statuses</option>
+        <option value="pending">Pending</option>
+        <option value="sent">Sent</option>
+        <option value="replied">Replied</option>
+      </select>
+      <select id="opResponseFilter">
+        <option value="">All responses</option>
+        <option value="1">1 — Interested</option>
+        <option value="2">2 — Needs info</option>
+        <option value="3">3 — Not interested</option>
+      </select>
+    </div>
+
+    <div class="tableWrap">
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Mobile</th><th>Position</th><th>Type</th>
+          <th>Campaign Status</th><th>Response</th><th>Re-registered</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="oldPlayerRows"></tbody>
+      </table>
+      <div id="oldPlayerEmptyNote" class="emptyNote" style="display:none">No previous players imported yet.</div>
+    </div>
+    </div>
   </div>
 </div>
 
@@ -541,6 +583,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
   let allShots = [];
   let allSponsors = [];
   let allExpenses = [];
+  let allOldPlayers = [];
   let editingSponsorId = null;
   let editingExpenseId = null;
 
@@ -649,6 +692,7 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     await loadTeamReferences();
     await loadSponsors();
     await loadExpenses();
+    await loadOldPlayers();
     renderFinance();
   }
 
@@ -1269,6 +1313,165 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     document.getElementById('financePendingRows').innerHTML = pendingTaskRows
       .map(([task, count, amount]) => `<tr><td>${task}</td><td>${count}</td><td>${amount}</td></tr>`).join('');
   }
+
+  // ---- Old Players Campaign ----
+
+  function oldPlayerFirstName(fullName) {
+    return String(fullName || '').trim().split(/\s+/)[0] || 'there';
+  }
+
+  // Matches the brief's exact WhatsApp message template, personalised with
+  // the player's first name.
+  function oldPlayerCampaignMessage(fullName) {
+    const firstName = oldPlayerFirstName(fullName);
+    return `Hey ${firstName}! 👋
+
+Remember the excitement, competition and unforgettable memories from our last season?
+
+*THE GAME UP LEAGUE – RELOADED IS BACK!*
+
+We're bringing the football community together for another exciting season, and we'd genuinely love to see you back on the pitch!
+
+🔥 LAST CHANCE – EARLY BIRD OFFER
+Registration Fee: ₹1,600
+Regular Fee: ₹1,800
+You Save ₹200!
+
+⏳ The Early Bird offer ends TONIGHT, 7 November, at 11:59 PM.
+
+WHAT'S YOUR PLAN FOR SEASON 2?
+1️⃣ YES! I'm registering for Season 2.
+2️⃣ I'M INTERESTED! I need more details.
+3️⃣ NOT THIS SEASON. Maybe next time.
+
+Just reply with 1, 2 or 3.
+
+Register here: https://thegameupleague.com/register.html
+
+Let's bring the old gang back together and create more football memories!
+
+THE GAME UP LEAGUE – RELOADED ⚽🔥`;
+  }
+
+  async function loadOldPlayers() {
+    const { data, error } = await client.from('old_players_campaign').select('*').order('full_name', { ascending: true });
+    if (error) { showMsg('dashMsg', 'err', 'Could not load old players: ' + error.message); return; }
+    allOldPlayers = data || [];
+    renderOldPlayerStats();
+    renderOldPlayerRows(filteredOldPlayers());
+  }
+
+  function renderOldPlayerStats() {
+    const total = allOldPlayers.length;
+    const validMobile = allOldPlayers.filter(p => p.mobile_valid).length;
+    const pending = allOldPlayers.filter(p => p.campaign_status === 'pending').length;
+    const sent = allOldPlayers.filter(p => p.campaign_status === 'sent' || p.campaign_status === 'replied').length;
+    const r1 = allOldPlayers.filter(p => p.response === '1').length;
+    const r2 = allOldPlayers.filter(p => p.response === '2').length;
+    const r3 = allOldPlayers.filter(p => p.response === '3').length;
+    const reregistered = allOldPlayers.filter(p => p.reregistered).length;
+    document.getElementById('oldPlayerStats').innerHTML = [
+      ['Total Previous Players', total],
+      ['Valid Mobile Numbers', validMobile],
+      ['Pending Messages', pending],
+      ['Messages Sent', sent],
+      ['Interested – Reply 1', r1],
+      ['Need More Details – Reply 2', r2],
+      ['Not Interested – Reply 3', r3],
+      ['Successfully Re-registered', reregistered]
+    ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
+  }
+
+  function filteredOldPlayers() {
+    const q = document.getElementById('opSearch').value.trim().toLowerCase();
+    const statusF = document.getElementById('opStatusFilter').value;
+    const respF = document.getElementById('opResponseFilter').value;
+    return allOldPlayers.filter(p => {
+      if (statusF && p.campaign_status !== statusF) return false;
+      if (respF && p.response !== respF) return false;
+      if (q) {
+        const hay = [p.full_name, p.mobile].filter(Boolean).join(' ').toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  ['opSearch', 'opStatusFilter', 'opResponseFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => renderOldPlayerRows(filteredOldPlayers()));
+  });
+
+  const OP_STATUS_PILL = { pending: 'pending', sent: 'pending', replied: 'approved' };
+  const OP_RESPONSE_LABELS = { '1': '1 · Interested', '2': '2 · Needs info', '3': '3 · Not interested' };
+  const OP_RESPONSE_PILL = { '1': 'approved', '2': 'pending', '3': 'rejected' };
+
+  function renderOldPlayerRows(list) {
+    const tbody = document.getElementById('oldPlayerRows');
+    document.getElementById('oldPlayerEmptyNote').style.display = list.length ? 'none' : 'block';
+    tbody.innerHTML = list.map(p => `
+      <tr data-id="${p.id}">
+        <td class="wrap-cell">${esc(p.full_name)}${p.duplicate_mobile ? ' <span class="pill pending" title="Shares a mobile number with another row">⚠ dup</span>' : ''}</td>
+        <td>${esc(p.mobile)}</td>
+        <td class="wrap-cell">${esc(p.position || '—')}</td>
+        <td>${esc(p.participation_type || 'Player')}</td>
+        <td><span class="pill ${OP_STATUS_PILL[p.campaign_status] || 'pending'}">${esc(p.campaign_status)}</span></td>
+        <td>${p.response ? `<span class="pill ${OP_RESPONSE_PILL[p.response]}">${esc(OP_RESPONSE_LABELS[p.response])}</span>` : '—'}</td>
+        <td><span class="pill ${p.reregistered ? 'paid' : 'unpaid'}">${p.reregistered ? '✅ Yes' : 'Not yet'}</span></td>
+        <td class="actionsCell">
+          <button class="secondaryBtn" data-action="op-whatsapp">💬 ${p.campaign_status === 'pending' ? 'Open WhatsApp' : 'Re-send'}</button>
+          <button class="secondaryBtn" data-action="op-mark-sent" ${p.campaign_status === 'pending' ? '' : 'disabled'}>✓ Mark Sent</button>
+          <button class="secondaryBtn" data-action="op-resp-1" title="Interested - ready to register">1</button>
+          <button class="secondaryBtn" data-action="op-resp-2" title="Interested - needs info">2</button>
+          <button class="secondaryBtn" data-action="op-resp-3" title="Not interested">3</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('oldPlayerRows').addEventListener('click', async (e) => {
+    const row = e.target.closest('tr');
+    if (!row) return;
+    const id = row.dataset.id;
+    const player = allOldPlayers.find(p => p.id === id);
+    if (!player) return;
+
+    if (e.target.closest('[data-action="op-whatsapp"]')) {
+      // Opening the chat never marks it sent on its own - the brief requires
+      // a human to manually confirm the send (and attach the poster) before
+      // this row is counted, so an accidental tab-open can't inflate the count.
+      if (player.campaign_status !== 'pending' && !confirm('This player was already marked ' + player.campaign_status + '. Open WhatsApp again anyway?')) return;
+      window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
+      return;
+    }
+    if (e.target.closest('[data-action="op-mark-sent"]')) {
+      const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) { alert('Could not update: ' + error.message); return; }
+      await loadOldPlayers();
+      return;
+    }
+    const respBtn = e.target.closest('[data-action^="op-resp-"]');
+    if (respBtn) {
+      const response = respBtn.dataset.action.split('-')[2];
+      const { error } = await client.from('old_players_campaign')
+        .update({ response, campaign_status: 'replied', updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) { alert('Could not update: ' + error.message); return; }
+      await loadOldPlayers();
+    }
+  });
+
+  document.getElementById('exportOldPlayersBtn').addEventListener('click', () => {
+    downloadCsv('gul-old-players-campaign.csv', allOldPlayers, [
+      { label: 'Name', value: p => p.full_name },
+      { label: 'Mobile', value: p => p.mobile },
+      { label: 'Duplicate Mobile', value: p => p.duplicate_mobile ? 'Yes' : 'No' },
+      { label: 'Position', value: p => p.position || '' },
+      { label: 'Type', value: p => p.participation_type || '' },
+      { label: 'Campaign Status', value: p => p.campaign_status },
+      { label: 'Response', value: p => p.response || '' },
+      { label: 'Re-registered', value: p => p.reregistered ? 'Yes' : 'No' },
+      { label: 'Instagram', value: p => p.instagram_id || '' },
+      { label: 'Emergency Contact', value: p => p.emergency_contact || '' }
+    ]);
+  });
 
   async function loadTeams() {
     const { data: teams, error } = await client
