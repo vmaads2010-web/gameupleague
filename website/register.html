@@ -300,11 +300,13 @@ html.lenis,html.lenis body{height:auto}
 .navin{gap:10px}
 .navCenter{min-width:0;flex:1;display:flex;justify-content:center}
 .navRegister{font-size:13px!important;padding:8px 20px!important;min-height:40px;flex-shrink:0}
-.brand{gap:8px;min-width:0}
+.brand{gap:8px;min-width:0;overflow:hidden}
 .brand img{width:32px;height:38px;flex-shrink:0}
 .brand span,.brandFull{font-size:13px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis}
 .hamburgerBtn{flex-shrink:0;width:42px;height:42px;padding:0}
 @media (min-width:480px){.brand span,.brandFull{font-size:16px}.brand img{width:40px;height:46px}.navRegister{font-size:15px!important;padding:10px 26px!important}}
+@media (max-width:420px){.navRegister{font-size:10.5px!important;padding:7px 11px!important;letter-spacing:.03em}}
+@media (max-width:360px){.navRegister{font-size:9.5px!important;padding:6px 9px!important}.brand img{width:26px;height:30px}}
 .comicPanel a.tlItem,.roboPanel .tlItem,.tlPanel .tlItem{background:none!important;border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
 .comicPanel .tlPanelTitle,.roboPanel .tlPanelTitle{font-family:var(--font-stat);letter-spacing:.2em;color:var(--muted)}
 #timeline{min-height:0;padding-block:24px 56px}
@@ -376,6 +378,8 @@ background:conic-gradient(from 180deg at 50% 0%,transparent 38%,rgba(255,201,60,
 .reg .offerBox,.reg .feeBox{background:var(--surface);border:0;border-top:3px solid var(--gold);border-radius:0;box-shadow:none;padding:clamp(20px,3vw,32px)}
 .reg .offerBox .price{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(56px,10vw,92px);line-height:1;color:var(--gold)}
 .reg .offerBox .price small{font-family:var(--font-stat);font-size:15px;font-style:normal;letter-spacing:.14em;color:var(--muted)}
+.reg .offerBox .saveBadge{font-family:var(--font-stat);font-size:12.5px;font-style:normal;font-weight:800;letter-spacing:.04em;color:#2a1206;background:var(--gold);border-radius:999px;padding:4px 11px;vertical-align:middle;margin-left:6px;display:inline-block}
+.reg .offerBox .offerPriceSub{font-family:var(--font-stat);font-size:13px;font-style:normal;font-weight:600;letter-spacing:.04em;color:var(--muted);margin-top:6px}
 .reg .notice{background:none;border:1px solid var(--line);border-radius:0;color:var(--muted)}
 .reg .sectionTitle{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(24px,4vw,34px);letter-spacing:0;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--line);padding-top:26px;margin:44px 0 20px}
 .reg .sectionTitle:first-child{border-top:0;margin-top:0;padding-top:0}
@@ -556,6 +560,38 @@ a.tlItem{position:relative;overflow:hidden}
      return { label: 'Solo', window: s.window, note: s.note, price: s.price, quotedPerPlayer: s.price, playerCount: 1, isReferral: false };
    };
 
+   let countdownTimer = null;
+   const pad = (v) => String(v).padStart(2, '0');
+
+   // Live countdown to whichever phase is currently selected's own close -
+   // Early Bird / Referral / the full Solo window (2 Dec) each have their
+   // own end date, so this re-targets every time renderOfferBox runs
+   // (initial load, or the player flipping Solo/Referral).
+   function startCountdown(endIso) {
+     if (countdownTimer) clearInterval(countdownTimer);
+     const cdEl = document.getElementById('offerCountdownBig');
+     if (!endIso) { cdEl.style.display = 'none'; return; }
+     const endTime = new Date(endIso).getTime();
+     function tickCountdownBig() {
+       const diff = endTime - Date.now();
+       if (diff <= 0) { cdEl.style.display = 'none'; clearInterval(countdownTimer); return; }
+       const d = Math.floor(diff / 86400000);
+       const h = Math.floor((diff % 86400000) / 3600000);
+       const m = Math.floor((diff % 3600000) / 60000);
+       const s = Math.floor((diff % 60000) / 1000);
+       const parts = d > 0 ? [[d, 'D'], [h, 'H'], [m, 'M']] : [[h, 'H'], [m, 'M'], [s, 'S']];
+       cdEl.innerHTML = '<span class="cdLabel">This price ends in</span>' +
+         parts.map(([v, u], idx) =>
+           (idx > 0 ? '<span class="cdSep">:</span>' : '') +
+           '<span class="cdBox"><b>' + pad(v) + '</b><i>' + u + '</i></span>'
+         ).join('');
+       cdEl.classList.toggle('urgent', diff < 24 * 3600000);
+       cdEl.style.display = 'flex';
+     }
+     tickCountdownBig();
+     countdownTimer = setInterval(tickCountdownBig, 1000);
+   }
+
    function renderOfferBox(c) {
      const referralOpen = window.isReferralActive(c);
      document.getElementById('regTypeField').style.display = window.isEarlyBirdActive(c) ? 'none' : 'block';
@@ -564,46 +600,30 @@ a.tlItem{position:relative;overflow:hidden}
      const sel = window.getRegSelection(c);
      document.getElementById('offerLabel').textContent = sel.label + ' Registration — Open Now';
      document.getElementById('offerWindow').textContent = sel.window || '';
-     document.getElementById('offerPrice').innerHTML = '₹' + sel.price.toLocaleString('en-IN') + (sel.isReferral ? '<small> total (group of ' + referralCount + ')</small>' : '<small> / player</small>');
+     if (sel.isReferral) {
+       const savePerPlayer = c.registration.solo.price - sel.quotedPerPlayer;
+       document.getElementById('offerPrice').innerHTML = '₹' + sel.quotedPerPlayer.toLocaleString('en-IN') + '<small> / player</small>' +
+         (savePerPlayer > 0 ? ' <span class="saveBadge">Save ₹' + savePerPlayer.toLocaleString('en-IN') + '/player</span>' : '') +
+         '<div class="offerPriceSub">₹' + sel.price.toLocaleString('en-IN') + ' total for ' + referralCount + ' players</div>';
+     } else {
+       document.getElementById('offerPrice').innerHTML = '₹' + sel.price.toLocaleString('en-IN') + '<small> / player</small>';
+     }
      document.getElementById('offerExtraNote').textContent = sel.note || '';
      document.getElementById('offerUrgency').style.display = 'none';
      document.getElementById('regTypeHint').style.display = sel.isReferral ? 'block' : 'none';
      document.getElementById('referralCountField').style.display = sel.isReferral ? 'block' : 'none';
      if (window.renderPlayers) window.renderPlayers(sel.playerCount);
      if (window.updatePaymentUI) window.updatePaymentUI(c);
+
+     const endIso = window.isEarlyBirdActive(c) ? c.registration.early_bird.end :
+       (sel.isReferral ? c.registration.referral.end : (c.registration.regular && c.registration.regular.end));
+     startCountdown(endIso);
    }
 
    document.querySelectorAll('input[name="regType"]').forEach(el => el.addEventListener('change', () => window.__gulContentPromise.then(renderOfferBox)));
 
    window.__gulContentPromise.then(c => {
      renderOfferBox(c);
-
-     // Live countdown to the current phase's own close - Early Bird tonight,
-     // or the full registration window (2 Dec) once that phase is live.
-     const countdownEndIso = window.isEarlyBirdActive(c) ? c.registration.early_bird.end : (c.registration.regular && c.registration.regular.end);
-     if (countdownEndIso) {
-       const cdEl = document.getElementById('offerCountdownBig');
-       const endTime = new Date(countdownEndIso).getTime();
-       const pad = (v) => String(v).padStart(2, '0');
-       function tickCountdownBig() {
-         const diff = endTime - Date.now();
-         if (diff <= 0) { cdEl.style.display = 'none'; return; }
-         const d = Math.floor(diff / 86400000);
-         const h = Math.floor((diff % 86400000) / 3600000);
-         const m = Math.floor((diff % 3600000) / 60000);
-         const s = Math.floor((diff % 60000) / 1000);
-         const parts = d > 0 ? [[d, 'D'], [h, 'H'], [m, 'M']] : [[h, 'H'], [m, 'M'], [s, 'S']];
-         cdEl.innerHTML = '<span class="cdLabel">This price ends in</span>' +
-           parts.map(([v, u], idx) =>
-             (idx > 0 ? '<span class="cdSep">:</span>' : '') +
-             '<span class="cdBox"><b>' + pad(v) + '</b><i>' + u + '</i></span>'
-           ).join('');
-         cdEl.classList.toggle('urgent', diff < 24 * 3600000);
-         cdEl.style.display = 'flex';
-       }
-       tickCountdownBig();
-       setInterval(tickCountdownBig, 1000);
-     }
    }).catch(() => {
      document.getElementById('offerLabel').textContent = 'Could not load current pricing';
    });

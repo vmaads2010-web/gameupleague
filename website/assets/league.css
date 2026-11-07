@@ -188,11 +188,13 @@ html.lenis,html.lenis body{height:auto}
 .navin{gap:10px}
 .navCenter{min-width:0;flex:1;display:flex;justify-content:center}
 .navRegister{font-size:13px!important;padding:8px 20px!important;min-height:40px;flex-shrink:0}
-.brand{gap:8px;min-width:0}
+.brand{gap:8px;min-width:0;overflow:hidden}
 .brand img{width:32px;height:38px;flex-shrink:0}
 .brand span,.brandFull{font-size:13px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis}
 .hamburgerBtn{flex-shrink:0;width:42px;height:42px;padding:0}
 @media (min-width:480px){.brand span,.brandFull{font-size:16px}.brand img{width:40px;height:46px}.navRegister{font-size:15px!important;padding:10px 26px!important}}
+@media (max-width:420px){.navRegister{font-size:10.5px!important;padding:7px 11px!important;letter-spacing:.03em}}
+@media (max-width:360px){.navRegister{font-size:9.5px!important;padding:6px 9px!important}.brand img{width:26px;height:30px}}
 
 /* Hub: no leftover comic-panel boxes; first screen shows the logo and the start of the list */
 .comicPanel a.tlItem,.roboPanel .tlItem,.tlPanel .tlItem{background:none!important;border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
@@ -294,6 +296,8 @@ html.lenis,html.lenis body{height:auto}
 .reg .offerBox,.reg .feeBox{background:var(--surface);border:0;border-top:3px solid var(--gold);border-radius:0;box-shadow:none;padding:clamp(20px,3vw,32px)}
 .reg .offerBox .price{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(56px,10vw,92px);line-height:1;color:var(--gold)}
 .reg .offerBox .price small{font-family:var(--font-stat);font-size:15px;font-style:normal;letter-spacing:.14em;color:var(--muted)}
+.reg .offerBox .saveBadge{font-family:var(--font-stat);font-size:12.5px;font-style:normal;font-weight:800;letter-spacing:.04em;color:#2a1206;background:var(--gold);border-radius:999px;padding:4px 11px;vertical-align:middle;margin-left:6px;display:inline-block}
+.reg .offerBox .offerPriceSub{font-family:var(--font-stat);font-size:13px;font-style:normal;font-weight:600;letter-spacing:.04em;color:var(--muted);margin-top:6px}
 .reg .notice{background:none;border:1px solid var(--line);border-radius:0;color:var(--muted)}
 .reg .sectionTitle{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(24px,4vw,34px);letter-spacing:0;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--line);padding-top:26px;margin:44px 0 20px}
 .reg .sectionTitle:first-child{border-top:0;margin-top:0;padding-top:0}
