@@ -105,7 +105,7 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payBox h3{margin:0 0 4px;font-size:16px}
 .payRequiredNotice{background:rgba(227,38,46,.12);border:1px solid rgba(227,38,46,.4);border-radius:10px;padding:10px 12px;font-size:12.5px;color:#ff9d9d;margin-bottom:16px;text-align:left;line-height:1.5}
 .payBox .amt{font-size:30px;font-weight:900;color:var(--gold);margin:8px 0}
-.payBox canvas{background:#fff;padding:28px;border-radius:12px;margin:12px 0}
+.payBox canvas{background:#fff;border-radius:12px;margin:12px 0;display:block}
 .payBox .upiBtn{display:inline-block;width:auto;padding:12px 22px;margin-top:4px}
 .payBox .note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
 .paySegment{display:flex;background:#1a0a0c;border:1px solid rgba(255,201,60,.25);border-radius:12px;padding:4px;margin:14px 0 18px;gap:4px}
@@ -116,7 +116,7 @@ button:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .payPanel.active{display:block;animation:payPanelIn .3s ease}
 @keyframes payPanelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .payQrWrap{position:relative;display:inline-block;margin:12px auto;max-width:100%}
-.payQrWrap canvas{box-sizing:border-box;max-width:100%;height:auto}
+.payQrWrap canvas{max-width:100%;height:auto}
 .payQrWrap .qrLogo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10.5%;aspect-ratio:1;border-radius:22%;border:3px solid #fff;background:#fff;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .payUpiIdCard{background:#1a0a0c;border:1px dashed rgba(255,201,60,.4);border-radius:12px;padding:16px;margin:10px 0}
 .payUpiIdCard .uid{font-size:19px;font-weight:900;color:var(--gold);word-break:break-all}
@@ -951,6 +951,36 @@ document.getElementById('payTabs').addEventListener('click', (e) => {
   document.querySelectorAll('.payPanel').forEach(p => p.classList.toggle('active', p.id === 'payPanel-' + btn.dataset.payTab));
 });
 
+// Draws the QR with its white quiet-zone margin BAKED INTO the actual pixels,
+// instead of relying on CSS padding around the canvas. Real phones were
+// rendering that CSS padding inconsistently (box-sizing + an explicit
+// width/height attribute on a <canvas> is a known cross-browser minefield for
+// replaced elements), so the quiet zone some phones actually displayed was
+// far thinner than it looked on desktop - exactly why GPay's camera kept
+// failing on-device despite every desktop decode test passing. Baking the
+// margin into the bitmap itself removes that variable entirely: whatever
+// this canvas's CSS size ends up being, the white margin scales with it.
+function renderQr(container, link) {
+  const QUIET = 40, INNER = 400, TOTAL = INNER + QUIET * 2; // 480px total
+  const temp = document.createElement('div');
+  new QRCode(temp, { text: link, width: INNER, height: INNER, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
+  const qrCanvas = temp.querySelector('canvas');
+  const composite = document.createElement('canvas');
+  composite.width = TOTAL;
+  composite.height = TOTAL;
+  const ctx = composite.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, TOTAL, TOTAL);
+  ctx.drawImage(qrCanvas, QUIET, QUIET, INNER, INNER);
+  container.innerHTML = '';
+  container.appendChild(composite);
+  const logo = document.createElement('img');
+  logo.className = 'qrLogo';
+  logo.src = 'assets/favicon-64.png';
+  logo.alt = '';
+  container.appendChild(logo);
+}
+
 // Reuses the fetch kicked off immediately near the top of the page (see the
 // early inline script right after the offer banner markup). Re-run every time
 // the player flips Solo/Referral - the QR and amount depend on that choice.
@@ -970,21 +1000,14 @@ window.updatePaymentUI = function (c) {
 
     // The QR encodes a shorter link than the "Pay with UPI app" button does -
     // dropping pn/tn (payee name, note) cuts it from ~115 to ~55 characters,
-    // which roughly halves the module count for the same 300px canvas. Fewer,
+    // which roughly halves the module count for the same canvas size. Fewer,
     // bigger modules is what actually makes a camera scanner like GPay lock
     // on fast; all that data was never required to read by a human anyway,
     // only pa (who) and am (how much) matter for paying. Q-level correction
     // (25%) comfortably covers the small centred logo badge (~15%) while
     // keeping the code simpler than H would.
     const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + amount + '&cu=INR';
-    const qrWrap = document.getElementById('payQr');
-    qrWrap.innerHTML = '';
-    new QRCode(qrWrap, { text: qrLink, width: 440, height: 440, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
-    const logo = document.createElement('img');
-    logo.className = 'qrLogo';
-    logo.src = 'assets/favicon-64.png';
-    logo.alt = '';
-    qrWrap.appendChild(logo);
+    renderQr(document.getElementById('payQr'), qrLink);
   }
   updateSubmitGate();
 };
