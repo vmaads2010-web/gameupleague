@@ -467,8 +467,18 @@ a.tlItem{position:relative;overflow:hidden}
   <div class="field" id="regTypeField" style="margin-bottom:18px">
    <label>How are you registering? <span class="required-star">*</span></label>
    <div class="radioRow"><input type="radio" id="regTypeSolo" name="regType" value="solo" checked><label for="regTypeSolo">⚽ Solo — register just yourself</label></div>
-   <div class="radioRow"><input type="radio" id="regTypeReferral" name="regType" value="referral"><label for="regTypeReferral">👥 Referral — register a group of 3 together, pay less each</label></div>
-   <span class="fieldHint" id="regTypeHint" style="display:none;margin-top:8px">Fill in all 3 players' full details below. One combined payment of ₹4,800 covers all three — only one payment screenshot is needed.</span>
+   <div class="radioRow"><input type="radio" id="regTypeReferral" name="regType" value="referral"><label for="regTypeReferral">👥 Referral — bring friends (3+) together, pay less each</label></div>
+   <span class="fieldHint" id="regTypeHint" style="display:none;margin-top:8px">Fill in every player's full details below. One combined payment covers the whole group — only one payment screenshot is needed.</span>
+  </div>
+
+  <div class="field" id="referralCountField" style="display:none;margin-bottom:18px">
+   <label>👥 How many players in your group? (minimum 3)</label>
+   <div style="display:flex;align-items:center;gap:14px">
+    <button type="button" id="referralCountMinus" style="width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--line);background:#260d10;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer">−</button>
+    <div style="flex:1;text-align:center;font-family:var(--font-display);font-style:italic;font-size:28px;color:var(--gold)" id="referralCountDisplay">3</div>
+    <button type="button" id="referralCountPlus" style="width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--line);background:#260d10;color:var(--gold);font-size:20px;font-weight:900;cursor:pointer">+</button>
+   </div>
+   <span class="fieldHint">🙋 You + 👥 more friends — add as many as you like, everyone pays ₹1,600 each.</span>
   </div>
 
   <div class="offerBox">
@@ -504,34 +514,57 @@ a.tlItem{position:relative;overflow:hidden}
      return !!(eb && Date.now() <= new Date(eb.end).getTime());
    };
 
-   // Recomputed every time the player flips Solo/Referral - the single source
-   // of truth the rest of the page (player-block count, price display, UPI
-   // amount, QR code, submit payload) reads from. Referral is always one
-   // combined payment covering all 3 players - there is no separate
-   // leader/member path, and a payment screenshot is always required.
+   // Referral closes on its own end date (15 Nov) - after that only Solo
+   // stays open until the final 2 Dec deadline, no manual flip needed.
+   window.isReferralActive = function (c) {
+     const r = c.registration.referral;
+     return !!(r && r.end && Date.now() <= new Date(r.end).getTime());
+   };
+
+   // Group size is adjustable (minimum 3, "you + 2 friends") - a referred
+   // group can bring as many extra players as they like, all at the same
+   // per-player referral rate, with one combined payment for the whole group.
+   let referralCount = 3;
+   function setReferralCount(n) {
+     referralCount = Math.max(3, Math.min(10, n));
+     document.getElementById('referralCountDisplay').textContent = referralCount;
+     window.__gulContentPromise.then(renderOfferBox);
+   }
+   document.getElementById('referralCountMinus').addEventListener('click', () => setReferralCount(referralCount - 1));
+   document.getElementById('referralCountPlus').addEventListener('click', () => setReferralCount(referralCount + 1));
+
+   // Recomputed every time the player flips Solo/Referral or adjusts the
+   // group size - the single source of truth the rest of the page
+   // (player-block count, price display, UPI amount, QR code, submit
+   // payload) reads from. Referral is always one combined payment covering
+   // the whole group - a payment screenshot is always required.
    window.getRegSelection = function (c) {
      if (window.isEarlyBirdActive(c)) {
        const eb = c.registration.early_bird;
        return { label: 'Early Bird', window: eb.window, note: eb.note, price: eb.price, quotedPerPlayer: eb.price, playerCount: 1, isReferral: false };
      }
      const regType = document.querySelector('input[name="regType"]:checked').value;
-     if (regType === 'referral') {
+     if (regType === 'referral' && window.isReferralActive(c)) {
        const r = c.registration.referral;
-       return { label: 'Referral — Group of 3', window: r.window, note: r.note, price: r.totalPrice, quotedPerPlayer: r.pricePerPlayer, playerCount: 3, isReferral: true };
+       return { label: 'Referral — Group of ' + referralCount, window: r.window, note: r.note, price: r.pricePerPlayer * referralCount, quotedPerPlayer: r.pricePerPlayer, playerCount: referralCount, isReferral: true };
      }
      const s = c.registration.solo;
      return { label: 'Solo', window: s.window, note: s.note, price: s.price, quotedPerPlayer: s.price, playerCount: 1, isReferral: false };
    };
 
    function renderOfferBox(c) {
+     const referralOpen = window.isReferralActive(c);
      document.getElementById('regTypeField').style.display = window.isEarlyBirdActive(c) ? 'none' : 'block';
+     document.getElementById('regTypeReferral').closest('.radioRow').style.display = referralOpen ? 'flex' : 'none';
+     if (!referralOpen && document.getElementById('regTypeReferral').checked) document.getElementById('regTypeSolo').checked = true;
      const sel = window.getRegSelection(c);
      document.getElementById('offerLabel').textContent = sel.label + ' Registration — Open Now';
      document.getElementById('offerWindow').textContent = sel.window || '';
-     document.getElementById('offerPrice').innerHTML = '₹' + sel.price.toLocaleString('en-IN') + (sel.isReferral ? '<small> total (group of 3)</small>' : '<small> / player</small>');
+     document.getElementById('offerPrice').innerHTML = '₹' + sel.price.toLocaleString('en-IN') + (sel.isReferral ? '<small> total (group of ' + referralCount + ')</small>' : '<small> / player</small>');
      document.getElementById('offerExtraNote').textContent = sel.note || '';
      document.getElementById('offerUrgency').style.display = 'none';
      document.getElementById('regTypeHint').style.display = sel.isReferral ? 'block' : 'none';
+     document.getElementById('referralCountField').style.display = sel.isReferral ? 'block' : 'none';
      if (window.renderPlayers) window.renderPlayers(sel.playerCount);
      if (window.updatePaymentUI) window.updatePaymentUI(c);
    }

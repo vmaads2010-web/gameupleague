@@ -529,6 +529,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
           <select id="opAudience">
             <option value="old_players">Old Players (previous seasons)</option>
             <option value="new_players">New Registrations (this season)</option>
+            <option value="owners">Team Owners (this season)</option>
           </select>
         </div>
         <div id="opSeasonField"><label>Season</label>
@@ -1475,6 +1476,17 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
       allCampaignRows = allOldPlayers
         .filter(p => !seasonF || p.season_label === seasonF)
         .map(p => ({ ...p, _trackable: true }));
+    } else if (audience === 'owners') {
+      const { data, error } = await client.from('team_registrations')
+        .select('id, owner_name, proposed_team_name, mobile, created_at').order('created_at', { ascending: false });
+      if (error) { showMsg('dashMsg', 'err', 'Could not load team owners: ' + error.message); return; }
+      // Same as New Registrations - no campaign_status column on this table,
+      // so sending is not persisted here either.
+      allCampaignRows = (data || []).map(r => ({
+        id: r.id, full_name: r.owner_name, mobile: String(r.mobile || '').replace(/\D/g, '').slice(-10),
+        position: r.proposed_team_name, participation_type: 'Owner', campaign_status: null,
+        reregistered: null, duplicate_mobile: false, photo_url: null, _trackable: false
+      }));
     } else {
       const { data, error } = await client.from('player_registrations')
         .select('id, full_name, mobile, position, created_at').order('created_at', { ascending: false });

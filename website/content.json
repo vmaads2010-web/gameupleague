@@ -30,7 +30,7 @@
     "_instructions": "Early Bird is shown automatically until early_bird.end (tonight, 7 Nov 2026 11:59:59 PM) - the site switches itself to Solo + Referral the moment that passes, no manual flip needed. Edit price/window/note below and it updates live.",
     "early_bird": { "label": "Early Bird", "price": 1600, "window": "1 – 7 Nov 2026", "note": "", "end": "2026-11-07T23:59:59+05:30" },
     "solo": { "label": "Solo", "price": 1800, "window": "8 Nov – 2 Dec 2026", "note": "" },
-    "referral": { "label": "Referral", "pricePerPlayer": 1600, "groupSize": 3, "totalPrice": 4800, "window": "8 Nov – 2 Dec 2026", "note": "Bring a group of 3 players together — ₹1,600 × 3 = ₹4,800 total, paid once by the group leader." },
+    "referral": { "label": "Referral", "pricePerPlayer": 1600, "groupSize": 3, "note": "Bring friends along — everyone in the group pays ₹1,600 each, paid together in one go.", "window": "8 – 15 Nov 2026", "end": "2026-11-15T23:59:59+05:30" },
     "regular": { "label": "Regular", "price": 1800, "window": "8 Nov – 2 Dec 2026", "note": "", "end": "2026-12-02T20:59:59+05:30" }
   },
 
