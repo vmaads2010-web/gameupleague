@@ -564,6 +564,11 @@ td.wrap-cell{white-space:normal;max-width:180px}
         <option value="2">2 — Needs info</option>
         <option value="3">3 — Not interested</option>
       </select>
+      <select id="opRenewedFilter">
+        <option value="">Renewed + Not Renewed</option>
+        <option value="no">🔴 Not Renewed Yet</option>
+        <option value="yes">✅ Already Renewed</option>
+      </select>
     </div>
 
     <div class="tableWrap">
@@ -1346,22 +1351,28 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     return String(fullName || '').trim().split(/\s+/)[0] || 'there';
   }
 
-  // Personalised with the player's first name. Deliberately doesn't hardcode
-  // "tonight" or a single price - this gets reused across multiple days of
-  // sending, so it states both current registration options instead of a
-  // one-night-only deadline that would go stale on day 2.
+  // Personalised with the player's first name. Automatically switches
+  // between tonight's urgent Early Bird wording and the generic Solo/Referral
+  // wording once that deadline passes - so the same button keeps sending the
+  // right message whether it's used in this last half hour or days from now.
+  const EARLY_BIRD_END = new Date('2026-11-07T23:59:59+05:30').getTime();
   function oldPlayerCampaignMessage(fullName) {
     const firstName = oldPlayerFirstName(fullName);
-    return `Hey ${firstName}! 👋⚽
-
-The old gang is back — *THE GAME UP LEAGUE: RELOADED* is here for Season 2! 🏆
-
-We had an incredible season together, and we'd genuinely love to see you back on the pitch.
-
-💰 *Registration is open:*
+    const urgent = Date.now() <= EARLY_BIRD_END;
+    const offerBlock = urgent
+      ? `🔥 *LAST CHANCE – EARLY BIRD, ENDS TONIGHT!*
+Just ₹1,600 (instead of ₹1,800) — but only if you register before *11:59 PM TODAY*. ⏳`
+      : `💰 *Registration is open:*
 • Solo — ₹1,800
-• Bring 2 friends (group of 3) — just ₹1,800 ₹1,600 each, ₹4,800 total
-📅 Closes 2 December 2026.
+• Bring 2 friends (group of 3) — just ₹1,600 each, ₹4,800 total
+📅 Closes 2 December 2026.`;
+    return `Hey ${firstName}! 👋⚽🐺
+
+The old gang is back — *THE GAME UP LEAGUE: RELOADED* is here for Season 2!🏆
+
+We had an incredible season together, and honestly, it won't be the same without you on the pitch. Come back and play with us one more time! 🔥
+
+${offerBlock}
 
 What's your plan for Season 2?
 1️⃣ YES! Registering now.
@@ -1380,9 +1391,25 @@ Let's bring the squad back together! 🔥
     const { data, error } = await client.from('old_players_campaign').select('*').order('full_name', { ascending: true });
     if (error) { showMsg('dashMsg', 'err', 'Could not load old players: ' + error.message); return; }
     allOldPlayers = data || [];
+    await syncOldPlayerRenewals();
     renderOldPlayerStats();
     renderOldPlayerRows(filteredOldPlayers());
     if (typeof opUpdateQueueProgress === 'function') opUpdateQueueProgress();
+  }
+
+  // Cross-checks every not-yet-renewed old player against this season's
+  // player_registrations every time this tab loads, so anyone who registers
+  // mid-campaign flips to "Renewed" automatically on the next refresh - no
+  // database trigger needed, just a normal table update using the existing
+  // admin UPDATE grant.
+  async function syncOldPlayerRenewals() {
+    const { data: regs, error } = await client.from('player_registrations').select('mobile');
+    if (error || !regs) return;
+    const registeredMobiles = new Set(regs.map(r => String(r.mobile || '').replace(/\D/g, '').slice(-10)));
+    const toFlip = allOldPlayers.filter(p => !p.reregistered && registeredMobiles.has(p.mobile));
+    if (!toFlip.length) return;
+    await client.from('old_players_campaign').update({ reregistered: true, updated_at: new Date().toISOString() }).in('id', toFlip.map(p => p.id));
+    toFlip.forEach(p => { p.reregistered = true; });
   }
 
   function renderOldPlayerStats() {
@@ -1394,15 +1421,18 @@ Let's bring the squad back together! 🔥
     const r2 = allOldPlayers.filter(p => p.response === '2').length;
     const r3 = allOldPlayers.filter(p => p.response === '3').length;
     const reregistered = allOldPlayers.filter(p => p.reregistered).length;
+    const notRenewed = total - reregistered;
+    const renewalPct = total ? Math.round((reregistered / total) * 100) : 0;
     document.getElementById('oldPlayerStats').innerHTML = [
       ['Total Previous Players', total],
-      ['Valid Mobile Numbers', validMobile],
+      ['✅ Renewed', reregistered],
+      ['🔴 Not Renewed Yet', notRenewed],
+      ['Renewal %', renewalPct + '%'],
       ['Pending Messages', pending],
       ['Messages Sent', sent],
       ['Interested – Reply 1', r1],
       ['Need More Details – Reply 2', r2],
-      ['Not Interested – Reply 3', r3],
-      ['Successfully Re-registered', reregistered]
+      ['Not Interested – Reply 3', r3]
     ].map(([label, num]) => `<div class="stat"><div class="num">${num}</div><div class="label">${label}</div></div>`).join('');
   }
 
@@ -1410,9 +1440,12 @@ Let's bring the squad back together! 🔥
     const q = document.getElementById('opSearch').value.trim().toLowerCase();
     const statusF = document.getElementById('opStatusFilter').value;
     const respF = document.getElementById('opResponseFilter').value;
+    const renewedF = document.getElementById('opRenewedFilter').value;
     return allOldPlayers.filter(p => {
       if (statusF && p.campaign_status !== statusF) return false;
       if (respF && p.response !== respF) return false;
+      if (renewedF === 'yes' && !p.reregistered) return false;
+      if (renewedF === 'no' && p.reregistered) return false;
       if (q) {
         const hay = [p.full_name, p.mobile].filter(Boolean).join(' ').toLowerCase();
         if (!hay.includes(q)) return false;
@@ -1421,7 +1454,7 @@ Let's bring the squad back together! 🔥
     });
   }
 
-  ['opSearch', 'opStatusFilter', 'opResponseFilter'].forEach(id => {
+  ['opSearch', 'opStatusFilter', 'opResponseFilter', 'opRenewedFilter'].forEach(id => {
     document.getElementById(id).addEventListener('input', () => renderOldPlayerRows(filteredOldPlayers()));
   });
 
@@ -1503,7 +1536,9 @@ Let's bring the squad back together! 🔥
   let opQueueIndex = -1;
 
   function opPendingQueue() {
-    return allOldPlayers.filter(p => p.campaign_status === 'pending');
+    // Skips anyone who already re-registered - no point messaging them again,
+    // and this is exactly the "unregistered-only" bulk run that's needed.
+    return allOldPlayers.filter(p => p.campaign_status === 'pending' && !p.reregistered);
   }
 
   function opUpdateQueueProgress() {
