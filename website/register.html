@@ -967,15 +967,18 @@ window.updatePaymentUI = function (c) {
     document.getElementById('payAppAmt').textContent = amount.toLocaleString('en-IN');
     document.getElementById('payIdAmt').textContent = amount.toLocaleString('en-IN');
 
-    // Generated large (300px) with HIGH error correction, which is what
-    // actually keeps a QR scannable after a player screenshots it and
-    // re-scans from their gallery - the old 180px/default-correction QR was
-    // too fragile for that round trip and kept failing to decode. A small
-    // logo badge sits in the centre; H-level correction tolerates up to ~30%
-    // of the code being covered, so this is safe.
+    // The QR encodes a shorter link than the "Pay with UPI app" button does -
+    // dropping pn/tn (payee name, note) cuts it from ~115 to ~55 characters,
+    // which roughly halves the module count for the same 300px canvas. Fewer,
+    // bigger modules is what actually makes a camera scanner like GPay lock
+    // on fast; all that data was never required to read by a human anyway,
+    // only pa (who) and am (how much) matter for paying. Q-level correction
+    // (25%) comfortably covers the small centred logo badge (~15%) while
+    // keeping the code simpler than H would.
+    const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + amount + '&cu=INR';
     const qrWrap = document.getElementById('payQr');
     qrWrap.innerHTML = '';
-    new QRCode(qrWrap, { text: upiLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+    new QRCode(qrWrap, { text: qrLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
     const logo = document.createElement('img');
     logo.className = 'qrLogo';
     logo.src = 'assets/favicon-64.png';

@@ -648,11 +648,15 @@ window.__gulContentPromise.then(c => {
     document.getElementById('payUpiBtn').href = upiLink;
     document.getElementById('payAppAmt').textContent = teamFee.toLocaleString('en-IN');
     document.getElementById('payIdAmt').textContent = teamFee.toLocaleString('en-IN');
-    // Large (300px) + HIGH error correction so the QR survives a
-    // screenshot-and-rescan round trip - see register.html for why.
+    // Shorter QR-only link (drops pn/pname and tn/note) scans much faster -
+    // fewer characters means fewer modules for the same 300px canvas, so
+    // each module is bigger and a camera locks on quicker. Q-level
+    // correction (25%) still comfortably covers the small centred logo.
+    // See register.html for the full reasoning.
+    const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + teamFee + '&cu=INR';
     const qrWrap = document.getElementById('payQr');
     qrWrap.innerHTML = '';
-    new QRCode(qrWrap, { text: upiLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+    new QRCode(qrWrap, { text: qrLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
     const logo = document.createElement('img');
     logo.className = 'qrLogo';
     logo.src = 'assets/favicon-64.png';
