@@ -135,10 +135,15 @@ body:before{display:none}
 main{overflow-x:clip}
 .offerBanner{background:var(--red);animation:none;padding:0}
 .offerBannerIn{width:min(1200px,calc(100% - 24px));margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;padding:9px 0}
-.offerBannerLine{display:flex;align-items:center;justify-content:center;text-align:center}
+.offerBannerLine{display:flex;align-items:center;justify-content:flex-start;text-align:left;flex:1 1 220px;min-width:0;overflow:hidden}
 .offerBannerDot{display:none}
+.offerBannerTicker{overflow:hidden;flex:1;min-width:0}
+.offerBannerTrack{display:inline-flex;white-space:nowrap;animation:gulTicker 16s linear infinite}
+.offerBannerTrack .offerBannerText{display:inline-block;padding-right:56px;white-space:nowrap}
+@keyframes gulTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.offerBannerTrack{animation:none}.offerBannerTicker{overflow-x:auto}.offerBannerTrack .offerBannerText:last-child{display:none}}
 .offerBannerText{font-size:12.5px;line-height:1.4}
-.offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px}
+.offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
 .offerBannerBtn{border-radius:0;padding:7px 14px;font-size:12px}
 .nav{background:rgba(11,5,6,.86);border-bottom:1px solid var(--line)}
 .navin{min-height:64px;padding-block:8px}

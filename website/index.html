@@ -423,12 +423,12 @@ h3{font-family:var(--font-display);font-weight:400;font-style:italic;letter-spac
 .offerBannerDot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0}
 @media (prefers-reduced-motion: no-preference){.offerBannerDot{animation:pulseDot 1.4s ease-in-out infinite}}
 @keyframes pulseDot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{opacity:.4;box-shadow:0 0 0 6px rgba(255,255,255,0)}}
-.offerBannerText{font-weight:800;font-size:13.5px;color:#fff;letter-spacing:.2px}
-.offerBannerText b{color:#fff;font-size:15px}
+.offerBannerText{font-weight:800;font-size:13.5px;color:#fff;letter-spacing:.2px;white-space:nowrap}
+.offerBannerText b{color:#fff;font-size:inherit;font-weight:900}
 .offerBannerOldPrice{color:rgba(255,255,255,.75);font-weight:700;text-decoration-color:#1a0a0c;text-decoration-thickness:2px}
 .offerBannerBtn{background:#fff;color:#101c31;font-weight:900;font-size:12.5px;padding:7px 16px;border-radius:999px;white-space:nowrap;transition:transform .25s ease}
 .offerBannerBtn:hover{transform:translateY(-2px) scale(1.04)}
-@media(max-width:600px){.offerBannerText{font-size:12px}.offerBannerText b{font-size:13px}}
+@media(max-width:600px){.offerBannerText{font-size:12px}}
 .offerCountdown{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .offerCountdown .cdLabel{font-size:10.5px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px;margin-right:2px;opacity:.85}
 .offerCountdown .cdBox{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:3px 7px 2px;min-width:30px;line-height:1}
@@ -462,10 +462,15 @@ body:before{display:none}
 main{overflow-x:clip}
 .offerBanner{background:var(--red);animation:none;padding:0}
 .offerBannerIn{width:min(1200px,calc(100% - 24px));margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;padding:9px 0}
-.offerBannerLine{display:flex;align-items:center;justify-content:center;text-align:center}
+.offerBannerLine{display:flex;align-items:center;justify-content:flex-start;text-align:left;flex:1 1 220px;min-width:0;overflow:hidden}
 .offerBannerDot{display:none}
+.offerBannerTicker{overflow:hidden;flex:1;min-width:0}
+.offerBannerTrack{display:inline-flex;white-space:nowrap;animation:gulTicker 16s linear infinite}
+.offerBannerTrack .offerBannerText{display:inline-block;padding-right:56px;white-space:nowrap}
+@keyframes gulTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.offerBannerTrack{animation:none}.offerBannerTicker{overflow-x:auto}.offerBannerTrack .offerBannerText:last-child{display:none}}
 .offerBannerText{font-size:12.5px;line-height:1.4}
-.offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px}
+.offerBannerAction{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
 .offerBannerBtn{border-radius:0;padding:7px 14px;font-size:12px}
 .nav{background:rgba(11,5,6,.86);border-bottom:1px solid var(--line)}
 .navin{min-height:64px;padding-block:8px}
@@ -765,7 +770,12 @@ a.tlItem{position:relative;overflow:hidden}
  <div class="offerBannerIn">
   <span class="offerBannerLine">
    <span class="offerBannerDot"></span>
-   <span class="offerBannerText" id="offerBannerText"></span>
+   <span class="offerBannerTicker">
+    <span class="offerBannerTrack" id="offerBannerTrack">
+     <span class="offerBannerText" id="offerBannerText"></span>
+     <span class="offerBannerText" id="offerBannerText2" aria-hidden="true"></span>
+    </span>
+   </span>
   </span>
   <span class="offerBannerAction">
    <span class="offerCountdown" id="offerCountdown" style="display:none"></span>
@@ -779,7 +789,7 @@ a.tlItem{position:relative;overflow:hidden}
   <div class="navCenter">
    <a class="brand" href="#home"><img src="assets/gul-logo-nav.webp" width="40" height="40" alt="The Game Up League logo"><span class="brandFull">THE GAME UP LEAGUE</span></a>
   </div>
-  <a class="btn outline navRegister" href="register-team.html" style="flex-shrink:0">Owner Registration</a>
+  <a class="btn gold navRegister ctaMagnetic" href="register-team.html" style="flex-shrink:0">Owner Registration</a>
   <button class="hamburgerBtn" id="hamburgerBtn" aria-label="Open menu">☰</button>
  </div>
  <div class="mobileMenu" id="mobileMenu">
@@ -1378,24 +1388,26 @@ window.__gulData
         document.getElementById('offerOldPrice').style.display = 'none';
       }
       set('offerNote', 'Valid ' + earlyBird.window + (earlyBird.note ? ' — ' + earlyBird.note : ''));
-      bannerHtml = '🔥 EARLY BIRD CLOSES TONIGHT — <b>₹' + earlyBird.price.toLocaleString('en-IN') + '/player</b> <span style="white-space:nowrap">· last few hours!</span>';
+      const ebDate = new Date(earlyBird.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      bannerHtml = '🔥 EARLY BIRD — <b>₹' + earlyBird.price.toLocaleString('en-IN') + '/player</b> · closes tonight, ' + ebDate;
       countdownEndIso = earlyBird.end;
     } else {
       set('soloPrice', '₹' + solo.price.toLocaleString('en-IN'));
       set('soloNote', 'Valid ' + solo.window);
       const referralOpen = !!(referral.end && Date.now() <= new Date(referral.end).getTime());
       document.getElementById('referralCard').style.display = referralOpen ? 'block' : 'none';
-      let bannerReferralPart = '';
+      const soloDate = (c.registration.regular && c.registration.regular.end) ? new Date(c.registration.regular.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+      const items = ['🔥 Solo — <b>₹' + solo.price.toLocaleString('en-IN') + '/player</b> · closes ' + soloDate];
       if (referralOpen) {
         set('referralPrice', '₹' + referral.pricePerPlayer.toLocaleString('en-IN'));
         set('referralMath', '₹' + referral.pricePerPlayer.toLocaleString('en-IN') + ' per player — bring ' + referral.groupSize + ' or more, everyone pays the same rate, one combined payment');
         const perPlayerSavings = solo.price - referral.pricePerPlayer;
         set('referralTotalBadge', '💰 Save ₹' + perPlayerSavings.toLocaleString('en-IN') + ' per player');
         set('referralNote', '✅ ' + referral.note + ' ⏳ Valid ' + referral.window + '.');
-        bannerReferralPart = ' or Referral (3+) <b>₹' + referral.pricePerPlayer.toLocaleString('en-IN') + '/player</b>';
+        const refDate = new Date(referral.end).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        items.push('⚡ Referral (3+) — <b>₹' + referral.pricePerPlayer.toLocaleString('en-IN') + '/player</b> · closes ' + refDate);
       }
-      bannerHtml = '🔥 REGISTRATION IS OPEN — Solo <b>₹' + solo.price.toLocaleString('en-IN') + '/player</b>' + bannerReferralPart +
-        ' <span style="white-space:nowrap">· closes 2 Dec 2026</span>';
+      bannerHtml = items.join('&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;');
       countdownEndIso = c.registration.regular && c.registration.regular.end;
     }
 
@@ -1409,6 +1421,7 @@ window.__gulData
     }
 
     document.getElementById('offerBannerText').innerHTML = bannerHtml;
+    document.getElementById('offerBannerText2').innerHTML = bannerHtml;
     document.getElementById('offerBanner').style.display = 'block';
 
     // Live countdown to the current phase's own end-time - early bird tonight,
