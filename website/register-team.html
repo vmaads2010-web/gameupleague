@@ -656,7 +656,7 @@ window.__gulContentPromise.then(c => {
     const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + teamFee + '&cu=INR';
     const qrWrap = document.getElementById('payQr');
     qrWrap.innerHTML = '';
-    new QRCode(qrWrap, { text: qrLink, width: 300, height: 300, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
+    new QRCode(qrWrap, { text: qrLink, width: 440, height: 440, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.Q });
     const logo = document.createElement('img');
     logo.className = 'qrLogo';
     logo.src = 'assets/favicon-64.png';
