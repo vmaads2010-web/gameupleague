@@ -515,7 +515,7 @@ td.wrap-cell{white-space:normal;max-width:180px}
     <div class="refreshRow">
       <h2 style="margin:0;font-size:18px">Old Players – WhatsApp Re-engagement Campaign</h2>
       <div style="display:flex;gap:8px">
-        <a class="secondaryBtn" href="../assets/og-share.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 Download Poster</a>
+        <a class="secondaryBtn" href="../assets/old-players-campaign-poster.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 Download Poster</a>
         <button class="exportBtn" id="exportOldPlayersBtn">⬇ Export CSV</button>
       </div>
     </div>
@@ -540,9 +540,8 @@ td.wrap-cell{white-space:normal;max-width:180px}
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-          <button class="secondaryBtn" id="opQueueOpenBtn">💬 1. Open WhatsApp Chat</button>
-          <a class="secondaryBtn" href="../assets/og-share.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 2. Download Poster (attach it yourself)</a>
-          <button class="secondaryBtn" id="opQueueSentBtn">✓ 3. Mark Sent &amp; Next →</button>
+          <a class="secondaryBtn" href="../assets/old-players-campaign-poster.jpg" download="gul-reloaded-poster.jpg" target="_blank" rel="noopener">📥 1. Download Poster (attach it yourself)</a>
+          <button class="secondaryBtn" id="opQueueSentBtn">💬 2. Send &amp; Next →</button>
           <button class="secondaryBtn" id="opQueueSkipBtn">⏭ Skip</button>
           <button class="dangerBtn" id="opQueueStopBtn">■ Stop</button>
         </div>
@@ -1347,37 +1346,34 @@ if (!window.GUL_SUPABASE_URL || window.GUL_SUPABASE_URL.includes('PASTE')) {
     return String(fullName || '').trim().split(/\s+/)[0] || 'there';
   }
 
-  // Matches the brief's exact WhatsApp message template, personalised with
-  // the player's first name.
+  // Personalised with the player's first name. Deliberately doesn't hardcode
+  // "tonight" or a single price - this gets reused across multiple days of
+  // sending, so it states both current registration options instead of a
+  // one-night-only deadline that would go stale on day 2.
   function oldPlayerCampaignMessage(fullName) {
     const firstName = oldPlayerFirstName(fullName);
-    return `Hey ${firstName}! 👋
+    return `Hey ${firstName}! 👋⚽
 
-Remember the excitement, competition and unforgettable memories from our last season?
+The old gang is back — *THE GAME UP LEAGUE: RELOADED* is here for Season 2! 🏆
 
-*THE GAME UP LEAGUE – RELOADED IS BACK!*
+We had an incredible season together, and we'd genuinely love to see you back on the pitch.
 
-We're bringing the football community together for another exciting season, and we'd genuinely love to see you back on the pitch!
+💰 *Registration is open:*
+• Solo — ₹1,800
+• Bring 2 friends (group of 3) — just ₹1,800 ₹1,600 each, ₹4,800 total
+📅 Closes 2 December 2026.
 
-🔥 LAST CHANCE – EARLY BIRD OFFER
-Registration Fee: ₹1,600
-Regular Fee: ₹1,800
-You Save ₹200!
+What's your plan for Season 2?
+1️⃣ YES! Registering now.
+2️⃣ INTERESTED — send me more details.
+3️⃣ Not this season.
 
-⏳ The Early Bird offer ends TONIGHT, 7 November, at 11:59 PM.
+Just reply with 1, 2 or 3 and we'll take it from there 🙌
 
-WHAT'S YOUR PLAN FOR SEASON 2?
-1️⃣ YES! I'm registering for Season 2.
-2️⃣ I'M INTERESTED! I need more details.
-3️⃣ NOT THIS SEASON. Maybe next time.
+👉 Register here: https://thegameupleague.com/register.html
 
-Just reply with 1, 2 or 3.
-
-Register here: https://thegameupleague.com/register.html
-
-Let's bring the old gang back together and create more football memories!
-
-THE GAME UP LEAGUE – RELOADED ⚽🔥`;
+Let's bring the squad back together! 🔥
+*THE GAME UP LEAGUE – RELOADED*`;
   }
 
   async function loadOldPlayers() {
@@ -1446,8 +1442,7 @@ THE GAME UP LEAGUE – RELOADED ⚽🔥`;
         <td>${p.response ? `<span class="pill ${OP_RESPONSE_PILL[p.response]}">${esc(OP_RESPONSE_LABELS[p.response])}</span>` : '—'}</td>
         <td><span class="pill ${p.reregistered ? 'paid' : 'unpaid'}">${p.reregistered ? '✅ Yes' : 'Not yet'}</span></td>
         <td class="actionsCell">
-          <button class="secondaryBtn" data-action="op-whatsapp">💬 ${p.campaign_status === 'pending' ? 'Open WhatsApp' : 'Re-send'}</button>
-          <button class="secondaryBtn" data-action="op-mark-sent" ${p.campaign_status === 'pending' ? '' : 'disabled'}>✓ Mark Sent</button>
+          <button class="secondaryBtn" data-action="op-whatsapp">💬 ${p.campaign_status === 'pending' ? 'Send &amp; Track' : '↻ Re-send'}</button>
           <button class="secondaryBtn" data-action="op-resp-1" title="Interested - ready to register">1</button>
           <button class="secondaryBtn" data-action="op-resp-2" title="Interested - needs info">2</button>
           <button class="secondaryBtn" data-action="op-resp-3" title="Not interested">3</button>
@@ -1463,17 +1458,16 @@ THE GAME UP LEAGUE – RELOADED ⚽🔥`;
     if (!player) return;
 
     if (e.target.closest('[data-action="op-whatsapp"]')) {
-      // Opening the chat never marks it sent on its own - the brief requires
-      // a human to manually confirm the send (and attach the poster) before
-      // this row is counted, so an accidental tab-open can't inflate the count.
-      if (player.campaign_status !== 'pending' && !confirm('This player was already marked ' + player.campaign_status + '. Open WhatsApp again anyway?')) return;
+      // One click does both: opens the pre-filled chat AND tracks it as sent
+      // right away, so the Sent count stays accurate without a second click.
+      // Already-sent rows ask first, so a re-send can't double-count by accident.
+      if (player.campaign_status !== 'pending' && !confirm('This player was already marked ' + player.campaign_status + '. Open WhatsApp again?')) return;
       window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
-      return;
-    }
-    if (e.target.closest('[data-action="op-mark-sent"]')) {
-      const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', id);
-      if (error) { alert('Could not update: ' + error.message); return; }
-      await loadOldPlayers();
+      if (player.campaign_status === 'pending') {
+        const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', id);
+        if (error) { alert('Chat opened, but could not mark it sent: ' + error.message); return; }
+        await loadOldPlayers();
+      }
       return;
     }
     const respBtn = e.target.closest('[data-action^="op-resp-"]');
@@ -1545,15 +1539,12 @@ THE GAME UP LEAGUE – RELOADED ⚽🔥`;
     opShowQueuePlayer();
   });
 
-  document.getElementById('opQueueOpenBtn').addEventListener('click', () => {
-    const player = opQueue[opQueueIndex];
-    if (!player) return;
-    window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
-  });
-
   document.getElementById('opQueueSentBtn').addEventListener('click', async () => {
     const player = opQueue[opQueueIndex];
     if (!player) return;
+    // Opens the pre-filled chat and tracks it as sent in the same click -
+    // matches the per-row "Send & Track" button so the count is automatic.
+    window.open(waLink(player.mobile, oldPlayerCampaignMessage(player.full_name)), '_blank');
     const { error } = await client.from('old_players_campaign').update({ campaign_status: 'sent', updated_at: new Date().toISOString() }).eq('id', player.id);
     if (error) { alert('Could not update: ' + error.message); return; }
     await loadOldPlayers();
