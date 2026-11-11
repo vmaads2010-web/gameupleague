@@ -821,14 +821,18 @@ function updateTeamPaymentUI() {
   document.getElementById('payUpiBtn').href = upiLink;
   document.getElementById('payAppAmt').textContent = amount.toLocaleString('en-IN');
   document.getElementById('payIdAmt').textContent = amount.toLocaleString('en-IN');
-  // Shorter QR-only link (drops pn/pname and tn/note) scans much faster -
-  // fewer characters means fewer modules for the same canvas size, so each
-  // module is bigger and a camera locks on quicker. Q-level correction (25%)
-  // still comfortably covers the small centred logo. The quiet-zone margin
-  // is baked into the actual pixels by renderQr (see register.html for the
+  // The QR link keeps pn (payee name) even though it's shorter without it -
+  // pn is a mandatory NPCI field, and some UPI apps scan a pn-less link fine
+  // but then refuse to actually complete the payment, silently failing at
+  // the confirm step. Dropping only tn/note (genuinely optional) still keeps
+  // the link short enough for a fast scan. Q-level correction (25%) still
+  // comfortably covers the small centred logo. The quiet-zone margin is
+  // baked into the actual pixels by renderQr (see register.html for the
   // full reasoning) rather than left to CSS padding, which real phones were
   // rendering inconsistently.
-  const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + amount + '&cu=INR';
+  const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
+    '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
+    '&am=' + amount + '&cu=INR';
   renderQr(document.getElementById('payQr'), qrLink);
 }
 

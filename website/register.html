@@ -1058,15 +1058,16 @@ window.updatePaymentUI = function (c) {
     document.getElementById('payAppAmt').textContent = amount.toLocaleString('en-IN');
     document.getElementById('payIdAmt').textContent = amount.toLocaleString('en-IN');
 
-    // The QR encodes a shorter link than the "Pay with UPI app" button does -
-    // dropping pn/tn (payee name, note) cuts it from ~115 to ~55 characters,
-    // which roughly halves the module count for the same canvas size. Fewer,
-    // bigger modules is what actually makes a camera scanner like GPay lock
-    // on fast; all that data was never required to read by a human anyway,
-    // only pa (who) and am (how much) matter for paying. Q-level correction
-    // (25%) comfortably covers the small centred logo badge (~15%) while
-    // keeping the code simpler than H would.
-    const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) + '&am=' + amount + '&cu=INR';
+    // The QR link keeps pn (payee name) even though it's shorter without it -
+    // pn is a mandatory NPCI field, and some UPI apps scan a pn-less link
+    // fine but then refuse to actually complete the payment, silently
+    // failing at the confirm step. Dropping only tn/note (genuinely
+    // optional) still keeps the link short enough for a fast scan.
+    // Q-level correction (25%) comfortably covers the small centred logo
+    // badge (~15%) while keeping the code simpler than H would.
+    const qrLink = 'upi://pay?pa=' + encodeURIComponent(window.GUL_UPI_ID) +
+      '&pn=' + encodeURIComponent(window.GUL_UPI_PAYEE_NAME || 'The Game Up League') +
+      '&am=' + amount + '&cu=INR';
     renderQr(document.getElementById('payQr'), qrLink);
   }
   updateSubmitGate();
