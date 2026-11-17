@@ -491,7 +491,9 @@ a.tlItem{position:relative;overflow:hidden}
    <span class="fieldHint"><svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2c2.6.5 4.5 2.5 4.5 5.3"/></svg>You + your friends — add as many as you like, everyone pays ₹1,600 each.</span>
   </div>
 
-  <div class="offerBox">
+  <div class="notice" id="closedNotice" style="display:none"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>Registration is now closed — the deadline has passed. Thanks for your interest; look out for next season's announcement.</div>
+
+  <div class="offerBox" id="offerBox">
    <div class="offerBadge"><span class="dot"></span><span id="offerLabel">Loading offer…</span></div>
    <div class="offerMain">
     <div class="price" id="offerPrice"></div>
@@ -530,6 +532,15 @@ a.tlItem{position:relative;overflow:hidden}
    window.isReferralActive = function (c) {
      const r = c.registration.referral;
      return !!(r && r.end && Date.now() <= new Date(r.end).getTime());
+   };
+
+   // Once the final deadline (regular.end, 2 Dec) passes, registration
+   // closes outright - no offer, no form, no payment. Every other date
+   // check above only switches BETWEEN offers; this one turns the whole
+   // page off, so stale "closes 2 Dec" copy never lingers past 2 Dec.
+   window.isRegistrationClosed = function (c) {
+     const r = c.registration.regular;
+     return !!(r && r.end && Date.now() > new Date(r.end).getTime());
    };
 
    // Group size is adjustable (minimum 2, "you + 1 friend") - a referred
@@ -596,6 +607,18 @@ a.tlItem{position:relative;overflow:hidden}
    }
 
    function renderOfferBox(c) {
+     const closed = window.isRegistrationClosed(c);
+     document.getElementById('closedNotice').style.display = closed ? 'block' : 'none';
+     document.getElementById('offerBox').style.display = closed ? 'none' : '';
+     document.getElementById('infoNotice').style.display = closed ? 'none' : '';
+     document.getElementById('regCard').style.display = closed ? 'none' : '';
+     if (closed) {
+       document.getElementById('regTypeField').style.display = 'none';
+       document.getElementById('referralCountField').style.display = 'none';
+       if (countdownTimer) clearInterval(countdownTimer);
+       document.getElementById('offerCountdownBig').style.display = 'none';
+       return;
+     }
      const referralOpen = window.isReferralActive(c);
      document.getElementById('regTypeField').style.display = window.isEarlyBirdActive(c) ? 'none' : 'block';
      document.getElementById('regTypeReferral').closest('.radioRow').style.display = referralOpen ? 'flex' : 'none';
@@ -632,10 +655,10 @@ a.tlItem{position:relative;overflow:hidden}
    });
   </script>
 
-  <div class="notice"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
+  <div class="notice" id="infoNotice"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3.5 21 19H3L12 3.5z"/><line x1="12" y1="9.5" x2="12" y2="14"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>Fill in your details, then pay via UPI and attach your payment screenshot at the bottom (Section 6) — the Submit button only unlocks once that's done.</div>
   </div>
 
-  <div class="card">
+  <div class="card" id="regCard">
    <form id="regForm">
 
     <div class="field">
