@@ -1092,7 +1092,7 @@ a.tlItem{position:relative;overflow:hidden}
 
 <section class="section" id="specialCards">
  <div class="container">
-  <div class="section-head reveal"><div><div class="eyebrow">Game Changers</div><h2><span style="color:var(--trophy)">Special</span> Game Up Cards</h2></div></div>
+  <div class="section-head reveal"><div><div class="eyebrow">Game Changers · Reloaded</div><h2><span style="color:var(--trophy)">Special</span> Game Up Cards</h2></div></div>
   <p class="sub reveal" style="margin-bottom:6px">Drawn at the beginning and used during the game. Tap a card to see the twist.</p>
   <div class="flipHintChip reveal" style="margin-bottom:18px">👆 Tap to flip</div>
   <div class="flipCardRow reveal-stagger" id="flipCardRow"></div>
@@ -1506,19 +1506,20 @@ window.__gulData
     }).join('');
     document.getElementById('championsMarquee').innerHTML = championChips;
 
-    // Special Game Up Cards (Joker, Bench Threat, Power Surge, MLS Penalty) -
-    // rule text below is placeholder wording until GUL confirms the official rule copy.
+    // Special Game Up Cards for Season RELOADED (Joker, Bench Threat,
+    // Invisible Card, MLS Penalty) - official rule copy confirmed by GUL,
+    // 24 Nov 2026 (replaces the old Reimagined-season placeholder set).
     const specialCards = [
-      { img: 'assets/cards/joker.jpg', name: 'Joker', rule: 'A wildcard twist revealed only at kickoff - expect a surprise rule change mid-match.' },
-      { img: 'assets/cards/bench-threat.jpg', name: 'Bench Threat', rule: 'A benched player can be subbed on to take one decisive shot - coach\'s call, once per match.' },
-      { img: 'assets/cards/power-surge.jpg', name: 'Power Surge', rule: 'For a short window, the chosen player\'s goals count double.' },
-      { img: 'assets/cards/mls-penalty.jpg', name: 'MLS Penalty', rule: 'MLS-style penalty shootout - a running start instead of a standard spot kick.' }
+      { img: 'assets/cards/joker.jpg', name: 'Joker', rule: 'Why play by the cards when you can play ALL the cards? Choose any Game Up Power Card and flip the game on its head.' },
+      { img: 'assets/cards/bench-threat.jpg', name: 'Bench Threat', rule: 'Got a player who\'s causing trouble? Bench them! Neutralise your opponent\'s biggest threat for 60 seconds.' },
+      { img: 'assets/cards/invisible-card.jpg', name: 'Invisible Card', rule: 'One goal goes poof. Activate the card and start a 60-second countdown - the first goal scored in that window doesn\'t count.' },
+      { img: 'assets/cards/mls-penalty.jpg', name: 'MLS Penalty', rule: 'One kick. One shot. One chance to become the hero - an MLS-style penalty with a running start instead of a standard spot kick.' }
     ];
     document.getElementById('flipCardRow').innerHTML = specialCards.map((c, i) => `
       <div class="flipCard" data-i="${i}">
         <div class="flipCardInner">
           <div class="flipCardFace flipCardFront"><img src="${c.img}" alt="${c.name} card" loading="lazy"></div>
-          <div class="flipCardFace flipCardBack"><h4>${c.name}</h4><p>${c.rule}</p><div class="tapHint">Tap to flip back</div></div>
+          <div class="flipCardFace flipCardBack"><img src="assets/cards/card-back.jpg" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"><div style="position:relative;z-index:1;background:rgba(10,4,5,.72);border-radius:12px;padding:16px"><h4>${c.name}</h4><p>${c.rule}</p><div class="tapHint">Tap to flip back</div></div></div>
         </div>
       </div>`).join('');
     document.getElementById('flipCardRow').addEventListener('click', (e) => {
