@@ -58,7 +58,7 @@ main{overflow-x:clip}
 a:focus-visible>.roll>span{transform:translateY(-100%)}
 
 /* ---------- Sections and headings ---------- */
-.section{padding-block:clamp(72px,12vw,152px)}
+.section{padding-block:clamp(72px,12vw,152px);scroll-margin-top:96px}
 .section:not(#timeline){border-top:1px solid var(--line)}
 .section:not(#season1):before{display:none}
 .section-head{display:block;margin-bottom:clamp(28px,5vw,60px)}
